@@ -1,0 +1,19 @@
+
+# I didn't set one server.
+auto-update: false
+
+language: zh_CN
+
+#geominer biome info for things like infoProvider,must be int above 0
+geominer_info_lore_biome_every_line: 3
+
+#message delay for things like infoProvider,must be int above 0
+long_message_delay: 3000
+long_message_count: 5
+long_message_block_notification_time: 5
+
+#max (auto connect) distance for machine network core to connect,between 0 and 0x7fffffffffffffff
+#Don't set too large!
+machine_network_max_distance: 5
+machine_network_remote_connector_delay_millseconds_for_all: 5000
+machine_network_remote_connector_delay_millseconds_for_one: 15000

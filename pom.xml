@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.ignorelicensescn</groupId>
+    <artifactId>MinimizeFactory</artifactId>
+    <version>0.12</version>
+
+    <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+<!--        <repository>-->
+<!--            <id>slimefun_official</id>-->
+<!--            <url>https://thebusybiscuit.github.io/builds/</url>-->
+<!--        </repository>-->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>jeff-media-public</id>
+            <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+
+        <dependency>
+            <groupId>com.github.Slimefun</groupId>
+            <artifactId>Slimefun4</artifactId>
+            <version>RC-37</version>
+            <scope>provided</scope>
+        </dependency>
+
+<!--        compiled locally-->
+        <dependency>
+            <groupId>me.profelements</groupId>
+            <artifactId>DynaTech</artifactId>
+            <version>c6f32ec26c-j16</version>
+<!--            <version>master-SNAPSHOT</version>-->
+            <scope>provided</scope>
+        </dependency>
+
+<!--        compiled locally-->
+        <dependency>
+            <groupId>io.ncbpfluffybear</groupId>
+            <artifactId>FluffyMachines</artifactId>
+            <version>01c839cc0d</version>
+<!--            <version>master-SNAPSHOT</version>-->
+            <scope>provided</scope>
+        </dependency>
+
+<!--        compiled locally-->
+        <dependency>
+            <groupId>dev.j3fftw</groupId>
+            <artifactId>LiteXpansion</artifactId>
+            <version>5f1dcec294</version>
+<!--            <version>master-SNAPSHOT</version>-->
+            <scope>provided</scope>
+        </dependency>
+
+
+<!--        compiled locally-->
+        <dependency>
+            <groupId>ne.fnfal113</groupId>
+            <artifactId>FNAmplifications</artifactId>
+            <version>0b45a05e07</version>
+<!--            <version>master-SNAPSHOT</version>-->
+            <scope>provided</scope>
+        </dependency>
+
+<!--        compiled locally-->
+        <dependency>
+            <groupId>io.github.mooy1</groupId>
+            <artifactId>InfinityExpansion</artifactId>
+                        <version>9da37202ef</version>
+<!--            <version>master-SNAPSHOT</version>-->
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.jeff_media</groupId>
+            <artifactId>MorePersistentDataTypes</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+<!--        you may have to build it yourself-->
+        <dependency>
+            <groupId>io.github.acdeasdff</groupId>
+            <artifactId>InfinityCompress</artifactId>
+            <version>0.2.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.mooy1</groupId>
+            <artifactId>InfinityLib</artifactId>
+            <version>f784252486</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.github.seeseemelk</groupId>-->
+<!--            <artifactId>MockBukkit-v1.19</artifactId>-->
+<!--            <version>2.29.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.name} v${project.version}</finalName>
+        <defaultGoal>clean package</defaultGoal>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+
+                <configuration>
+                    <junitArtifactName>org.junit.jupiter:junit-jupiter</junitArtifactName>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <minimizeJar>true</minimizeJar>
+                    <relocations>
+                        <relocation>
+                            <pattern>io.github.mooy1.infinitylib</pattern>
+                            <shadedPattern>io.github.ignorelicensescn.minimizeFactory.infinitylib</shadedPattern>
+                        </relocation>
+
+                        <relocation>
+                            <pattern>com.jeff_media.morepersistentdatatypes</pattern>
+                            <shadedPattern>io.github.ignorelicensescn.minimizeFactory.morepersistentdatatypes</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.jeff_media.customblockdata</pattern>
+                            <shadedPattern>io.github.ignorelicensescn.minimizeFactory.customblockdata</shadedPattern>
+                        </relocation>
+                    </relocations>
+
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
