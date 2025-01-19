@@ -103,12 +103,12 @@ public class Registers {
     );
     public static final MachineStabilizer MACHINE_STABILIZER_FOR_REGISTER = new MachineStabilizer(
             Groups.MATERIALS,
-            new SlimefunItemStack(MACHINE_STABILIZER, 4),
+            new SlimefunItemStack(MACHINE_STABILIZER, 8),
             RecipeType.ENHANCED_CRAFTING_TABLE,
             new ItemStack[]{
-                    CARBONADO,LENS,CARBONADO,
-                    LENS,null,LENS,
-                    CARBONADO,LENS,CARBONADO
+                    DUCT_TAPE,LENS,DUCT_TAPE,
+                    LENS,CARBONADO,LENS,
+                    CHAIN,LENS,CHAIN
             }
     );
 
@@ -117,9 +117,9 @@ public class Registers {
             MACHINE_RECIPE_SERAILIZER,
             RecipeType.ENHANCED_CRAFTING_TABLE,
             new ItemStack[]{
-                    BLISTERING_INGOT_3,RAINBOW_RUNE,BLISTERING_INGOT_3,
-                    GPS_TRANSMITTER_4,PROGRAMMABLE_ANDROID_3,ENERGIZED_CAPACITOR,
-                    BLISTERING_INGOT_3,NUCLEAR_REACTOR,BLISTERING_INGOT_3
+                    URANIUM,RAINBOW_RUNE,SYNTHETIC_DIAMOND,
+                    GPS_CONTROL_PANEL,MULTIMETER,ENERGIZED_CAPACITOR,
+                    SYNTHETIC_EMERALD,NUCLEAR_REACTOR,SYNTHETIC_SAPPHIRE
             }
     );
 
@@ -138,9 +138,9 @@ public class Registers {
             MACHINE_NETWORK_STORAGE,
             RecipeType.ENHANCED_CRAFTING_TABLE,
             new ItemStack[]{
-                    BLISTERING_INGOT_3,new ItemStack(Material.DIAMOND_BLOCK),BLISTERING_INGOT_3,
+                    GOLD_24K,new ItemStack(Material.DIAMOND_BLOCK),GOLD_24K,
                     new ItemStack(Material.DIAMOND_BLOCK),ENDER_RUNE,new ItemStack(Material.DIAMOND_BLOCK),
-                    BLISTERING_INGOT_3,new ItemStack(Material.DIAMOND_BLOCK),BLISTERING_INGOT_3
+                    GOLD_24K,new ItemStack(Material.DIAMOND_BLOCK),GOLD_24K
             }
     );
 
@@ -149,9 +149,9 @@ public class Registers {
             MACHINE_NETWORK_CONTAINER,
             RecipeType.ENHANCED_CRAFTING_TABLE,
             new ItemStack[]{
-                    WITHER_PROOF_GLASS,ENERGY_CONNECTOR,WITHER_PROOF_GLASS,
-                    CARGO_CONNECTOR_NODE,INFUSED_HOPPER,GPS_TRANSMITTER_4,
-                    WITHER_PROOF_GLASS,GPS_TELEPORTATION_MATRIX,WITHER_PROOF_GLASS,
+                    new ItemStack(Material.WATER_BUCKET),ENERGY_CONNECTOR,OUTPUT_CHEST,
+                    CARGO_CONNECTOR_NODE,INFUSED_HOPPER,GPS_TRANSMITTER,
+                    REACTOR_ACCESS_PORT,GPS_TELEPORTATION_MATRIX,BLOCK_PLACER,
             }
     );
 
