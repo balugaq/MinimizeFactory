@@ -1,8 +1,7 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 
 import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.Serializations;
-import io.github.ignorelicensescn.minimizeFactory.utils.network.NodeType;
+import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -16,7 +15,6 @@ import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
-import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -28,18 +26,18 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import java.util.List;
 import java.util.Objects;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizeFactory.utils.network.NodeKeys.MINIMIZEFACTORY_CORE_LOCATION;
-import static io.github.ignorelicensescn.minimizeFactory.utils.network.NodeKeys.MINIMIZEFACTORY_NODE_TYPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.MINIMIZEFACTORY_CORE_LOCATION;
+import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.MINIMIZEFACTORY_NODE_TYPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.BukkitSerializer.LOCATION_SERIALIZER;
 
 public class MachineNetworkContainer extends NetworkNode{
-    public static final int[] INPUTS = new int[]{
+    public static final int[] STABILIZER_INPUT_SLOTS = new int[]{
             0,1,2,3,4,5,6,7,8,
             9,10,11,12,13,14,15,16,17,
             18,19,20,21,22,23,24,25,26,
@@ -95,7 +93,7 @@ public class MachineNetworkContainer extends NetworkNode{
                     return;
                 }
                 removeNode(e.getBlock().getLocation());
-                BlockStorage.getInventory(e.getBlock()).dropItems(e.getPlayer().getLocation(),INPUTS);
+                BlockStorage.getInventory(e.getBlock()).dropItems(e.getPlayer().getLocation(), STABILIZER_INPUT_SLOTS);
             }
         });
     }
@@ -106,11 +104,11 @@ public class MachineNetworkContainer extends NetworkNode{
         boolean lockFlag = isLocked(nodeLocation);
         JSONObject jsonObject = new JSONObject(BlockStorage.getBlockInfoAsJson(nodeLocation));
         if (jsonObject.has(MINIMIZEFACTORY_CORE_LOCATION)
-                && BlockStorage.hasInventory(Serializations.StringToLocation(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)).getBlock())
-                && isNodeRegisteredToCore(nodeLocation, Serializations.StringToLocation(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)))
+                && BlockStorage.hasInventory(LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)).getBlock())
+                && isNodeRegisteredToCore(nodeLocation, LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)))
         ){
             String locationStr = jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION);
-            Location coreLocation = Serializations.StringToLocation(locationStr);
+            Location coreLocation = LOCATION_SERIALIZER.StringToSerializable(locationStr);
             nodeMenu.replaceExistingItem(hintSlot,
                     !lockFlag ? new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,
                     properties.getReplacedProperty("MachineNetwork_Core_Location") + locationStr,
@@ -147,7 +145,7 @@ public class MachineNetworkContainer extends NetworkNode{
     }
     public static final ItemStack LOCKED_SLOT = new CustomItemStack(Material.BARRIER, properties.getReplacedProperty("MachineNetworkStorage_Locked"));
     public static void lockInputs(BlockMenu nodeMenu){
-        for (int i:INPUTS){
+        for (int i: STABILIZER_INPUT_SLOTS){
             nodeMenu.addMenuClickHandler(i, ChestMenuUtils.getEmptyClickHandler());
             if (nodeMenu.getItemInSlot(i) == null){
                 nodeMenu.replaceExistingItem(i,LOCKED_SLOT);
@@ -155,7 +153,7 @@ public class MachineNetworkContainer extends NetworkNode{
         }
     }
     public static void unlockInputs(BlockMenu nodeMenu){
-        for (int i:INPUTS){
+        for (int i: STABILIZER_INPUT_SLOTS){
             nodeMenu.addMenuClickHandler(i, null);
             ItemStack inSlot = nodeMenu.getItemInSlot(i);
             if (inSlot != null){

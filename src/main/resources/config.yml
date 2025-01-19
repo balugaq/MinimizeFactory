@@ -12,8 +12,8 @@ long_message_delay: 3000
 long_message_count: 5
 long_message_block_notification_time: 5
 
-#max (auto connect) distance for machine network core to connect,between 0 and 0x7fffffffffffffff
+#max (auto connect) distance for machine network core to connect,between 0 and 2^31 - 1
 #Don't set too large!
 machine_network_max_distance: 5
-machine_network_remote_connector_delay_millseconds_for_all: 5000
-machine_network_remote_connector_delay_millseconds_for_one: 15000
+machine_network_remote_connector_delay_millseconds_for_all: 1000
+machine_network_remote_connector_delay_millseconds_for_one: 5000

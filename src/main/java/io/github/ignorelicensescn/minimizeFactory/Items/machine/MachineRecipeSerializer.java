@@ -1,26 +1,19 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.DataTypeMethods;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentSerializedMachineRecipeType;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.MachineRecipeSerializerInitCrafting;
+import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.MachineRecipeSerializerInitCrafting;
 import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeInTicks;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeOutEntity;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.EnhancedAutoCrafter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.VanillaAutoCrafter;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.FluidPump;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.entities.AbstractEntityAssembler;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.libraries.unirest.json.JSONObject;
@@ -46,11 +39,8 @@ import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.Items.Registers.MACHINE_STABILIZER;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.findEnergyInfo_AbstractEntityAssembler;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.findRecipes_AbstractEntityAssembler;
-import static io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.getSerializedRecipeProviderForMachine;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SlimefunConsts.FLUID_PUMP_ENERGY_CONSUMPTION;
+import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.getSerializedRecipeProviderForMachine;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityCompress.InfinityCompressConsts.getMultiblockAutocrafterRecipes;
 import static io.github.mooy1.infinityexpansion.items.generators.Generators.GEOTHERMAL;
 import static io.github.mooy1.infinityexpansion.items.generators.Generators.REINFORCED_GEOTHERMAL;
@@ -2385,16 +2375,20 @@ public class MachineRecipeSerializer extends SlimefunItem {
                 if (machineRecipe.outputExpectations == null){
                     for (ItemStack output1:machineRecipe.outputs){
                         String name = NameUtil.findName(output1);
-                        lore.add(ChatColor.WHITE + name + properties.getReplacedProperty("Stabilizer_Output_Unit") + output1.getAmount());
+                        lore.add(ChatColor.WHITE + name
+                                + properties.getReplacedProperty("Stabilizer_Output_Unit")
+                                + output1.getAmount()
+                        );
                     }
                 }else {
-                    for (int i=0;i<machineRecipe.outputs.length;i++){
+                    for (int i=0;i<machineRecipe.outputs.length;i+=1){
                         ItemStack output1 = machineRecipe.outputs[i];
                         String name = NameUtil.findName(output1);
                         lore.add(ChatColor.WHITE + name
                                 + properties.getReplacedProperty("Stabilizer_Output_Unit") + output1.getAmount()
                                 + properties.getReplacedProperty("Stabilizer_Output_Expectation")
-                                + machineRecipe.outputExpectations[i]);
+                                + machineRecipe.outputExpectations[i]
+                        );
                     }
                 }
             }
@@ -2413,7 +2407,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
             if (machineRecipe.biome != null){
                 worldStr += properties.getReplacedProperty("Stabilizer_Biome") + NameUtil.nameForBiome(machineRecipe.biome);
             }
-            if (!worldStr.equals("")){
+            if (!worldStr.isEmpty()){
                 lore.add(worldStr);
             }
             if (machineRecipe.entityClassName != null){
@@ -2428,7 +2422,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
 
             ItemMeta outputMeta = output.getItemMeta();
             assert outputMeta != null;
-            if (lore.size() != 0){
+            if (!lore.isEmpty()){
                 lore = new CustomItemStack(Material.BEDROCK,"1",lore).getItemMeta().getLore();
                 outputMeta.setLore(lore);
             }

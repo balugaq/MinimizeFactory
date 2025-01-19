@@ -1,6 +1,6 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.serializable;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;

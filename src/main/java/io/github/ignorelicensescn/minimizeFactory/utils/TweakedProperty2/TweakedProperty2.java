@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.instance;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
+/**
+ * maybe I should consider slimefun-like yml way
+ */
 public class TweakedProperty2 extends Properties {
 
     public String getReplacedProperty(String key) {
@@ -81,7 +84,6 @@ public class TweakedProperty2 extends Properties {
         result.replaceAll(textToTranslate -> translateAlternateColorCodes('&', textToTranslate));
         return result;
     }
-
     public List<String> getReplacedProperties0(String key, int times, ChatColor color) {
         List<String> svals = new ArrayList<>();
 

@@ -1,9 +1,8 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.ConnectorSettings;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.DataTypeMethods;
-import io.github.ignorelicensescn.minimizeFactory.utils.Serializations;
-import io.github.ignorelicensescn.minimizeFactory.utils.network.NodeType;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.ConnectorSettings;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
+import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -23,14 +22,17 @@ import java.util.UUID;
 
 import static io.github.ignorelicensescn.minimizeFactory.Items.machine.network.NetworkNode.isLocked;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentConnectorSettingsType.CONNECTOR_SETTINGS;
-import static io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentConnectorSettingsType.TYPE;
-import static io.github.ignorelicensescn.minimizeFactory.utils.network.NodeKeys.MINIMIZEFACTORY_NODE_TYPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentConnectorSettingsType.CONNECTOR_SETTINGS;
+import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentConnectorSettingsType.TYPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.MINIMIZEFACTORY_NODE_TYPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.BukkitSerializer.LOCATION_SERIALIZER;
 
 public class MachineNetworkConnector extends SlimefunItem {
     public MachineNetworkConnector(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
+        assert item.hasItemMeta();
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         DataTypeMethods.setCustom(meta,CONNECTOR_SETTINGS,TYPE,new ConnectorSettings(""));
         item.setItemMeta(meta);
         addItemHandler(
@@ -46,24 +48,19 @@ public class MachineNetworkConnector extends SlimefunItem {
                                     block -> {
                                         if (BlockStorage.hasBlockInfo(block)){
                                             JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(block));
-                                            if (coreInfo.has(MINIMIZEFACTORY_NODE_TYPE)){
-                                                if (coreInfo.get(MINIMIZEFACTORY_NODE_TYPE).equals(NodeType.CONTROLLER.name())){
-                                                    connectorSettings.coreLocation = Serializations.LocationToString(block.getLocation());
-                                                    DataTypeMethods.setCustom(connectorMeta, CONNECTOR_SETTINGS, TYPE, connectorSettings);
-                                                    connector.setItemMeta(connectorMeta);
-                                                    p.sendMessage(
-                                                            properties.getReplacedProperty("Connector_Core_Bound"));
-                                                    p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0F);
-                                                }else {
-                                                    TweakConnectorMode(connectorSettings,connectorMeta,connector,p);
-                                                }
-                                            }else {
-                                                TweakConnectorMode(connectorSettings,connectorMeta,connector,p);
+                                            if (coreInfo.has(MINIMIZEFACTORY_NODE_TYPE)
+                                                    && coreInfo.get(MINIMIZEFACTORY_NODE_TYPE).equals(NodeType.CONTROLLER.name())
+                                            ){
+                                                connectorSettings.coreLocation = LOCATION_SERIALIZER.SerializableToString(block.getLocation());
+                                                DataTypeMethods.setCustom(connectorMeta, CONNECTOR_SETTINGS, TYPE, connectorSettings);
+                                                connector.setItemMeta(connectorMeta);
+                                                p.sendMessage(
+                                                        properties.getReplacedProperty("Connector_Core_Bound"));
+                                                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0F);
+                                                return;
                                             }
                                         }
-                                        else {
-                                            TweakConnectorMode(connectorSettings,connectorMeta,connector,p);
-                                        }
+                                        TweakConnectorMode(connectorSettings,connectorMeta,connector,p);
                                     },
                                     () -> TweakConnectorMode(connectorSettings,connectorMeta,connector,p)
                             );
@@ -74,7 +71,7 @@ public class MachineNetworkConnector extends SlimefunItem {
                                 p.sendMessage(properties.getReplacedProperty("Connector_No_Core_Found"));
                                 return;
                             }
-                            Location coreLocation = Serializations.StringToLocation(connectorSettings.coreLocation);
+                            Location coreLocation = LOCATION_SERIALIZER.StringToSerializable(connectorSettings.coreLocation);
                             if (coreLocation == null){
                                 p.sendMessage(properties.getReplacedProperty("Connector_No_Core_Found"));
                                 return;
@@ -106,9 +103,9 @@ public class MachineNetworkConnector extends SlimefunItem {
                                                     PlayerLastConnectorUsedTime.put(playerUUID,current);
 
                                                     if (connectorSettings.connectMode){
-                                                        NetworkNode.registerNodes(block.getLocation(),coreLocation,0);
+                                                        NetworkNode.registerNodes(block.getLocation(),coreLocation);
                                                     }else {
-                                                        NetworkNode.unregisterNodes(block.getLocation(),coreLocation,0);
+                                                        NetworkNode.unregisterNodes(coreLocation);
                                                     }
                                                     p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0F);
                                                 }

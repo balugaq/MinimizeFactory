@@ -1,8 +1,8 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.Consumptions;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.DataTypeMethods;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentSerializedMachineRecipeType;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
 
-import static io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
 
 public class MachineStabilizer extends UnplaceableBlock implements DistinctiveItem {
     public MachineStabilizer(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {

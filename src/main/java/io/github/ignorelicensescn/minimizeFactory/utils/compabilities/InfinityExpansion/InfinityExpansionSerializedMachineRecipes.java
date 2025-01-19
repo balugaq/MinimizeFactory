@@ -1,14 +1,14 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.BiomeAndEnvironment;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
-import io.github.ignorelicensescn.minimizeFactory.utils.TweakedMachineFuel;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.TweakedMachineFuel;
 import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityCompress.InfinityCompressSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeInTicks;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeInTicksWithExpectations;
-import io.github.ignorelicensescn.minimizeFactory.utils.mathUtils.IntegerRational;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicks;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicksWithExpectations;
+import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimpleFour;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimpleTri;
@@ -33,9 +33,9 @@ import java.util.*;
 
 import static io.github.acdeasdff.infinityCompress.items.blocks.Blocks.INFINITY_INFINITE_PANEL;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SlimefunConsts.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun.SlimefunConsts.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionConsts.*;
 import static io.github.mooy1.infinityexpansion.items.generators.Generators.*;
 import static io.github.mooy1.infinityexpansion.items.materials.Materials.VOID_BIT;
@@ -280,7 +280,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 //                            String[] locations = new String[canBeFoundAt.size() / GEOMINER_BIOME_EVERY_LINE
 //                                    + (canBeFoundAt.size() % GEOMINER_BIOME_EVERY_LINE == 0 ? 0 : 1)];
 //                            Arrays.fill(locations, "");
-//                            for (int j=0;j<canBeFoundAt.size();j++){
+//                            for (int j=0;j<canBeFoundAt.size();j+=1){
 //                                SimplePair<BiomeAndEnvironment, IntegerRational> tri = canBeFoundAt.get(j);
 //                                StringBuilder sb = new StringBuilder();
 //                                if (tri.first.environment().equals(World.Environment.NORMAL)){
@@ -757,7 +757,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                             ItemStack cardItem = card==null?null:card.getItem();
                             lore.add(NameUtil.findName(cardItem));
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
-                            for (int j=0;j<recipe.b.length;j++){
+                            for (int j=0;j<recipe.b.length;j+=1){
                                 lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(recipe.b[j]) + properties.getReplacedProperty("Test_InfoProvider_Info_Recipe_Expectation") + recipe.c[j]);
                             }
                             return new SimplePair<>(properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime")

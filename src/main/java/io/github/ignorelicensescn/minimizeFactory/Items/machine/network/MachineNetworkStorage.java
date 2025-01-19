@@ -1,9 +1,8 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 
 import io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.Serializations;
-import io.github.ignorelicensescn.minimizeFactory.utils.network.NodeType;
-import io.github.ignorelicensescn.minimizeFactory.utils.network.StorageUtils;
+import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeType;
+import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.StorageUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemHandler;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -47,8 +46,9 @@ import java.util.List;
 import java.util.Locale;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizeFactory.utils.network.NodeKeys.MINIMIZEFACTORY_CORE_LOCATION;
-import static io.github.ignorelicensescn.minimizeFactory.utils.network.NodeKeys.MINIMIZEFACTORY_NODE_TYPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.MINIMIZEFACTORY_CORE_LOCATION;
+import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.MINIMIZEFACTORY_NODE_TYPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.BukkitSerializer.LOCATION_SERIALIZER;
 
 /**
  * a chest from FluffyMachines
@@ -424,7 +424,7 @@ public class MachineNetworkStorage extends NetworkNode{
 
         BigInteger stored = getStored(b);
 
-        for (int i = 0; i < inv.getContents().length; i++) {
+        for (int i = 0; i < inv.getContents().length; i+=1) {
             ItemStack item = inv.getItem(i);
             if (item == null) {
                 continue;
@@ -476,7 +476,7 @@ public class MachineNetworkStorage extends NetworkNode{
         BigInteger maxStackSizeBigInteger = BigInteger.valueOf(maxStackSize);
         int outI = 0;
 
-        for (int i = 0; i < contents.length; i++) {
+        for (int i = 0; i < contents.length; i+=1) {
 
             if (contents[i] == null) {
                 if (stored.compareTo(maxStackSizeBigInteger) > 0)
@@ -502,7 +502,7 @@ public class MachineNetworkStorage extends NetworkNode{
                     inv.setItem(i, item.clone());
                     menu.replaceExistingItem(OUTPUT_SLOTS[outI], null);
 
-                    outI++;
+                    outI+=1;
                 }
             }
         }
@@ -549,12 +549,12 @@ public class MachineNetworkStorage extends NetworkNode{
     static void showCoreLocation(Location nodeLocation, int hintSlot, BlockMenu nodeMenu){
         JSONObject jsonObject = new JSONObject(BlockStorage.getBlockInfoAsJson(nodeLocation));
         if (jsonObject.has(MINIMIZEFACTORY_CORE_LOCATION)
-                && BlockStorage.hasInventory(Serializations.StringToLocation(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)).getBlock())
-                && isNodeRegisteredToCore(nodeLocation, Serializations.StringToLocation(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)))
+                && BlockStorage.hasInventory(LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)).getBlock())
+                && isNodeRegisteredToCore(nodeLocation, LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)))
         )
         {
             String locationStr = jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION);
-            Location coreLocation = Serializations.StringToLocation(locationStr);
+            Location coreLocation = LOCATION_SERIALIZER.StringToSerializable(locationStr);
             nodeMenu.replaceExistingItem(hintSlot, new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,
                     properties.getReplacedProperty("MachineNetwork_Core_Location") + locationStr,
                     properties.getReplacedProperties("MachineNetwork_Core_Location_Lore_1", ChatColor.GRAY)

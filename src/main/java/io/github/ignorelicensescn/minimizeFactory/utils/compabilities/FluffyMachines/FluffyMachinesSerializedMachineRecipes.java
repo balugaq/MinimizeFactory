@@ -1,8 +1,8 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.FluffyMachines;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializeMachineRecipeUtils;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.ncbpfluffybear.fluffymachines.machines.AutoAncientAltar;
 import io.ncbpfluffybear.fluffymachines.machines.AutoCraftingTable;
@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.findRecipes_AutoTableSaw;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.findRecipes_AutoTableSaw;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityCompress.InfinityCompressConsts.getMultiblockAutocrafterRecipes;
 
 public class FluffyMachinesSerializedMachineRecipes {

@@ -1,8 +1,8 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.LiteX;
 
 import dev.j3fftw.litexpansion.machine.generators.AdvancedSolarPanel;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,8 +15,8 @@ import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.LiteXpansionFlag;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.findEnergyInfo_LiteX_AdvancedSolarPanel;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.findEnergyInfo_LiteX_AdvancedSolarPanel;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 
 public class LiteXpansionSerializedMachineRecipes {
     private static boolean initFlag = false;

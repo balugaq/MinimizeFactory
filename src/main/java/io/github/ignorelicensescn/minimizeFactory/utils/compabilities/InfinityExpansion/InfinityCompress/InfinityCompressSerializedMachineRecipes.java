@@ -2,13 +2,13 @@ package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityE
 
 import io.github.acdeasdff.infinityCompress.items.Multiblock_Autocrafter;
 import io.github.acdeasdff.infinityCompress.items.blocks.*;
-import io.github.ignorelicensescn.minimizeFactory.utils.BiomeAndEnvironment;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializeMachineRecipeUtils;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeInTicks;
-import io.github.ignorelicensescn.minimizeFactory.utils.mathUtils.IntegerRational;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicks;
+import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import org.bukkit.ChatColor;
@@ -23,10 +23,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SlimefunConsts.geoResourcesInfo;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SlimefunConsts.geoResourcesInfo_ResourcesList;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun.SlimefunConsts.geoResourcesInfo;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun.SlimefunConsts.geoResourcesInfo_ResourcesList;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityCompress.InfinityCompressConsts.getMultiblockAutocrafterRecipes;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionConsts.GEAR_TRANSFORMER_RECIPES;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionConsts.INFINITY_WORKBENCH_RECIPES;
@@ -122,7 +122,7 @@ public class InfinityCompressSerializedMachineRecipes {
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_LocationAndExpectation"));
                             String[] locations = new String[recipe.second.size() / GEOMINER_BIOME_EVERY_LINE + (recipe.second.size() % GEOMINER_BIOME_EVERY_LINE == 0 ? 0 : 1)];
                             Arrays.fill(locations, "");
-                            for (int j=0;j<recipe.second.size();j++){
+                            for (int j=0;j<recipe.second.size();j+=1){
                                 SimplePair<BiomeAndEnvironment, IntegerRational> tri = recipe.second.get(j);
                                 StringBuilder sb = new StringBuilder();
                                 if (tri.first.environment().equals(World.Environment.NORMAL)){
@@ -166,7 +166,7 @@ public class InfinityCompressSerializedMachineRecipes {
                                             .get(bioAndEnv.environment())
                                             .get(bioAndEnv.biome());
                                     pair.first = pair.first.clone();
-                                    for (int j = 0; j < pair.first.length; j++) {
+                                    for (int j = 0; j < pair.first.length; j+=1) {
                                         pair.first[j] = pair.first[j].clone();
                                         pair.first[j].setAmount((int) energyInfo[1]);
                                     }
@@ -230,7 +230,7 @@ public class InfinityCompressSerializedMachineRecipes {
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_LocationAndExpectation"));
                             String[] locations = new String[recipe.second.size() / GEOMINER_BIOME_EVERY_LINE + (recipe.second.size() % GEOMINER_BIOME_EVERY_LINE == 0 ? 0 : 1)];
                             Arrays.fill(locations, "");
-                            for (int j=0;j<recipe.second.size();j++){
+                            for (int j=0;j<recipe.second.size();j+=1){
                                 SimplePair<BiomeAndEnvironment, IntegerRational> tri = recipe.second.get(j);
                                 StringBuilder sb = new StringBuilder();
                                 if (tri.first.environment().equals(World.Environment.NORMAL)){
@@ -274,7 +274,7 @@ public class InfinityCompressSerializedMachineRecipes {
                                             .get(bioAndEnv.environment())
                                             .get(bioAndEnv.biome());
                                     pair.first = pair.first.clone();
-                                    for (int j = 0; j < pair.first.length; j++) {
+                                    for (int j = 0; j < pair.first.length; j+=1) {
                                         pair.first[j] = pair.first[j].clone();
                                         pair.first[j].setAmount((int) energyInfo[1]);
                                     }

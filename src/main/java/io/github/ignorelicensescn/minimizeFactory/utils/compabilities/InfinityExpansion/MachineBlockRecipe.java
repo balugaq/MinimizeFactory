@@ -23,7 +23,7 @@ public final class MachineBlockRecipe extends MachineRecipe {
         this.amounts = amounts;//useless
         this.strings = strings;//useless
         this.input = newEmpty;
-        for (int i=0;i<strings.length;i++){
+        for (int i=0;i<strings.length;i+=1){
             ItemStack itemStack;
             SlimefunItem sfItem = SlimefunItem.getById(strings[i]);
             if (sfItem != null) {
@@ -37,7 +37,7 @@ public final class MachineBlockRecipe extends MachineRecipe {
     }
 
 //    boolean check(Map<String, MachineInput> map) {
-//        for (int i = 0; i < strings.length; i++) {
+//        for (int i = 0; i < strings.length; i+=1) {
 //            MachineInput input = map.get(strings[i]);
 //            if (input == null || input.amount < amounts[i]) {
 //                return false;
@@ -48,7 +48,7 @@ public final class MachineBlockRecipe extends MachineRecipe {
 //    }
 //
 //    void consume() {
-//        for (int i = 0; i < strings.length; i++) {
+//        for (int i = 0; i < strings.length; i+=1) {
 //            int consume = amounts[i];
 //            for (ItemStack item : lastMatch.get(strings[i]).items) {
 //                int amt = item.getAmount();

@@ -1,11 +1,11 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializeMachineRecipeUtils;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeInTicks;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeWithExpectations;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicks;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeWithExpectations;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.EnhancedAutoCrafter;
 import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.VanillaAutoCrafter;
@@ -28,10 +28,10 @@ import java.util.*;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.vanillaRecipeArray;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializeMachineRecipeUtils.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SlimefunConsts.FLUID_PUMP_ENERGY_CONSUMPTION;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun.SlimefunConsts.FLUID_PUMP_ENERGY_CONSUMPTION;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityCompress.InfinityCompressConsts.getMultiblockAutocrafterRecipes;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionConsts.emptyItemStackArray;
 
@@ -219,7 +219,7 @@ public class SlimefunSerializedMachineRecipes {
                                 int coolantCount = ((ticks / COOLANT_DURATION) + ((ticks % COOLANT_DURATION) == 0 ? 0 : 1));
                                 coolant.setAmount(coolant.getMaxStackSize());
                                 int divide = coolantCount / coolant.getMaxStackSize();
-                                for (int j = 0; j < (divide); j++) {
+                                for (int j = 0; j < (divide); j+=1) {
                                     coolants.add(coolant.clone());
                                 }
                                 int remain = coolantCount % coolant.getMaxStackSize();

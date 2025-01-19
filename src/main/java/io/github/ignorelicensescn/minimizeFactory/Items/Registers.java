@@ -7,8 +7,8 @@ import io.github.ignorelicensescn.minimizeFactory.Items.machine.network.*;
 import io.github.ignorelicensescn.minimizeFactory.Items.serializable.SerializeOnly;
 import io.github.ignorelicensescn.minimizeFactory.MinimizeFactory;
 import io.github.ignorelicensescn.minimizeFactory.SFGroups.Groups;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeInTicks;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -210,11 +210,17 @@ public class Registers {
                     null,                               new ItemStack(Material.DIRT),new ItemStack(Material.SUGAR_CANE),
             }
     ) {
-        final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = Collections.singletonList(new SimplePair<>(new SerializedMachine_MachineRecipe(
-                AUTO_SUGAR_CANE,
-                new MachineRecipeInTicks(15152,new ItemStack[0],new ItemStack[]{new ItemStack(Material.SUGAR_CANE)}),
+        final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = Collections.singletonList(
+                new SimplePair<>(
+                        new SerializedMachine_MachineRecipe(
+                                AUTO_SUGAR_CANE,
+                                new MachineRecipeInTicks(
+                                        15152,
+                                        new ItemStack[0],
+                                        new ItemStack[]{new ItemStack(Material.SUGAR_CANE)}
+                                ),
                 0
-        ),null));
+                        ),null));
         @Nonnull
         @Override
         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m) {

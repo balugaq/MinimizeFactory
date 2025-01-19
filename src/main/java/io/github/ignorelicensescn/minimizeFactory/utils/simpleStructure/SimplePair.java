@@ -1,5 +1,6 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class SimplePair<A,B> {
@@ -23,5 +24,11 @@ public class SimplePair<A,B> {
     public int hashCode() {
         return (first == null?0:first.hashCode() << 16)
                 + (second == null?0:second.hashCode());
+    }
+
+    @Override
+    public String toString() {
+        String firstStr;
+        return first + "|" + second;
     }
 }

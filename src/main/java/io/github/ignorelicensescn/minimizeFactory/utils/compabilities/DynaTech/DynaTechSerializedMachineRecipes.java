@@ -1,8 +1,8 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.DynaTech;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializeMachineRecipeUtils;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
@@ -20,9 +20,9 @@ import java.util.List;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.DynaTechFlag;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.DynaTech.DynaTechConsts.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byPackageName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byPackageName;
 
 public class DynaTechSerializedMachineRecipes {
 

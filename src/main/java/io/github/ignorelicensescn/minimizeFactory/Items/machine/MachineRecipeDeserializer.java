@@ -1,8 +1,8 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.DataTypeMethods;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentSerializedMachineRecipeType;
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -32,7 +32,7 @@ import java.util.Optional;
 
 import static io.github.ignorelicensescn.minimizeFactory.Items.Registers.MACHINE_STABILIZER;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
 import static io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil.isItemStackSimilar;
 import static io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils.getEmptyClickHandler;
 
@@ -179,7 +179,7 @@ public class MachineRecipeDeserializer extends SlimefunItem {
         out.setAmount(out.getMaxStackSize());
         Location l = menu.getLocation();
         World w = l.getWorld();
-        for (int i=0;i<(itemAmount / out.getMaxStackSize());i++)
+        for (int i=0;i<(itemAmount / out.getMaxStackSize());i+=1)
         {
             if (w != null){
                 w.dropItemNaturally(l,out.clone());

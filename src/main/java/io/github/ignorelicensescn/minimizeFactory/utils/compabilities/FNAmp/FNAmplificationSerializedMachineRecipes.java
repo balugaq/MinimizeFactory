@@ -1,7 +1,7 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.FNAmp;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemMetaRelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizeFactory.utils.SerializedRecipeProvider;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import ne.fnfal113.fnamplifications.powergenerators.implementation.CustomPowerGen;
 import ne.fnfal113.fnamplifications.powergenerators.implementation.CustomSolarGen;
@@ -16,8 +16,8 @@ import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.FNAmplificationsFlag;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizeFactory.utils.InfoScan.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 
 public class FNAmplificationSerializedMachineRecipes {
 

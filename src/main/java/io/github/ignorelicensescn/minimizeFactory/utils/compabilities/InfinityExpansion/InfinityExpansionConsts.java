@@ -3,10 +3,9 @@ package io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityE
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry;
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry_Filter;
 import io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.mathUtils.Approximation;
-import io.github.ignorelicensescn.minimizeFactory.utils.localMachineRecipe.MachineRecipeInTicks;
-import io.github.ignorelicensescn.minimizeFactory.utils.mathUtils.IntegerRational;
-import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimpleFif;
+import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.Approximation;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicks;
+import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimpleFour;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimpleTri;
@@ -40,10 +39,11 @@ import java.util.logging.Level;
 
 import static com.google.common.math.IntMath.gcd;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.logger;
-import static io.github.ignorelicensescn.minimizeFactory.utils.mathUtils.DividingsOperation.sumOfDividings;
+import static io.github.ignorelicensescn.minimizeFactory.utils.mathutils.DividingsOperation.sumOfDividings;
 import static io.github.mooy1.infinityexpansion.items.blocks.Blocks.INFINITY_FORGE;
 import static io.github.mooy1.infinityexpansion.items.machines.Machines.*;
 
+//TODO:rewrite
 /**
  * things here would be mad and {@link sun.misc.Unsafe}
  * */
@@ -278,7 +278,7 @@ public class InfinityExpansionConsts {
             SimpleTri<SimplePair<Material,IntegerRational>[],Oscillator, World.Environment>[] quarryTirThird = new SimpleTri[triArrSize];
             World.Environment env = World.Environment.NETHER;
             //oscillator
-            for (int i=0;i<OscillatorArray.length;i++){
+            for (int i=0;i<OscillatorArray.length;i+=1){
                 Oscillator o = OscillatorArray[i];
 
                 IntegerRational oscillatorChanceNumeratorAndDenominator = Approximation.find((float) o.chance);
@@ -289,7 +289,7 @@ public class InfinityExpansionConsts {
                 int specificDenominator = materialArray.length;
 
                 SimplePair<Material,IntegerRational>[] materialTris = new SimplePair[basicMaterialTriArrSize];
-                for (int j=0;j<materialArray.length;j++){
+                for (int j=0;j<materialArray.length;j+=1){
                     Material m=materialArray[j];
                     if (o.getItem().getType().equals(m)){
                         int num = numerator;
@@ -331,7 +331,7 @@ public class InfinityExpansionConsts {
                     if (!newMap.containsKey(o)){
                         Material[] outs = new Material[materialTris.length];
                         IntegerRational[] outExpectations = new IntegerRational[materialTris.length];
-                        for (int i2=0;i2<materialTris.length;i2++){
+                        for (int i2=0;i2<materialTris.length;i2+=1){
                             outs[i2] = materialTris[i2].first;
                             outExpectations[i2] = materialTris[i2].second;
                         }
@@ -342,7 +342,7 @@ public class InfinityExpansionConsts {
                     Map<Oscillator, SimplePair<Material[], IntegerRational[]>> newMap = new HashMap<>();
                     Material[] outs = new Material[materialTris.length];
                     IntegerRational[] outExpectations = new IntegerRational[materialTris.length];
-                    for (int i2=0;i2<materialTris.length;i2++){
+                    for (int i2=0;i2<materialTris.length;i2+=1){
                         outs[i2] = materialTris[i2].first;
                         outExpectations[i2] = materialTris[i2].second;
                     }
@@ -357,7 +357,7 @@ public class InfinityExpansionConsts {
                 int basicNumerator = 1;
                 int basicDenominator = (materialArray.length) * (chance);
                 SimplePair<Material, IntegerRational>[] materialTris = new SimplePair[materialArray.length + 1];
-                for (int j = 0; j < materialArray.length; j++) {
+                for (int j = 0; j < materialArray.length; j+=1) {
                     materialTris[j] = new SimplePair<>(materialArray[j], new IntegerRational(basicNumerator, basicDenominator));
                 }
                 materialTris[materialArray.length] = new SimplePair<>(Material.COBBLESTONE, new IntegerRational(chance - 1, chance));
@@ -365,7 +365,7 @@ public class InfinityExpansionConsts {
 
                 Material[] outs = new Material[materialTris.length];
                 IntegerRational[] outExpectations = new IntegerRational[materialTris.length];
-                for (int i2=0;i2<materialTris.length;i2++){
+                for (int i2=0;i2<materialTris.length;i2+=1){
                     outs[i2] = materialTris[i2].first;
                     outExpectations[i2] = materialTris[i2].second;
                 }
@@ -380,7 +380,7 @@ public class InfinityExpansionConsts {
             if (!ALLOW_NETHER_IN_OVERWORLD){
                 env = World.Environment.NORMAL;//not nether
                 //oscillator
-                for (int i=0;i<OscillatorArray.length;i++){
+                for (int i=0;i<OscillatorArray.length;i+=1){
                     Oscillator o = OscillatorArray[i];
                     IntegerRational oscillatorChanceNumeratorAndDenominator = Approximation.find((float) o.chance);
                     int numerator = oscillatorChanceNumeratorAndDenominator.numerator();
@@ -428,7 +428,7 @@ public class InfinityExpansionConsts {
                         if (!newMap.containsKey(o)){
                             Material[] outs = new Material[materialTris.length];
                             IntegerRational[] outExpectations = new IntegerRational[materialTris.length];
-                            for (int i2=0;i2<materialTris.length;i2++){
+                            for (int i2=0;i2<materialTris.length;i2+=1){
                                 outs[i2] = materialTris[i2].first;
                                 outExpectations[i2] = materialTris[i2].second;
                             }
@@ -439,7 +439,7 @@ public class InfinityExpansionConsts {
                         Map<Oscillator, SimplePair<Material[], IntegerRational[]>> newMap = new HashMap<>();
                         Material[] outs = new Material[materialTris.length];
                         IntegerRational[] outExpectations = new IntegerRational[materialTris.length];
-                        for (int i2=0;i2<materialTris.length;i2++){
+                        for (int i2=0;i2<materialTris.length;i2+=1){
                             outs[i2] = materialTris[i2].first;
                             outExpectations[i2] = materialTris[i2].second;
                         }
@@ -470,7 +470,7 @@ public class InfinityExpansionConsts {
 
                 Material[] outs = new Material[materialTris.length];
                 IntegerRational[] outExpectations = new IntegerRational[materialTris.length];
-                for (int i2=0;i2<materialTris.length;i2++){
+                for (int i2=0;i2<materialTris.length;i2+=1){
                     outs[i2] = materialTris[i2].first;
                     outExpectations[i2] = materialTris[i2].second;
                 }
@@ -554,7 +554,7 @@ public class InfinityExpansionConsts {
             fIn.setAccessible(false);
             fOut.setAccessible(false);
         }
-        for (int i=0;i<stoneworksFactoryEnumInstances.size();i++){
+        for (int i=0;i<stoneworksFactoryEnumInstances.size();i+=1){
             StoneworksFactoryEnumInstance s = stoneworksFactoryEnumInstances.get(i);
             if (s.name().equals("NONE")){
                 stoneworksFactoryEnumInstances.remove(i);
@@ -565,7 +565,7 @@ public class InfinityExpansionConsts {
         stoneworksFactoryRecipes.add(new SimplePair<>(new MachineRecipeInTicks(1,emptyItemStackArray,new ItemStack[]{new ItemStack(Material.COBBLESTONE)}),new String[]{"NONE"}));
         for (StoneworksFactoryEnumInstance s1:stoneworksFactoryEnumInstances){
             int ticks;
-            for (int i1=0;i1< s1.inputs().length;i1++){
+            for (int i1=0;i1< s1.inputs().length;i1+=1){
                 ItemStack input = null;
                 ItemStack[] inputArray;
                 if (s1.inputs()[i1].equals(Material.COBBLESTONE)){
@@ -583,7 +583,7 @@ public class InfinityExpansionConsts {
                 );
                 stoneworksFactoryRecipes.add(new SimplePair<>(machineRecipe,new String[]{s1.name()}));
                 for (StoneworksFactoryEnumInstance s2:stoneworksFactoryEnumInstances){
-                    for (int i2=0;i2<s2.inputs().length;i2++){
+                    for (int i2=0;i2<s2.inputs().length;i2+=1){
                         if (input == null){
                             ticks = 3;
                         }else {
@@ -603,7 +603,7 @@ public class InfinityExpansionConsts {
                             }else {
                                 ticks = 3;
                             }
-                            for (int i3=0;i3<s3.inputs().length;i3++){
+                            for (int i3=0;i3<s3.inputs().length;i3+=1){
                                 if (s3.inputs()[i3].equals(s2.outputs()[i2])){
                                     machineRecipe = new MachineRecipeInTicks(
                                             ticks
@@ -716,7 +716,7 @@ public class InfinityExpansionConsts {
         Field f = fake.getClass().getSuperclass().getDeclaredField("recipes");
         List<io.github.mooy1.infinityexpansion.infinitylib.machines.CraftingBlockRecipe> recipes = (List<io.github.mooy1.infinityexpansion.infinitylib.machines.CraftingBlockRecipe>) getInUnsafe(fake,f);
         INFINITY_WORKBENCH_RECIPES = new SimplePair[recipes.size()];
-        for (int i=0;i<recipes.size();i++){
+        for (int i=0;i<recipes.size();i+=1){
             ItemStack[] inputs;
             try {
                 inputs = (ItemStack[]) getInUnsafe(recipes.get(i),recipes.get(i).getClass().getDeclaredField("recipe"));
@@ -724,7 +724,7 @@ public class InfinityExpansionConsts {
                 inputs = (ItemStack[]) getInUnsafe(recipes.get(i),recipes.get(i).getClass().getDeclaredField("inputs"));
             }
             ItemStack[] inputsClone = new ItemStack[inputs.length];
-            for (int j=0;j<inputs.length;j++){
+            for (int j=0;j<inputs.length;j+=1){
                 if (inputs[j] != null && inputs[j].getType() != Material.AIR){
                     inputsClone[j] = new ItemStack(inputs[j].getType());
                     if (inputs[j].hasItemMeta()) {
@@ -757,7 +757,7 @@ public class InfinityExpansionConsts {
         int counter = 0;
         for (String type:armorTypes){
             for (String material:armorMaterials){
-                for (int i=0;i<armorMaterials.length;i++){
+                for (int i=0;i<armorMaterials.length;i+=1){
                     String inMaterial=armorMaterials[i];
                     if (material.equals(inMaterial)){continue;}
                     GEAR_TRANSFORMER_RECIPES[counter] = new SimplePair<>(new ItemStack[]{
@@ -770,7 +770,7 @@ public class InfinityExpansionConsts {
         }
         for (String type:toolTypes){
             for (String material:toolMaterials){
-                for (int i=0;i<toolMaterials.length;i++){
+                for (int i=0;i<toolMaterials.length;i+=1){
                     String inMaterial=toolMaterials[i];
                     if (material.equals(inMaterial)){continue;}
                     GEAR_TRANSFORMER_RECIPES[counter] = new SimplePair<>(new ItemStack[]{
