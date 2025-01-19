@@ -9,3 +9,5 @@ dependency-reduced-pom.xml
 .DS_Store
 /gitignores/compareA
 /gitignores/compareB
+/MinimizeFactory-0.12.7z
+.gitignore
