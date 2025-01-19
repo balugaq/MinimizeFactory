@@ -11,6 +11,7 @@ import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityEx
 import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.LiteX.LiteXpansionSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizeFactory.utils.TweakedProperty2.TweakedProperty2;
 import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun.SlimefunSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BlockLocationSign;
 import io.github.ignorelicensescn.minimizeFactory.utils.searchregistries.SearchRegistries;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.mooy1.infinityexpansion.InfinityExpansion;

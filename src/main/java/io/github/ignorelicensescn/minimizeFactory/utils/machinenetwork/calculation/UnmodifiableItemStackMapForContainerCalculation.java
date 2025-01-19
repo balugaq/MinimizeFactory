@@ -7,14 +7,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 
 
-public class UnmodifiableItemStackMap extends ItemStackMap{
+public class UnmodifiableItemStackMapForContainerCalculation extends ItemStackMapForContainerCalculation {
 
-    public static final ItemStackMap EMPTY_ITEM_STACK_MAP = new UnmodifiableItemStackMap();
-    public UnmodifiableItemStackMap(){
+    public static final ItemStackMapForContainerCalculation EMPTY_ITEM_STACK_MAP = new UnmodifiableItemStackMapForContainerCalculation();
+    public UnmodifiableItemStackMapForContainerCalculation(){
         super();
     }
 
-    public UnmodifiableItemStackMap(ItemStackMap map){
+    public UnmodifiableItemStackMapForContainerCalculation(ItemStackMapForContainerCalculation map){
         super();
         super.putAll(map);
     }

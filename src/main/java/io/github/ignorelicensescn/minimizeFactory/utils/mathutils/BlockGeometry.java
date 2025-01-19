@@ -15,20 +15,6 @@ public class BlockGeometry {
                         + Math.abs(l1.z()-l2.z()));
     }
 
-    /**
-     * constants generated via python code
-     */
-    public static BlockLocation[] oneStepFartherFromBase(BlockLocation current,BlockLocation base){
-        BlockLocation basePointMoved = current.subtract(base);
-        BlockLocationSign extractedSign = basePointMoved.sign();
-
-        BlockLocation[] result = new BlockLocation[extractedSign.moveDirections.length];
-        for (int i=0;i< extractedSign.moveDirections.length;i+=1){
-            result[i] = current.add(extractedSign.moveDirections[i]);
-        }
-        return result;
-    }
-
     public static Comparator<Location> getManhattanDistanceBasedComparatorWithLocationBase(Location base){
         return (locA,locB) -> {
             int aX,aY,aZ,bX,bY,bZ;

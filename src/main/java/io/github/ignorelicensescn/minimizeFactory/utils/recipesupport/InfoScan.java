@@ -515,6 +515,7 @@ public final class InfoScan {
                 int totalWeight = 0;
                 int counter = 0;
                 for (GoldPanDrop drop:outputs){
+                    totalWeight += drop.getValue();
                     outputStacks[counter] = drop.getOutput().clone();
                     outputExpectations[counter] = new IntegerRational(drop.getValue(),1);
                     counter += 1;

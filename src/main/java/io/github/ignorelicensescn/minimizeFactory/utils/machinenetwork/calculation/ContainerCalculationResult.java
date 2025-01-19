@@ -9,38 +9,38 @@ import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Collection;
 
-import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.calculation.UnmodifiableItemStackMap.EMPTY_ITEM_STACK_MAP;
+import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.calculation.UnmodifiableItemStackMapForContainerCalculation.EMPTY_ITEM_STACK_MAP;
 
 
-public record ContainerCalculationResult(@Nonnull ItemStackMap inputs,
-                                         @Nonnull ItemStackMap outputs,
-                                         @Nonnull ItemStackMap stableOutputs,
+public record ContainerCalculationResult(@Nonnull ItemStackMapForContainerCalculation inputs,
+                                         @Nonnull ItemStackMapForContainerCalculation outputs,
+                                         @Nonnull ItemStackMapForContainerCalculation stableOutputs,
                                          @Nonnull BigInteger energyConsumption,
                                          @Nonnull BigInteger energyConsumptionStable) {
 
     @Nonnull
-    public ItemStackMap inputs() {
-        return new UnmodifiableItemStackMap(inputs);
+    public ItemStackMapForContainerCalculation inputs() {
+        return new UnmodifiableItemStackMapForContainerCalculation(inputs);
     }
 
     @Override
     @Nonnull
-    public ItemStackMap outputs() {
-        return new UnmodifiableItemStackMap(outputs);
+    public ItemStackMapForContainerCalculation outputs() {
+        return new UnmodifiableItemStackMapForContainerCalculation(outputs);
     }
 
     @Override
     @Nonnull
-    public ItemStackMap stableOutputs() {
-        return new UnmodifiableItemStackMap(stableOutputs);
+    public ItemStackMapForContainerCalculation stableOutputs() {
+        return new UnmodifiableItemStackMapForContainerCalculation(stableOutputs);
     }
 
-    public static final ContainerCalculationResult EMPTY = new ContainerCalculationResult(new ItemStackMap(),new ItemStackMap(),new ItemStackMap(),BigInteger.ZERO,BigInteger.ZERO);
+    public static final ContainerCalculationResult EMPTY = new ContainerCalculationResult(new ItemStackMapForContainerCalculation(),new ItemStackMapForContainerCalculation(),new ItemStackMapForContainerCalculation(),BigInteger.ZERO,BigInteger.ZERO);
 
     public ContainerCalculationResult combineWith(ContainerCalculationResult another){
-        ItemStackMap inputMap = new ItemStackMap();
-        ItemStackMap outputMap = new ItemStackMap();
-        ItemStackMap stableOutputMap = new ItemStackMap();
+        ItemStackMapForContainerCalculation inputMap = new ItemStackMapForContainerCalculation();
+        ItemStackMapForContainerCalculation outputMap = new ItemStackMapForContainerCalculation();
+        ItemStackMapForContainerCalculation stableOutputMap = new ItemStackMapForContainerCalculation();
         BigInteger energyConsumption = this.energyConsumption().add(another.energyConsumption());
         BigInteger energyConsumptionStable = this.energyConsumptionStable().add(another.energyConsumptionStable());
         inputMap.addAllItems(this.inputs);
@@ -62,9 +62,9 @@ public record ContainerCalculationResult(@Nonnull ItemStackMap inputs,
             BiomeAndEnvironment bioAndEnv,
             Collection<SimplePair<SerializedMachine_MachineRecipe,Integer>> serializedRecipeWithRepeats
     ){
-        ItemStackMap inputMap = new ItemStackMap();
-        ItemStackMap outputMap = new ItemStackMap();
-        ItemStackMap stableOutputMap = new ItemStackMap();
+        ItemStackMapForContainerCalculation inputMap = new ItemStackMapForContainerCalculation();
+        ItemStackMapForContainerCalculation outputMap = new ItemStackMapForContainerCalculation();
+        ItemStackMapForContainerCalculation stableOutputMap = new ItemStackMapForContainerCalculation();
         BigInteger energyConsumption = BigInteger.ZERO;
         BigInteger energyConsumptionStable = BigInteger.ZERO;
         for (SimplePair<SerializedMachine_MachineRecipe,Integer> recipePair:serializedRecipeWithRepeats){
@@ -102,14 +102,14 @@ public record ContainerCalculationResult(@Nonnull ItemStackMap inputs,
         ));
     }
     public static ContainerCalculationResult tryConvertToStableOutput(ContainerCalculationResult toGiveATry){
-        ItemStackMap inputMap = toGiveATry.inputs;
-        ItemStackMap outputMap = toGiveATry.outputs;
-        ItemStackMap stableOutputMap = toGiveATry.stableOutputs;
+        ItemStackMapForContainerCalculation inputMap = toGiveATry.inputs;
+        ItemStackMapForContainerCalculation outputMap = toGiveATry.outputs;
+        ItemStackMapForContainerCalculation stableOutputMap = toGiveATry.stableOutputs;
         BigInteger energyConsumption = toGiveATry.energyConsumption;
         BigInteger energyConsumptionStable = toGiveATry.energyConsumptionStable;
         BigInteger tryConsumeEnergy = energyConsumption.add(energyConsumptionStable);
         if (tryConsumeEnergy.signum() <= 0){
-            ItemStackMap tryConsume = outputMap.tryConsume(inputMap);
+            ItemStackMapForContainerCalculation tryConsume = outputMap.tryConsume(inputMap);
             if (tryConsume != null) {
                 tryConsume.addAllItems(stableOutputMap);
                 return new ContainerCalculationResult(

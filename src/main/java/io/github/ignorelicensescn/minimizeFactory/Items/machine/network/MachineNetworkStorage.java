@@ -3,6 +3,7 @@ package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 import io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil;
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.StorageUtils;
+import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BigRational;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemHandler;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -49,12 +50,15 @@ import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.propert
 import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.MINIMIZEFACTORY_CORE_LOCATION;
 import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.MINIMIZEFACTORY_NODE_TYPE;
 import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.BukkitSerializer.LOCATION_SERIALIZER;
+import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.Serializer.BIG_INTEGER_SERIALIZER;
 
 /**
  * a chest from FluffyMachines
  * <p>Tweaked to fit in network</p>
  */
 public class MachineNetworkStorage extends NetworkNode{
+    public static final ItemStack EMPTY_ITEM = new CustomItemStack(Material.BARRIER, properties.getReplacedProperty("MachineNetworkStorage_Empty"));
+    public static final String KEY_STORED = "stored";
     public static final BigInteger BIGINTEGER_FIVE = BigInteger.valueOf(5);
     public static final int[] inputBorder = {9, 10, 11, 12, 18, 21, 27, 28, 29, 30};
     public static final int[] outputBorder = {14, 15, 16, 17, 23, 26, 32, 33, 34, 35, 36};
@@ -173,11 +177,15 @@ public class MachineNetworkStorage extends NetworkNode{
                             +OVERFLOW_AMOUNT+properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Dropping_Item_Part2"));
                             int toRemove = 3240;
                             while (toRemove >= stackSize) {
-                                b.getWorld().dropItemNaturally(b.getLocation(), new CustomItemStack(unKeyed, stackSize));
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(stackSize);
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
                                 toRemove = toRemove - stackSize;
                             }
                             if (toRemove > 0) {
-                                b.getWorld().dropItemNaturally(b.getLocation(), new CustomItemStack(unKeyed, toRemove));
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(toRemove);
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
                             }
                             setStored(b, stored.subtract(OVERFLOW_AMOUNT));
                             updateMenu(b, inv, false);
@@ -187,15 +195,18 @@ public class MachineNetworkStorage extends NetworkNode{
                             BigInteger stackSizeBigInteger = BigInteger.valueOf(stackSize);
                             // Everything greater than 1 stack
                             while (stored.compareTo(stackSizeBigInteger) > 0) {
-
-                                b.getWorld().dropItemNaturally(b.getLocation(), new CustomItemStack(unKeyed, stackSize));
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(stackSize);
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
 
                                 stored = stored.subtract(stackSizeBigInteger);
                             }
 
                             // Drop remaining, if there is any
                             if (stored.compareTo(BigInteger.ZERO) > 0) {
-                                b.getWorld().dropItemNaturally(b.getLocation(), new CustomItemStack(unKeyed, stored.intValue()));
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(stored.intValue());
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
                             }
 
                             // In case they use an explosive pick
@@ -218,11 +229,11 @@ public class MachineNetworkStorage extends NetworkNode{
     protected void buildMenu(BlockMenu menu, Block b) {
 
         // Initialize an empty barrel
-        if (BlockStorage.getLocationInfo(b.getLocation(), "stored") == null) {
+        if (BlockStorage.getLocationInfo(b.getLocation(), KEY_STORED) == null) {
 
             menu.replaceExistingItem(STATUS_SLOT, new CustomItemStack(
                     Material.LIME_STAINED_GLASS_PANE, properties.getReplacedProperty("MachineNetworkStorage_Items_Stored_0")));
-            menu.replaceExistingItem(DISPLAY_SLOT, new CustomItemStack(Material.BARRIER, properties.getReplacedProperty("MachineNetworkStorage_Empty")));
+            menu.replaceExistingItem(DISPLAY_SLOT, EMPTY_ITEM);
 
             setStored(b, BigInteger.ZERO);
 
@@ -263,7 +274,7 @@ public class MachineNetworkStorage extends NetworkNode{
             if (sfItem == null){return false;}
             if (ItemStackUtil.isItemStackSimilar(sfItem.getItem(),unkey)){
                 menu.replaceExistingItem(DISPLAY_SLOT,StorageUtils.keyItem(sfItem.getItem().clone()));
-                menu.addMenuClickHandler(DISPLAY_SLOT,(p1, slot1, item1, action1) -> false);
+                menu.addMenuClickHandler(DISPLAY_SLOT,ChestMenuUtils.getEmptyClickHandler());
             }
             return false;
         });
@@ -324,7 +335,8 @@ public class MachineNetworkStorage extends NetworkNode{
             BigInteger stored = getStored(b);
             // Output stack
             if (stored.compareTo(BigInteger.valueOf(displayItem.getMaxStackSize())) > 0) {
-                ItemStack clone = new CustomItemStack(StorageUtils.unKeyItem(displayItem), displayItem.getMaxStackSize());
+                ItemStack clone = StorageUtils.unKeyItem(displayItem);
+                clone.setAmount(clone.getMaxStackSize());
                 if (inv.fits(clone, OUTPUT_SLOTS)) {
                     int amount = clone.getMaxStackSize();
 
@@ -335,7 +347,8 @@ public class MachineNetworkStorage extends NetworkNode{
             }
             else if (stored.compareTo(BigInteger.ZERO) == 0) {   // Output remaining
 
-                ItemStack clone = new CustomItemStack(StorageUtils.unKeyItem(displayItem), stored.intValue());
+                ItemStack clone = StorageUtils.unKeyItem(displayItem);
+                clone.setAmount(stored.intValue());
 
                 if (inv.fits(clone, OUTPUT_SLOTS)) {
                     setStored(b, BigInteger.ZERO);
@@ -347,11 +360,15 @@ public class MachineNetworkStorage extends NetworkNode{
     }
 
     private static void registerItem(Block b, BlockMenu inv, int slot, ItemStack item, BigInteger stored) {
-        inv.replaceExistingItem(DISPLAY_SLOT, new CustomItemStack(StorageUtils.keyItem(item), 1));
+        inv.replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
         storeItem(b, inv, slot, item, stored);
     }
     public static void registerItem(Location l,ItemStack itemStack){
-        BlockStorage.getInventory(l).replaceExistingItem(DISPLAY_SLOT, new CustomItemStack(StorageUtils.keyItem(itemStack), 1));
+        BlockStorage.getInventory(l).replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(itemStack));
+    }
+
+    public static void setStoredStackNoThrow(Location l, ItemStack item){
+        BlockStorage.getInventory(l).replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
     }
 
     public static void storeItem(Block b, BlockMenu inv, int slot, ItemStack item, BigInteger stored) {
@@ -365,7 +382,7 @@ public class MachineNetworkStorage extends NetworkNode{
     public static void networkStoreItem(Block b, BlockMenu inv, ItemStack item, BigInteger store) {
         BigInteger stored = getStored(b);
         if (stored.compareTo(BigInteger.ZERO) == 0) {
-            inv.replaceExistingItem(DISPLAY_SLOT, new CustomItemStack(StorageUtils.keyItem(item), 1));
+            inv.replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
             setStored(b, store);
         }
         else {
@@ -386,8 +403,7 @@ public class MachineNetworkStorage extends NetworkNode{
         String itemName;
 
         BigDecimal maxStackSizeBigDecimal = BigDecimal.valueOf(inv.getItemInSlot(DISPLAY_SLOT).getMaxStackSize());
-        String storedStacks =
-                doubleRoundAndFade(storedBigDecimal.divide(maxStackSizeBigDecimal,4, RoundingMode.DOWN));
+        String storedStacks = doubleRoundAndFade(storedBigDecimal.divide(maxStackSizeBigDecimal,4, RoundingMode.DOWN));
 
         if (inv.getItemInSlot(DISPLAY_SLOT) != null && inv.getItemInSlot(DISPLAY_SLOT).getItemMeta().hasDisplayName()) {
             itemName = inv.getItemInSlot(DISPLAY_SLOT).getItemMeta().getDisplayName();
@@ -406,7 +422,7 @@ public class MachineNetworkStorage extends NetworkNode{
 
 
         if (stored.compareTo(BigInteger.ZERO) == 0) {
-            inv.replaceExistingItem(DISPLAY_SLOT, new CustomItemStack(Material.BARRIER, "&cEmpty"));
+            inv.replaceExistingItem(DISPLAY_SLOT, EMPTY_ITEM);
         }
     }
 
@@ -436,12 +452,14 @@ public class MachineNetworkStorage extends NetworkNode{
             }
         }
 
-        BlockStorage.addBlockInfo(b.getLocation(), "stored", String.valueOf(stored));
+        BlockStorage.addBlockInfo(b.getLocation(), KEY_STORED, BIG_INTEGER_SERIALIZER.SerializableToString(stored));
         updateMenu(b, menu, false);
     }
 
     public void extract(Player p, BlockMenu menu, Block b, ClickAction action) {
         ItemStack storedItem = getStoredItem(b);
+        if (storedItem == null){return;}
+        ItemStack storedClone = storedItem.clone();
 
         PlayerInventory inv = p.getInventory();
         BigInteger stored = getStored(b);
@@ -449,15 +467,16 @@ public class MachineNetworkStorage extends NetworkNode{
         // Extract single
         if (action.isRightClicked()) {
             if (stored.compareTo(BigInteger.ZERO) > 0) { // Extract from stored
-                StorageUtils.giveOrDropItem(p, new CustomItemStack(storedItem));
+                StorageUtils.giveOrDropItem(p, storedClone);
                 stored = stored.subtract(BigInteger.ONE);
                 setStored(b, stored);
                 updateMenu(b, menu, false);
                 return;
             } else {
                 for (int slot : OUTPUT_SLOTS) { // Extract from slot
-                    if (menu.getItemInSlot(slot) != null) {
-                        StorageUtils.giveOrDropItem(p, new CustomItemStack(menu.getItemInSlot(slot), 1));
+                    ItemStack inSlot = menu.getItemInSlot(slot);
+                    if (inSlot != null) {
+                        StorageUtils.giveOrDropItem(p, inSlot);
                         menu.consumeItem(slot);
                         return;
                     }
@@ -481,11 +500,15 @@ public class MachineNetworkStorage extends NetworkNode{
             if (contents[i] == null) {
                 if (stored.compareTo(maxStackSizeBigInteger) > 0)
                 {
-                    inv.setItem(i, new CustomItemStack(storedItem, maxStackSize));
+                    storedItem = storedItem.clone();
+                    storedItem.setAmount(maxStackSize);
+                    inv.setItem(i, storedItem.clone());
                     stored = stored.subtract(maxStackSizeBigInteger);
                 }
                 else if (stored.compareTo(BigInteger.ZERO) > 0) {
-                    inv.setItem(i, new CustomItemStack(storedItem, stored.intValue()));
+                    storedItem = storedItem.clone();
+                    storedItem.setAmount(stored.intValue());
+                    inv.setItem(i, storedItem.clone());
                     stored = BigInteger.ZERO;
                 }
                 else {
@@ -523,24 +546,42 @@ public class MachineNetworkStorage extends NetworkNode{
     }
 
     public static BigInteger getStored(Block b) {
-        return new BigInteger(BlockStorage.getLocationInfo(b.getLocation(), "stored"));
+        return BIG_INTEGER_SERIALIZER.StringToSerializable(BlockStorage.getLocationInfo(b.getLocation(), KEY_STORED));
     }
     public static BigInteger getStored(Location b) {
-        return new BigInteger(BlockStorage.getLocationInfo(b, "stored"));
+        return BIG_INTEGER_SERIALIZER.StringToSerializable(BlockStorage.getLocationInfo(b, KEY_STORED));
     }
 
     public static void setStored(Block b, BigInteger amount) {
-        BlockStorage.addBlockInfo(b.getLocation(), "stored", amount.toString());
+        BlockStorage.addBlockInfo(b.getLocation(), KEY_STORED, BIG_INTEGER_SERIALIZER.SerializableToString(amount));
+        updateMenu(b,BlockStorage.getInventory(b),true);
     }
     public static void setStored(Location b, BigInteger amount) {
-        BlockStorage.addBlockInfo(b, "stored", amount.toString());
+        BlockStorage.addBlockInfo(b, KEY_STORED, BIG_INTEGER_SERIALIZER.SerializableToString(amount));
+        updateMenu(b.getBlock(),BlockStorage.getInventory(b),true);
+    }
+    public static void addStored(Location b,BigInteger amount){
+        BlockStorage.addBlockInfo(b, KEY_STORED, BIG_INTEGER_SERIALIZER.SerializableToString(amount.add(getStored(b))));
+        updateMenu(b.getBlock(),BlockStorage.getInventory(b),true);
+    }
+    public static void addStored(Location b, BigRational amount){
+        BigRational rational = amount.add(getStored(b));
+        if (rational.denominator().compareTo(BigInteger.ZERO) == 0){
+            new ArithmeticException("divide by zero:"+rational).printStackTrace();
+            return;
+        }
+        BigInteger result = rational.numerator().divide(rational.denominator());
+        BlockStorage.addBlockInfo(b, KEY_STORED, BIG_INTEGER_SERIALIZER.SerializableToString(result));
+        updateMenu(b.getBlock(),BlockStorage.getInventory(b),true);
     }
 
     public static ItemStack getStoredItem(Block b) {
-        return StorageUtils.unKeyItem(BlockStorage.getInventory(b).getItemInSlot(DISPLAY_SLOT));
+        return getStoredItem(b.getLocation());
     }
     public static ItemStack getStoredItem(Location b) {
-        return StorageUtils.unKeyItem(BlockStorage.getInventory(b).getItemInSlot(DISPLAY_SLOT));
+        ItemStack result = StorageUtils.unKeyItem(BlockStorage.getInventory(b).getItemInSlot(DISPLAY_SLOT));
+        if (ItemStackUtil.isItemStackSimilar(result,EMPTY_ITEM)){return null;}
+        return result;
     }
 
     public static void showCoreLocation(Location nodeLocation,int hintSlot){
@@ -549,14 +590,14 @@ public class MachineNetworkStorage extends NetworkNode{
     static void showCoreLocation(Location nodeLocation, int hintSlot, BlockMenu nodeMenu){
         JSONObject jsonObject = new JSONObject(BlockStorage.getBlockInfoAsJson(nodeLocation));
         if (jsonObject.has(MINIMIZEFACTORY_CORE_LOCATION)
-                && BlockStorage.hasInventory(LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)).getBlock())
-                && isNodeRegisteredToCore(nodeLocation, LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)))
+                && BlockStorage.hasInventory(LOCATION_SERIALIZER.StringToSerializable(jsonObject.get(MINIMIZEFACTORY_CORE_LOCATION).toString()).getBlock())
+                && isNodeRegisteredToCore(nodeLocation, LOCATION_SERIALIZER.StringToSerializable(jsonObject.get(MINIMIZEFACTORY_CORE_LOCATION).toString()))
         )
         {
-            String locationStr = jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION);
+            String locationStr = jsonObject.get(MINIMIZEFACTORY_CORE_LOCATION).toString();
             Location coreLocation = LOCATION_SERIALIZER.StringToSerializable(locationStr);
             nodeMenu.replaceExistingItem(hintSlot, new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,
-                    properties.getReplacedProperty("MachineNetwork_Core_Location") + locationStr,
+                    properties.getReplacedProperty("MachineNetwork_Core_Location") + coreLocation,
                     properties.getReplacedProperties("MachineNetwork_Core_Location_Lore_1", ChatColor.GRAY)
             ));
             nodeMenu.addMenuClickHandler(hintSlot, (p, slot, item, action) -> {
@@ -579,5 +620,12 @@ public class MachineNetworkStorage extends NetworkNode{
             nodeMenu.replaceExistingItem(hintSlot, new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE,""));
             nodeMenu.addMenuClickHandler(hintSlot, (p, slot, item, action) -> false);
         }
+    }
+
+    public static boolean isValidStorage(Block b){
+        return BlockStorage.check(b) instanceof MachineNetworkStorage;
+    }
+    public static boolean isValidStorage(Location l){
+        return BlockStorage.check(l) instanceof MachineNetworkStorage;
     }
 }

@@ -49,6 +49,11 @@ public record BigRational(@Nonnull BigInteger numerator,@Nonnull BigInteger deno
                 this.denominator.multiply(BigInteger.valueOf(another.denominator())));
     }
 
+    public BigRational add(BigInteger toAdd){
+        return new BigRational(
+                this.numerator.add(this.denominator.multiply(toAdd)),
+                this.denominator);
+    }
     public BigRational add(long toAdd){
         return new BigRational(
                 this.numerator.add(this.denominator.multiply(BigInteger.valueOf(toAdd))),

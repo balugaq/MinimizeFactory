@@ -3,12 +3,20 @@ package io.github.ignorelicensescn.minimizeFactory.utils.mathutils;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+
 import static io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BlockLocationSign.*;
 
-public record BlockLocation(long x, long y, long z, int hash, BlockLocationSign sign, Vector vector) {
-    public static final BlockLocationSign[][][] allSign = new BlockLocationSign[3][3][3];
+@Immutable
+public record BlockLocation(long x, long y, long z, int hash,@Nonnull Vector vector) {
     public BlockLocation(long x, long y, long z){
-        this(x,y,z,(int)(y<<24+x*31+z),extractSign(x,y,z),new Vector(x,y,z));
+        this(x,y,z,(int)(y<<24+x*31+z),new Vector(x,y,z));
+    }
+
+    @Nonnull
+    public BlockLocationSign sign() {
+        return extractSign(x,y,z);
     }
 
     public BlockLocation(Location from){

@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ItemStackMap extends HashMap<ItemStackAsKey, BigRational> {
+public class ItemStackMapForContainerCalculation extends HashMap<ItemStackAsKey, BigRational> {
 
     public BigRational get(ItemStackAsKey key) {
         BigRational result = super.get(key);
@@ -50,7 +50,7 @@ public class ItemStackMap extends HashMap<ItemStackAsKey, BigRational> {
         return put(new ItemStackAsKey(key),value);
     }
 
-    public void addAllItems(@Nonnull ItemStackMap another){
+    public void addAllItems(@Nonnull ItemStackMapForContainerCalculation another){
         for (Map.Entry<ItemStackAsKey, BigRational> fromAnother:another.entrySet()){
             this.addItem(fromAnother.getKey(),fromAnother.getValue());
         }
@@ -104,9 +104,9 @@ public class ItemStackMap extends HashMap<ItemStackAsKey, BigRational> {
      * @return consumed
      */
     @Nullable
-    public ItemStackMap tryConsume(ItemStackMap consumeMap){
-        ItemStackMap resultIfSuccess = new ItemStackMap();
-        ItemStackMap beingConsumed = this;
+    public ItemStackMapForContainerCalculation tryConsume(ItemStackMapForContainerCalculation consumeMap){
+        ItemStackMapForContainerCalculation resultIfSuccess = new ItemStackMapForContainerCalculation();
+        ItemStackMapForContainerCalculation beingConsumed = this;
         Set<ItemStackAsKey> notConsumedKey = new HashSet<>(this.keySet());
         for (Map.Entry<ItemStackAsKey, BigRational> consumeEntry:consumeMap.entrySet()){
             BigRational ifConsumed = beingConsumed.getOrDefault(consumeEntry.getKey(),BigRational.ZERO).subtract(consumeEntry.getValue());

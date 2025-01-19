@@ -1,10 +1,13 @@
 package io.github.ignorelicensescn.minimizeFactory.utils;
 
 import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BigRational;
-import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.IntegerRational;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.core.attributes.DistinctiveItem;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -36,35 +39,42 @@ public class ItemStackUtil {
         }
         return inputs;
     }
-    public static final IntegerRational[] emptyDividingsArray = new IntegerRational[0];
+
     public static final BigRational[] emptyDividingsArray_BigInteger = new BigRational[0];
     //does not check amount
     public static boolean isItemStackSimilar(ItemStack i1,ItemStack i2){
-        return SlimefunUtils.isItemSimilar(i1, i2, false, false, true);
-//        i1 = i1.clone();
-//        i1.setAmount(1);
-//        i2 = i2.clone();
-//        i2.setAmount(1);
-//        ItemMeta meta1 = i1.getItemMeta();
-//        ItemMeta meta2 = i2.getItemMeta();
-//        if (( (meta1 == null) && !(meta2 == null) )
-//                || ( !(meta1 == null) && (meta2 == null) )
-//        ){return false;}//different item meta stats
-//
-//        //same item meta stats
-//        if (meta1 != null){//both have
-//            SlimefunItem sfi1 = SlimefunItem.getByItem(i1);
-//            SlimefunItem sfi2 = SlimefunItem.getByItem(i2);
-//            if ((sfi1 != null) && (sfi2 != null))
-//            {
-//                return SlimefunUtils.isItemSimilar(i2, i1, false, false, true);
-//            }
-//            return Objects.equals(i1,i2);
-//        }
-//
-//        return Objects.equals(i1,i2);
+        ItemMeta m1 = i1.hasItemMeta()?i1.getItemMeta():null;
+        ItemMeta m2 = i2.hasItemMeta()?i2.getItemMeta():null;
+        SlimefunItem sfItem1 = SlimefunItem.getByItem(i1);
+        SlimefunItem sfItem2 = SlimefunItem.getByItem(i2);
 
-//        return i1.getType().equals(i2.getType());
+        if (m1 != null && m2 != null){
+            if (sfItem1 instanceof DistinctiveItem d) {
+                if (!d.canStack(m1,m2)) {
+                    return false;
+                }
+            }else if (sfItem2 instanceof DistinctiveItem d) {
+                if (!d.canStack(m1,m2)) {
+                    return false;
+                }
+            }
+        }
+        if (i1 instanceof SlimefunItemStack s1){
+            if (i2 instanceof SlimefunItemStack s2){
+                if (m1 != null && m2 != null){
+                    if (s1 instanceof DistinctiveItem d) {
+                        if (!d.canStack(m1, m2)) {
+                            return false;
+                        }
+                    } else if (s2 instanceof DistinctiveItem d) {
+                        if (!d.canStack(m1, m2)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return SlimefunUtils.isItemSimilar(i1, i2, false, false, true);
     }
 
     public static ItemStack[] RecipeChoiceListToItemStackArray_formated(List<RecipeChoice> recipeChoices){
@@ -75,5 +85,4 @@ public class ItemStackUtil {
         }
         return collapseItems(itemStacks.toArray(emptyItemStackArray));
     }
-
 }

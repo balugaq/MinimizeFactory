@@ -1,5 +1,6 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 
+import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.calculation.ItemStackMapForOutputCalculation;
 import io.github.ignorelicensescn.minimizeFactory.utils.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
 import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
@@ -9,11 +10,10 @@ import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BigRational;
 import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BlockGeometry;
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.calculation.ContainerCalculationResult;
-import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.calculation.ItemStackMap;
+import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.calculation.ItemStackMapForContainerCalculation;
 import io.github.ignorelicensescn.minimizeFactory.utils.records.ItemStackAsKey;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
@@ -23,8 +23,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction
 import io.github.thebusybiscuit.slimefun4.libraries.unirest.json.JSONArray;
 import io.github.thebusybiscuit.slimefun4.libraries.unirest.json.JSONObject;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
@@ -150,7 +148,7 @@ public class MachineNetworkCore extends NetworkNode{
                 );
                 menu.addMenuClickHandler(COUNTER_SLOT,(p, slot, item1, action) -> false);
                 BlockStorage.setBlockInfo(b,coreInfo.toString(),true);
-                refresh(menu,b, coreInfo.getString(NETWORK_CONTROLLER_STATUS));
+                refresh(menu,b, coreInfo.get(NETWORK_CONTROLLER_STATUS).toString());
             }
 
             @Override
@@ -218,18 +216,7 @@ public class MachineNetworkCore extends NetworkNode{
 
     @Override
     public void preRegister() {
-        addItemHandler(new BlockTicker() {
-
-                           @Override
-                           public void tick(Block b, SlimefunItem sf, Config data) {
-                               MachineNetworkCore.tick(b);
-                           }
-
-                           @Override
-                           public boolean isSynchronized() {
-                               return false;
-                           }
-                       },
+        addItemHandler(
                 new BlockBreakHandler(false,false) {
                     @Override
                     @ParametersAreNonnullByDefault
@@ -243,20 +230,6 @@ public class MachineNetworkCore extends NetworkNode{
                     }
                 }
         );
-    }
-    public static void tick(Block b){
-        BlockMenu menu = BlockStorage.getInventory(b);
-        int count = new JSONObject(BlockStorage.getBlockInfoAsJson(b.getLocation())).getInt(NETWORK_COUNTER);
-        if (!NameUtil.findName(menu.getItemInSlot(COUNTER_SLOT)).split(" ")[1].equals(String.valueOf(count))) {
-            String name = properties.getReplacedProperty("MachineNetworkCore_Counter") + count;
-            menu.replaceExistingItem(COUNTER_SLOT,
-                    new CustomItemStack(
-                            Material.GREEN_STAINED_GLASS_PANE,
-                            name
-                    )
-            );
-            menu.addMenuClickHandler(COUNTER_SLOT,(p, slot, item1, action) -> false);
-        }
     }
     public static void refresh(BlockMenu menu,Block b,String status){
         switch (status){
@@ -298,12 +271,12 @@ public class MachineNetworkCore extends NetworkNode{
                 });
             }
             case NETWORK_CONTROLLER_STARTING -> {
-                menu.replaceExistingItem(BUTTON_ESTABLISH_MACHINE_NETWORK, ITEM_STARTING_NETWORK.clone());
+                menu.replaceExistingItem(BUTTON_ESTABLISH_MACHINE_NETWORK, BORDER_ITEM.clone());
                 menu.addMenuClickHandler(BUTTON_ESTABLISH_MACHINE_NETWORK, ChestMenuUtils.getEmptyClickHandler());
             }
             case NETWORK_CONTROLLER_ONLINE -> {
                 menu.replaceExistingItem(BUTTON_ESTABLISH_MACHINE_NETWORK,BORDER_ITEM.clone());
-                menu.addMenuClickHandler(BUTTON_ESTABLISH_MACHINE_NETWORK,(p, slot, item1, action) -> false);
+                menu.addMenuClickHandler(BUTTON_ESTABLISH_MACHINE_NETWORK,ChestMenuUtils.getEmptyClickHandler());
                 menu.replaceExistingItem(BUTTON_LOCK_MACHINE_NETWORK, ITEM_LOCK_MACHINE_NETWORK.clone());
                 menu.addMenuClickHandler(BUTTON_LOCK_MACHINE_NETWORK, (p, slot, item, action) -> {
                     JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(b));
@@ -356,17 +329,17 @@ public class MachineNetworkCore extends NetworkNode{
                     {
                         JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(b));
                         {
-                            JSONArray containers = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_CONTAINERS));
+                            JSONArray containers = new JSONArray(coreInfo.get(MINIMIZEFACTORY_CONTAINERS).toString());
                             for (int i = 0; i < containers.length(); i+=1) {
-                                Location location = LOCATION_SERIALIZER.StringToSerializable(containers.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION));
+                                Location location = LOCATION_SERIALIZER.StringToSerializable(new JSONObject(containers.get(i).toString()).get(MINIMIZEFACTORY_NODE_LOCATION).toString());
                                 lockNode(location);
                                 setCoreStatusForNode(NodeType.MACHINE_CONTAINER, location);
                             }
                         }
                         {
-                            JSONArray storages = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_STORAGES));
+                            JSONArray storages = new JSONArray(coreInfo.get(MINIMIZEFACTORY_STORAGES).toString());
                             for (int i = 0; i < storages.length(); i+=1) {
-                                Location location = LOCATION_SERIALIZER.StringToSerializable(storages.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION));
+                                Location location = LOCATION_SERIALIZER.StringToSerializable(new JSONObject(storages.get(i).toString()).get(MINIMIZEFACTORY_NODE_LOCATION).toString());
                                 lockNode(location);
                                 setCoreStatusForNode(NodeType.STORAGE, location);
                             }
@@ -384,8 +357,8 @@ public class MachineNetworkCore extends NetworkNode{
                         List<Location> containerLocations = new ArrayList<>(containers.length());
 
                         for (int i = 0; i < containers.length(); i+=1) {
-                            JSONObject jsonObject = containers.getJSONObject(i);
-                            Location containerLocation = LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_NODE_LOCATION));
+                            JSONObject jsonObject = new JSONObject(containers.get(i).toString());
+                            Location containerLocation = LOCATION_SERIALIZER.StringToSerializable(jsonObject.get(MINIMIZEFACTORY_NODE_LOCATION).toString());
                             containerLocations.add(containerLocation);
                         }
                         containerLocations.sort(BlockGeometry.getManhattanDistanceBasedComparatorWithLocationBase(b.getLocation()));
@@ -437,7 +410,7 @@ public class MachineNetworkCore extends NetworkNode{
                             List<String> outputLore = new ArrayList<>();
                             List<String> stableOutputLore = new ArrayList<>();
 
-                            ItemStackMap map = result.inputs();
+                            ItemStackMapForContainerCalculation map = result.inputs();
                             ItemStack[] inputArr = new ItemStack[map.size()];
                             BigRational[] inputAmount = new BigRational[map.size()];
                             int counter = 0;
@@ -477,14 +450,18 @@ public class MachineNetworkCore extends NetworkNode{
                             coreInfo.put(MINIMIZEFACTORY_OUTPUT_AMOUNT_ARRAY, BIG_RATIONAL_ARRAY_SERIALIZER.SerializableToString(outputAmount));
                             coreInfo.put(MINIMIZEFACTORY_STABLE_OUTPUT_AMOUNT_ARRAY, BIG_RATIONAL_ARRAY_SERIALIZER.SerializableToString(stableOutputAmount));
                             if (result.energyConsumption().compareTo(BigInteger.ZERO) <= 0){
-                                coreInfo.put(MINIMIZEFACTORY_ENERGY_PRODUCTION, result.energyConsumption().multiply(BigInteger.valueOf(-1)).toString());
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_PRODUCTION, result.energyConsumption().multiply(BigInteger.valueOf(-1)));
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_CONSUMPTION, BigInteger.ZERO);
                             }else {
-                                coreInfo.put(MINIMIZEFACTORY_ENERGY_CONSUMPTION, result.energyConsumption().toString());
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_PRODUCTION, BigInteger.ZERO);
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_CONSUMPTION, result.energyConsumption());
                             }
                             if (result.energyConsumptionStable().compareTo(BigInteger.ZERO) <= 0){
-                                coreInfo.put(MINIMIZEFACTORY_ENERGY_PRODUCTION_STABLE, result.energyConsumptionStable().multiply(BigInteger.valueOf(-1)).toString());
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_PRODUCTION_STABLE, result.energyConsumptionStable().multiply(BigInteger.valueOf(-1)));
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_CONSUMPTION_STABLE, BigInteger.ZERO);
                             }else {
-                                coreInfo.put(MINIMIZEFACTORY_ENERGY_CONSUMPTION_STABLE, result.energyConsumptionStable().toString());
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_PRODUCTION_STABLE, BigInteger.ZERO);
+                                coreInfo.put(MINIMIZEFACTORY_ENERGY_CONSUMPTION_STABLE, result.energyConsumptionStable());
                             }
 
                             menu.replaceExistingItem(SHOW_INPUT, new CustomItemStack(Material.ORANGE_STAINED_GLASS_PANE,
@@ -546,9 +523,9 @@ public class MachineNetworkCore extends NetworkNode{
                 {
                     JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(b));
                     {
-                        JSONArray containers = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_CONTAINERS));
+                        JSONArray containers = new JSONArray(coreInfo.get(MINIMIZEFACTORY_CONTAINERS).toString());
                         for (int i = 0; i < containers.length(); i+=1) {
-                            Location location = LOCATION_SERIALIZER.StringToSerializable(containers.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION));
+                            Location location = LOCATION_SERIALIZER.StringToSerializable(new JSONObject(containers.get(i).toString()).getString(MINIMIZEFACTORY_NODE_LOCATION));
                             unlockNode(location);
                             setCoreStatusForNode(NodeType.MACHINE_CONTAINER, location);
                         }
@@ -556,7 +533,7 @@ public class MachineNetworkCore extends NetworkNode{
                     {
                         JSONArray containers = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_STORAGES));
                         for (int i = 0; i < containers.length(); i+=1) {
-                            Location location = LOCATION_SERIALIZER.StringToSerializable(containers.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION));
+                            Location location = LOCATION_SERIALIZER.StringToSerializable(new JSONObject(containers.get(i).toString()).getString(MINIMIZEFACTORY_NODE_LOCATION));
                             unlockNode(location);
                             setCoreStatusForNode(NodeType.STORAGE, location);
                         }
@@ -567,9 +544,44 @@ public class MachineNetworkCore extends NetworkNode{
                     public void run() {
                         super.run();
                         JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(b));
-                        //TODO:Rewrite output calculation
-                        ItemStack[] stabilizedOutputs = ITEM_STACK_ARRAY_SERIALIZER.StringToSerializable(coreInfo.getString(MINIMIZEFACTORY_STABLE_OUTPUT_ARRAY));
 
+                        List<Location> emptyStorageLocations = new LinkedList<>();
+                        ItemStackMapForOutputCalculation outputMap = new ItemStackMapForOutputCalculation();
+                        //TODO:Rewrite output calculation
+                        JSONArray storageJSONArray = new JSONArray(coreInfo.get(MINIMIZEFACTORY_STORAGES).toString());
+                        for(int i=0;i<storageJSONArray.length();i+=1){
+                            JSONObject storageLocationJSON = new JSONObject(storageJSONArray.get(i).toString());
+                            Location storageLocation = LOCATION_SERIALIZER.StringToSerializable(storageLocationJSON.get(MINIMIZEFACTORY_NODE_LOCATION).toString());
+                            if (!MachineNetworkStorage.isValidStorage(storageLocation)){
+                                continue;
+                            }
+                            ItemStack storeItem = MachineNetworkStorage.getStoredItem(storageLocation);
+                            if (storeItem == null){
+                                emptyStorageLocations.add(storageLocation);
+                            }else {
+                                outputMap.put(new ItemStackAsKey(storeItem),storageLocation);
+                            }
+                        }
+
+                        BigRational[] stablizedOutputAmountsPerTick = BIG_RATIONAL_ARRAY_SERIALIZER.StringToSerializable(coreInfo.get(MINIMIZEFACTORY_STABLE_OUTPUT_AMOUNT_ARRAY).toString());
+                        ItemStack[] stabilizedOutputs = ITEM_STACK_ARRAY_SERIALIZER.StringToSerializable(coreInfo.get(MINIMIZEFACTORY_STABLE_OUTPUT_ARRAY).toString());
+                        long lockTime = coreInfo.getLong(NETWORK_CONTROLLER_LOCK_TIME);
+                        long timePast = Math.max(0,System.currentTimeMillis()-lockTime);
+                        long tickPast = timePast/500;//slimefun tick
+                        for (int i=0;i<stablizedOutputAmountsPerTick.length;i+=1){
+                            stablizedOutputAmountsPerTick[i] = stablizedOutputAmountsPerTick[i].multiply(tickPast);
+                            BigRational outputAmount = stablizedOutputAmountsPerTick[i];
+                            ItemStackAsKey itemToOutput = new ItemStackAsKey(stabilizedOutputs[i]);
+                            if (!outputMap.containsKey(itemToOutput) && !emptyStorageLocations.isEmpty()){
+                                Location newEmptyContainer = emptyStorageLocations.remove(0);
+                                outputMap.put(itemToOutput,newEmptyContainer);
+                            }else if (emptyStorageLocations.isEmpty()){
+                                continue;
+                            }
+                            Location containerToOutput = outputMap.get(itemToOutput);
+                            MachineNetworkStorage.setStoredStackNoThrow(containerToOutput,itemToOutput.getTemplate());
+                            MachineNetworkStorage.addStored(containerToOutput,outputAmount);
+                        }
                         clearCoreInputsAndOutputsInfo(coreInfo);
                         coreInfo.put(NETWORK_CONTROLLER_STATUS, NETWORK_CONTROLLER_ONLINE);
                         BlockStorage.setBlockInfo(b, coreInfo.toString(), false);
@@ -583,32 +595,7 @@ public class MachineNetworkCore extends NetworkNode{
                 public void run() {
                     super.run();
                     lockNode(b.getLocation());
-
                     unregisterNodes(b.getLocation());
-
-//                    JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(b));
-//                    JSONArray storages = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_STORAGES));
-//                    JSONArray containers = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_CONTAINERS));
-//                    JSONArray bridges = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_BRIDGES));
-//                    for (int i = 0; i < storages.length(); i+=1) {
-//                        JSONObject nodeJSON = storages.getJSONObject(i);
-//                        Location nodeLocation = LOCATION_SERIALIZER.StringToSerializable(nodeJSON.getString(MINIMIZEFACTORY_NODE_LOCATION));
-//                        unregisterOneNode(nodeLocation);
-//                    }
-//                    coreInfo.put(MINIMIZEFACTORY_STORAGES,emptyJSONArray.toString());
-//                    for (int i = 0; i < containers.length(); i+=1) {
-//                        JSONObject nodeJSON = containers.getJSONObject(i);
-//                        Location nodeLocation = LOCATION_SERIALIZER.StringToSerializable(nodeJSON.getString(MINIMIZEFACTORY_NODE_LOCATION));
-//                        unregisterOneNode(nodeLocation);
-//                    }
-//                    coreInfo.put(MINIMIZEFACTORY_CONTAINERS,emptyJSONArray.toString());
-//                    for (int i = 0; i < bridges.length(); i+=1) {
-//                        JSONObject nodeJSON = bridges.getJSONObject(i);
-//                        Location nodeLocation = LOCATION_SERIALIZER.StringToSerializable(nodeJSON.getString(MINIMIZEFACTORY_NODE_LOCATION));
-//                        unregisterOneNode(nodeLocation);
-//                    }
-//                    coreInfo.put(MINIMIZEFACTORY_BRIDGES,emptyJSONArray.toString());
-//                    BlockStorage.setBlockInfo(b,coreInfo.toString(),true);
                     unlockNode(b.getLocation());
                     refresh(menu, b, NETWORK_CONTROLLER_OFFLINE);
                 }

@@ -104,17 +104,17 @@ public class MachineNetworkContainer extends NetworkNode{
         boolean lockFlag = isLocked(nodeLocation);
         JSONObject jsonObject = new JSONObject(BlockStorage.getBlockInfoAsJson(nodeLocation));
         if (jsonObject.has(MINIMIZEFACTORY_CORE_LOCATION)
-                && BlockStorage.hasInventory(LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)).getBlock())
-                && isNodeRegisteredToCore(nodeLocation, LOCATION_SERIALIZER.StringToSerializable(jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION)))
+                && BlockStorage.hasInventory(LOCATION_SERIALIZER.StringToSerializable(jsonObject.get(MINIMIZEFACTORY_CORE_LOCATION).toString()).getBlock())
+                && isNodeRegisteredToCore(nodeLocation, LOCATION_SERIALIZER.StringToSerializable(jsonObject.get(MINIMIZEFACTORY_CORE_LOCATION).toString()))
         ){
-            String locationStr = jsonObject.getString(MINIMIZEFACTORY_CORE_LOCATION);
+            String locationStr = jsonObject.get(MINIMIZEFACTORY_CORE_LOCATION).toString();
             Location coreLocation = LOCATION_SERIALIZER.StringToSerializable(locationStr);
             nodeMenu.replaceExistingItem(hintSlot,
                     !lockFlag ? new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,
-                    properties.getReplacedProperty("MachineNetwork_Core_Location") + locationStr,
+                    properties.getReplacedProperty("MachineNetwork_Core_Location") + coreLocation,
                     properties.getReplacedProperties("MachineNetwork_Core_Location_Lore_1", ChatColor.GRAY))
                             : new CustomItemStack(Material.RED_STAINED_GLASS_PANE,
-                            properties.getReplacedProperty("MachineNetwork_Core_Location") + locationStr,
+                            properties.getReplacedProperty("MachineNetwork_Core_Location") + coreLocation,
                             properties.getReplacedProperties("MachineNetwork_Core_Location_Lore_1_Locked", ChatColor.GRAY)
             ));
             nodeMenu.addMenuClickHandler(hintSlot, (p, slot, item, action) -> {

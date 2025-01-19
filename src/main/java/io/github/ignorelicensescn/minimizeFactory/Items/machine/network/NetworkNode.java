@@ -12,6 +12,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.unirest.json.JSONObject;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
@@ -61,22 +62,23 @@ public class NetworkNode extends SlimefunItem {
         }
 
         if ((locationInfo.has(MINIMIZEFACTORY_CORE_LOCATION)
-                && !BlockGeometry.blockLocationEquals(LOCATION_SERIALIZER.StringToSerializable(locationInfo.getString(MINIMIZEFACTORY_CORE_LOCATION)),coreLocation)
+                && !BlockGeometry.blockLocationEquals(LOCATION_SERIALIZER.StringToSerializable(locationInfo.get(MINIMIZEFACTORY_CORE_LOCATION).toString()),coreLocation)
         )){
             return false;//node registered to another core
         }
 
-        String nodeTypeStr = locationInfo.getString(MINIMIZEFACTORY_NODE_TYPE);
+        String nodeTypeStr = locationInfo.get(MINIMIZEFACTORY_NODE_TYPE).toString();
         switch (NodeType.valueOf(nodeTypeStr)){
             case BRIDGE, STORAGE, MACHINE_CONTAINER -> valid.add(nodeLocation);
-            default -> {return false;}//unsupported node type(e.g. core)
         }
         return true;
     }
     public static void registerNodes(
             Location sourceLocation,
             Location coreLocation){
-        registerNodes(sourceLocation,coreLocation,new HashSet<>(),new HashSet<>(),0);
+        Set<BlockLocation> toRegister = new HashSet<>(63);
+        toRegister.add(new BlockLocation(0,0,0));
+        registerNodes(sourceLocation,coreLocation,toRegister,new HashSet<>(),0);
     }
     public static void registerNodes(
             Location sourceLocation,
@@ -105,14 +107,16 @@ public class NetworkNode extends SlimefunItem {
             int distance
     ){
         assert coreLocation.getWorld() != null;
-        Set<BlockLocation> toRegisterForNextRun = new HashSet<>();
-        for (BlockLocation probablyNodeLocation:toRegister){
-            boolean successFlag = tryRegisterNode(sourceLocation,coreLocation,probablyNodeLocation,valid);
-            registeredOrFailed.add(probablyNodeLocation);
+        assert sourceLocation.getWorld() != null;
+        Set<BlockLocation> toRegisterForNextRun = new HashSet<>(63);
+        for (BlockLocation probablyNodeRelatedLocation:toRegister){
+            boolean successFlag = tryRegisterNode(sourceLocation,coreLocation,probablyNodeRelatedLocation,valid);
+            registeredOrFailed.add(probablyNodeRelatedLocation);
             if (successFlag){
-                for (BlockLocation locationForNextRun:probablyNodeLocation.sign().getMoveDirections()){
-                    if (!registeredOrFailed.contains(locationForNextRun)){
-                        toRegisterForNextRun.add(locationForNextRun);
+                for (BlockLocation locationForNextRunRelated:probablyNodeRelatedLocation.sign().getMoveDirections()){
+                    BlockLocation next = probablyNodeRelatedLocation.add(locationForNextRunRelated);
+                    if (!registeredOrFailed.contains(next)){
+                        toRegisterForNextRun.add(next);
                     }
                 }
             }
@@ -121,21 +125,12 @@ public class NetworkNode extends SlimefunItem {
             registerNodes(sourceLocation,coreLocation,toRegisterForNextRun,registeredOrFailed,valid,distance + 1);
         }else{
             JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-            JSONArray bridgesArray = coreInfo.getJSONArray(MINIMIZEFACTORY_BRIDGES);
-            if (bridgesArray == null){
-                bridgesArray = new JSONArray();
-            }
-            JSONArray containersArray = coreInfo.getJSONArray(MINIMIZEFACTORY_CONTAINERS);
-            if (containersArray == null){
-                containersArray = new JSONArray();
-            }
-            JSONArray storagesArray = coreInfo.getJSONArray(MINIMIZEFACTORY_STORAGES);
-            if (storagesArray == null){
-                storagesArray = new JSONArray();
-            }
+            JSONArray bridgesArray = new JSONArray(coreInfo.get(MINIMIZEFACTORY_BRIDGES).toString());
+            JSONArray containersArray = new JSONArray(coreInfo.get(MINIMIZEFACTORY_CONTAINERS).toString());
+            JSONArray storagesArray = new JSONArray(coreInfo.get(MINIMIZEFACTORY_STORAGES).toString());
             for (Location nodeLocation:valid){
                 JSONObject nodeInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(nodeLocation));
-                String nodeTypeStr = nodeInfo.getString(MINIMIZEFACTORY_NODE_TYPE);
+                String nodeTypeStr = nodeInfo.get(MINIMIZEFACTORY_NODE_TYPE).toString();
                 JSONObject putIntoArray = new JSONObject();
                 putIntoArray.put(MINIMIZEFACTORY_NODE_LOCATION,LOCATION_SERIALIZER.SerializableToString(nodeLocation));
                 switch (NodeType.valueOf(nodeTypeStr)){
@@ -161,13 +156,16 @@ public class NetworkNode extends SlimefunItem {
                     }
                 }
                 BlockStorage.addBlockInfo(nodeLocation,MINIMIZEFACTORY_CORE_LOCATION,LOCATION_SERIALIZER.SerializableToString(coreLocation));
-                nodeLocation.getWorld().playEffect(nodeLocation, Effect.ENDER_SIGNAL,/*Effect.ENDER_SIGNAL.getId()*/0);
+                World w = nodeLocation.getWorld();
+                if (w != null){
+                    w.playEffect(nodeLocation, Effect.ENDER_SIGNAL,/*Effect.ENDER_SIGNAL.getId()*/0);
+                }
             }
             coreInfo.put(NETWORK_COUNTER,valid.size());
             coreInfo.put(NETWORK_CONTROLLER_STATUS,NETWORK_CONTROLLER_ONLINE);
-            coreInfo.put(MINIMIZEFACTORY_BRIDGES,bridgesArray);
-            coreInfo.put(MINIMIZEFACTORY_CONTAINERS,containersArray);
-            coreInfo.put(MINIMIZEFACTORY_STORAGES,storagesArray);
+            coreInfo.put(MINIMIZEFACTORY_BRIDGES,bridgesArray.toString());
+            coreInfo.put(MINIMIZEFACTORY_CONTAINERS,containersArray.toString());
+            coreInfo.put(MINIMIZEFACTORY_STORAGES,storagesArray.toString());
             BlockStorage.setBlockInfo(coreLocation,coreInfo.toString(),true);
             MachineNetworkCore.refresh(BlockStorage.getInventory(coreLocation), coreLocation.getBlock(), NETWORK_CONTROLLER_ONLINE);
         }
@@ -177,14 +175,14 @@ public class NetworkNode extends SlimefunItem {
 
     public static void unregisterNodes(Location coreLocation){
         JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-        JSONArray bridgesArray = coreInfo.getJSONArray(MINIMIZEFACTORY_BRIDGES);
-        JSONArray containersArray = coreInfo.getJSONArray(MINIMIZEFACTORY_CONTAINERS);
-        JSONArray storagesArray = coreInfo.getJSONArray(MINIMIZEFACTORY_STORAGES);
+        JSONArray bridgesArray = new JSONArray(coreInfo.get(MINIMIZEFACTORY_BRIDGES).toString());
+        JSONArray containersArray = new JSONArray(coreInfo.get(MINIMIZEFACTORY_CONTAINERS).toString());
+        JSONArray storagesArray = new JSONArray(coreInfo.get(MINIMIZEFACTORY_STORAGES).toString());
         for (JSONArray array:new JSONArray[]{bridgesArray,containersArray,storagesArray}){
             if (array == null){continue;}
             for (int i=0;i<array.length();i++){
-                JSONObject nodeLocationJSON = array.getJSONObject(i);
-                Location nodeLocation = LOCATION_SERIALIZER.StringToSerializable(nodeLocationJSON.getString(MINIMIZEFACTORY_NODE_LOCATION));
+                JSONObject nodeLocationJSON = new JSONObject(array.get(i).toString());
+                Location nodeLocation = LOCATION_SERIALIZER.StringToSerializable(nodeLocationJSON.get(MINIMIZEFACTORY_NODE_LOCATION).toString());
                 JSONObject nodeInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(nodeLocation));
                 nodeInfo.remove(MINIMIZEFACTORY_CORE_LOCATION);
                 BlockStorage.setBlockInfo(nodeLocation,nodeInfo.toString(),true);
@@ -197,193 +195,6 @@ public class NetworkNode extends SlimefunItem {
         BlockStorage.setBlockInfo(coreLocation,coreInfo.toString(),true);
     }
 
-//    public static void unregisterNodes(Location location, Location coreLocation, int distance){
-//        unregisterNodes(location,coreLocation,distance,0);
-//    }
-//
-//    public static void unregisterNodes(Location location, Location coreLocation, int distance, int executed){
-//        location.getWorld().playEffect(location, Effect.ENDER_SIGNAL,Effect.ENDER_SIGNAL.getId());
-//        if (!BlockStorage.hasBlockInfo(location)){return;}
-//        JSONObject info = new JSONObject(BlockStorage.getBlockInfoAsJson(location));
-//        info.remove(MINIMIZEFACTORY_CORE_LOCATION);
-//        String nodeType = info.getString(MINIMIZEFACTORY_NODE_TYPE);
-//        if(nodeType.equals(NodeType.CONTROLLER.name())){
-//            MachineNetworkCore.refresh(BlockStorage.getInventory(location),location.getBlock(),UNREGISTERING);
-//        }
-//        else {
-//            if (nodeType.equals(NodeType.BRIDGE.name())){
-//                JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-//                String locationString = LOCATION_SERIALIZER.SerializableToString(location);
-//                JSONArray bridges = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_BRIDGES));
-//                int index = -1;
-//                for (int i = 0; i < bridges.length(); i+=1) {
-//                    if (bridges.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-//                        index = i;
-//                        break;
-//                    }
-//                }
-//                if (index != -1){
-//                    bridges.remove(index);
-//                    coreInfo.put(MINIMIZEFACTORY_BRIDGES,bridges.toString());
-//                    BlockStorage.setBlockInfo(coreLocation.getBlock(),coreInfo.toString(),false);
-//                }
-//            }
-//            else if (nodeType.equals(NodeType.MACHINE_CONTAINER.name())){
-//                JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-//                String locationString = LOCATION_SERIALIZER.SerializableToString(location);
-//                JSONArray containers = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_CONTAINERS));
-//                int index = -1;
-//                for (int i = 0; i < containers.length(); i+=1) {
-//                    if (containers.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-//                        index = i;
-//                        break;
-//                    }
-//                }
-//                if (index != -1){
-//                    containers.remove(index);
-//                    coreInfo.put(MINIMIZEFACTORY_CONTAINERS,containers.toString());
-//                    BlockStorage.setBlockInfo(coreLocation.getBlock(),coreInfo.toString(),false);
-//                }
-//            }
-//            else if (nodeType.equals(NodeType.STORAGE.name())){
-//                JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-//                String locationString = LOCATION_SERIALIZER.SerializableToString(location);
-//                JSONArray storages = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_STORAGES));
-//                int index = -1;
-//                for (int i = 0; i < storages.length(); i+=1) {
-//                    if (storages.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-//                        index = i;
-//                        break;
-//                    }
-//                }
-//                if (index != -1){
-//                    storages.remove(index);
-//                    coreInfo.put(MINIMIZEFACTORY_STORAGES,storages.toString());
-//                    BlockStorage.setBlockInfo(coreLocation.getBlock(),coreInfo.toString(),false);
-//                }
-//            }
-//            setCoreStatusForNode(NodeType.valueOf(info.getString(MINIMIZEFACTORY_NODE_TYPE)),location);
-//        }
-//        BlockStorage.setBlockInfo(location,info.toString(),false);
-//        int counter = -1;
-//        if (distance < NETWORK_MAX_DISTANCE) {
-//            for (BlockFace face : nearBlockFaces) {
-//                Location target = location.clone().add(face.getModX(), face.getModY(), face.getModZ());
-//                if (isNodeRegisteredToCore(target, coreLocation) && !scheduleOperateSet.contains(LOCATION_SERIALIZER.SerializableToString(target))) {
-//                    executed += 1;
-//                    int finalExecuted = executed;
-//                    Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> unregisterNodes(target, coreLocation, distance + 1, finalExecuted), distance + executed * 2L);
-//                    counter += 1;
-//                }
-//            }
-//        }
-//        int resultCounter = counter
-//                + new JSONObject(BlockStorage
-//                .getBlockInfoAsJson(coreLocation))
-//                .getInt(NETWORK_COUNTER);
-//        BlockStorage.addBlockInfo(coreLocation,NETWORK_COUNTER,
-//                String.valueOf(
-//                        resultCounter
-//                )
-//        );
-//        if (resultCounter == -1 || resultCounter == 0) {
-//            BlockStorage.addBlockInfo(coreLocation,NETWORK_CONTROLLER_STATUS,NETWORK_CONTROLLER_OFFLINE);
-//            MachineNetworkCore.refresh(BlockStorage.getInventory(coreLocation), coreLocation.getBlock(), NETWORK_CONTROLLER_OFFLINE);
-//        }
-//    }
-//
-//    public static void unregisterOneNode(Location location){
-//        location.getWorld().playEffect(location, Effect.ENDER_SIGNAL,Effect.ENDER_SIGNAL.getId());
-//        if (!BlockStorage.hasBlockInfo(location)){return;}
-//        JSONObject info = new JSONObject(BlockStorage.getBlockInfoAsJson(location));
-//        info.remove(MINIMIZEFACTORY_CORE_LOCATION);
-//        if(info.getString(MINIMIZEFACTORY_NODE_TYPE).equals(NodeType.CONTROLLER.name())){
-//            info.put(MINIMIZEFACTORY_CONTAINERS, emptyJSONArray.toString());
-//            info.put(MINIMIZEFACTORY_STORAGES, emptyJSONArray.toString());
-//            info.put(MINIMIZEFACTORY_BRIDGES, emptyJSONArray.toString());
-//        }else {
-//            if (info.has(MINIMIZEFACTORY_CORE_LOCATION)){
-//                Location coreLocation = LOCATION_SERIALIZER.StringToSerializable(info.getString(MINIMIZEFACTORY_CORE_LOCATION));
-//                if (coreLocation != null){
-//                    String nodeType = info.getString(MINIMIZEFACTORY_NODE_TYPE);
-//                    if (nodeType.equals(NodeType.BRIDGE.name())){
-//                        JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-//                        String locationString = LOCATION_SERIALIZER.SerializableToString(location);
-//                        JSONArray bridges = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_BRIDGES));
-//                        int index = -1;
-//                        for (int i = 0; i < bridges.length(); i+=1) {
-//                            if (bridges.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-//                                index = i;
-//                                break;
-//                            }
-//                        }
-//                        if (index != -1){
-//                            bridges.remove(index);
-//                            coreInfo.put(MINIMIZEFACTORY_BRIDGES,bridges.toString());
-//                            BlockStorage.setBlockInfo(coreLocation.getBlock(),coreInfo.toString(),false);
-//                        }
-//                    }
-//                    else if (nodeType.equals(NodeType.MACHINE_CONTAINER.name())){
-//                        JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-//                        String locationString = LOCATION_SERIALIZER.SerializableToString(location);
-//                        JSONArray containers = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_CONTAINERS));
-//                        int index = -1;
-//                        for (int i = 0; i < containers.length(); i+=1) {
-//                            if (containers.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-//                                index = i;
-//                                break;
-//                            }
-//                        }
-//                        if (index != -1){
-//                            containers.remove(index);
-//                            coreInfo.put(MINIMIZEFACTORY_CONTAINERS,containers.toString());
-//                            BlockStorage.setBlockInfo(coreLocation.getBlock(),coreInfo.toString(),true);
-//                        }
-//                    }
-//                    else if (nodeType.equals(NodeType.STORAGE.name())){
-//                        JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
-//                        String locationString = LOCATION_SERIALIZER.SerializableToString(location);
-//                        JSONArray storages = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_STORAGES));
-//                        int index = -1;
-//                        for (int i = 0; i < storages.length(); i+=1) {
-//                            if (storages.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-//                                index = i;
-//                                break;
-//                            }
-//                        }
-//                        if (index != -1){
-//                            storages.remove(index);
-//                            coreInfo.put(MINIMIZEFACTORY_STORAGES,storages.toString());
-//                            BlockStorage.setBlockInfo(coreLocation.getBlock(),coreInfo.toString(),true);
-//                        }
-//                    }
-//                }
-//            }
-//            setCoreStatusForNode(NodeType.valueOf(info.getString(MINIMIZEFACTORY_NODE_TYPE)),location);
-//        }
-//        BlockStorage.setBlockInfo(location,info.toString(),false);
-//    }
-
-    public static boolean isNode(Location location){
-        if (!BlockStorage.hasBlockInfo(location)){return false;}
-        return new JSONObject(BlockStorage.getBlockInfoAsJson(location)).has(MINIMIZEFACTORY_NODE_TYPE);
-    }
-    public static boolean isRegisteredNode(Location location){
-        if (!BlockStorage.hasBlockInfo(location)){return false;}
-        JSONObject targetJSON = new JSONObject(BlockStorage.getBlockInfoAsJson(location));
-        return (targetJSON.has(MINIMIZEFACTORY_CORE_LOCATION) && targetJSON.has(MINIMIZEFACTORY_NODE_TYPE));
-    }
-
-    /**
-     * return true if the node is not registered
-     * <p>false if the node is registered or there's no node</p>
-     */
-    public static boolean isNotRegisteredNode(Location location){
-        if (!BlockStorage.hasBlockInfo(location)){return false;}
-        JSONObject targetJSON = new JSONObject(BlockStorage.getBlockInfoAsJson(location));
-        if (!targetJSON.has(MINIMIZEFACTORY_NODE_TYPE)){return false;}
-        return (!targetJSON.has(MINIMIZEFACTORY_CORE_LOCATION));
-    }
     public static boolean isNodeRegisteredToCore(Location nodeLocation,Location coreLocation){
         if (!BlockStorage.hasBlockInfo(nodeLocation)){return false;}
         JSONObject info = new JSONObject(BlockStorage.getBlockInfoAsJson(nodeLocation));
@@ -392,50 +203,48 @@ public class NetworkNode extends SlimefunItem {
         if (!BlockStorage.hasBlockInfo(coreLocation)){return false;}//there's even no core
         JSONObject coreInfo = new JSONObject(BlockStorage.getBlockInfoAsJson(coreLocation));
         if (!coreInfo.has(MINIMIZEFACTORY_NODE_TYPE)){return false;}
-        if (!coreInfo.getString(MINIMIZEFACTORY_NODE_TYPE).equals(NodeType.CONTROLLER.name())){return false;}
-        String nodeType = info.getString(MINIMIZEFACTORY_NODE_TYPE);
+        if (!coreInfo.get(MINIMIZEFACTORY_NODE_TYPE).toString().equals(NodeType.CONTROLLER.name())){return false;}
+        String nodeType = info.get(MINIMIZEFACTORY_NODE_TYPE).toString();
         if (nodeType.equals(NodeType.BRIDGE.name())){
             String locationString = LOCATION_SERIALIZER.SerializableToString(nodeLocation);
-            JSONArray bridges = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_BRIDGES));
-            int index = -1;
+            JSONArray bridges = new JSONArray(coreInfo.get(MINIMIZEFACTORY_BRIDGES).toString());
+            boolean releaseLockFlag = true;
             for (int i = 0; i < bridges.length(); i+=1) {
-                if (bridges.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-                    index = i;
+                if (new JSONObject(bridges.get(i).toString()).get(MINIMIZEFACTORY_NODE_LOCATION).toString().equals(locationString)){
+                    releaseLockFlag = false;
                     break;
                 }
             }
-            boolean result = (index != -1);
-            if (!result){
+            if (releaseLockFlag){
                 info.remove(MINIMIZEFACTORY_CORE_LOCATION);
                 info.remove(MINIMIZEFACTORY_NODE_LOCKED);
                 BlockStorage.setBlockInfo(nodeLocation,info.toString(),false);
             }
-            return result;
+            return releaseLockFlag;
         }
         else if (nodeType.equals(NodeType.MACHINE_CONTAINER.name())){
             String locationString = LOCATION_SERIALIZER.SerializableToString(nodeLocation);
-            JSONArray containers = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_CONTAINERS));
-            int index = -1;
+            JSONArray containers = new JSONArray(coreInfo.get(MINIMIZEFACTORY_CONTAINERS).toString());
+            boolean releaseLockFlag = true;
             for (int i = 0; i < containers.length(); i+=1) {
-                if (containers.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
-                    index = i;
+                if (new JSONObject(containers.get(i).toString()).get(MINIMIZEFACTORY_NODE_LOCATION).toString().equals(locationString)){
+                    releaseLockFlag = false;
                     break;
                 }
             }
-            boolean result = (index != -1);
-            if (!result){
+            if (releaseLockFlag){
                 info.remove(MINIMIZEFACTORY_CORE_LOCATION);
                 info.remove(MINIMIZEFACTORY_NODE_LOCKED);
                 BlockStorage.setBlockInfo(nodeLocation,info.toString(),false);
             }
-            return result;
+            return releaseLockFlag;
         }
         else if (nodeType.equals(NodeType.STORAGE.name())){
             String locationString = LOCATION_SERIALIZER.SerializableToString(nodeLocation);
-            JSONArray storages = new JSONArray(coreInfo.getString(MINIMIZEFACTORY_STORAGES));
+            JSONArray storages = new JSONArray(coreInfo.get(MINIMIZEFACTORY_STORAGES).toString());
             int index = -1;
             for (int i = 0; i < storages.length(); i+=1) {
-                if (storages.getJSONObject(i).getString(MINIMIZEFACTORY_NODE_LOCATION).equals(locationString)){
+                if (new JSONObject(storages.get(i).toString()).get(MINIMIZEFACTORY_NODE_LOCATION).toString().equals(locationString)){
                     index = i;
                     break;
                 }

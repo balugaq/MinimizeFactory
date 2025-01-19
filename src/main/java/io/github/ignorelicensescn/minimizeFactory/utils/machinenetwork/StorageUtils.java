@@ -16,6 +16,7 @@ public class StorageUtils {
     private static final NamespacedKey mfkey = new NamespacedKey(instance, "mfkey");
 
     public static ItemStack unKeyItem(ItemStack item) {
+        if (item == null){return null;}
         ItemStack clone = item.clone();
         ItemMeta meta = clone.getItemMeta();
         if (meta != null){

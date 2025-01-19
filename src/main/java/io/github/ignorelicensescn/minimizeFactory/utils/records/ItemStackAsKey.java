@@ -30,7 +30,9 @@ public class ItemStackAsKey {
         if (o == null || getClass() != o.getClass()) return false;
         ItemStackAsKey thatKey = (ItemStackAsKey) o;
         ItemStack thisStack = this.template.clone();
+        thisStack.setAmount(1);
         ItemStack thatStack = thatKey.template.clone();
+        thatStack.setAmount(1);
         return ItemStackUtil.isItemStackSimilar(thisStack,thatStack);
     }
 
