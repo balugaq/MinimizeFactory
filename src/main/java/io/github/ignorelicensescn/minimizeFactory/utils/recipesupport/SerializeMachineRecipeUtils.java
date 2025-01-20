@@ -2,7 +2,10 @@ package io.github.ignorelicensescn.minimizeFactory.utils.recipesupport;
 
 import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicks;
+import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicksWithExpectations;
 import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeWithExpectations;
+import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.IntegerRational;
+import io.github.ignorelicensescn.minimizeFactory.utils.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
@@ -12,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SerializeMachineRecipeUtils {
@@ -22,27 +26,21 @@ public class SerializeMachineRecipeUtils {
             SlimefunItem sfItem,
             long consumption,
             int speed){
-        return fromMachineRecipe(machineRecipes,sfItem.getItem(),null,consumption);
-    }
-    @Nonnull
-    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineRecipe(
-            Collection<MachineRecipe> machineRecipes,
-            ItemStack slimefunItemStack,
-            long consumption,
-            int speed){
-        return fromMachineRecipe(machineRecipes,slimefunItemStack,null,consumption);
+        return fromMachineRecipe(machineRecipes,sfItem.getItem(),null,consumption,speed);
     }
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineRecipe(
             Collection<MachineRecipe> machineRecipes,
             ItemStack slimefunItemStack,
             ItemStack catalyzer,
-            long consumption){
-        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+            long consumption,
+            int speed){
+        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(machineRecipes.size());
         for (MachineRecipe recipe : machineRecipes) {
+            MachineRecipeInTicks inTicks = new MachineRecipeInTicks(Math.max(1,recipe.getTicks() / speed),recipe.getInput(),recipe.getOutput());
             SerializedMachine_MachineRecipe serialized =
                     new SerializedMachine_MachineRecipe(
                             slimefunItemStack,
-                            recipe,
+                            inTicks,
                             consumption
                     );
             result.add(new SimplePair<>(serialized, catalyzer));
@@ -50,25 +48,18 @@ public class SerializeMachineRecipeUtils {
         return result;
     }
     @Nonnull
-    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineFuel(
+    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineFuels(
             Collection<MachineFuel> machineRecipes,
             SlimefunItem sfItem,
             long consumption){
-        return fromMachineFuel(machineRecipes,sfItem.getItem(),null,consumption);
+        return fromMachineFuels(machineRecipes,sfItem.getItem(),null,consumption);
     }
-    @Nonnull
-    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineFuel(
-            Collection<MachineFuel> machineRecipes,
-            ItemStack slimefunItemStack,
-            long consumption){
-        return fromMachineFuel(machineRecipes,slimefunItemStack,null,consumption);
-    }
-    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineFuel(
+    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineFuels(
             Collection<MachineFuel> machineRecipes,
             ItemStack slimefunItemStack,
             ItemStack catalyzer,
             long consumption){
-        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(machineRecipes.size());
         for (MachineFuel fuel : machineRecipes) {
             SerializedMachine_MachineRecipe serialized =
                     new SerializedMachine_MachineRecipe(
@@ -86,26 +77,22 @@ public class SerializeMachineRecipeUtils {
             SlimefunItem sfItem,
             long consumption,
             int speed){
-        return fromMachineRecipeWithExpectations(machineRecipes,sfItem.getItem(),null,consumption);
-    }
-    @Nonnull
-    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineRecipeWithExpectations(
-            Collection<MachineRecipeWithExpectations> machineRecipes,
-            ItemStack slimefunItemStack,
-            long consumption,
-            int speed){
-        return fromMachineRecipeWithExpectations(machineRecipes,slimefunItemStack,null,consumption);
+        return fromMachineRecipeWithExpectations(machineRecipes,sfItem.getItem(),null,consumption,speed);
     }
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromMachineRecipeWithExpectations(
             Collection<MachineRecipeWithExpectations> machineRecipes,
             ItemStack slimefunItemStack,
             ItemStack catalyzer,
-            long consumption){
-        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+            long consumption,
+            int speed){
+        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(machineRecipes.size());
         for (MachineRecipeWithExpectations recipe : machineRecipes) {
+            MachineRecipeInTicksWithExpectations inTicks = new MachineRecipeInTicksWithExpectations(
+                    Math.max(recipe.getTicks()/speed,1),recipe
+            );
             SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
                     slimefunItemStack,
-                    recipe,
+                    inTicks,
                     consumption
             );
             result.add(new SimplePair<>(serialized, catalyzer));
@@ -131,14 +118,15 @@ public class SerializeMachineRecipeUtils {
                               ItemStack machineItem,
                               long consumption,
                               int speed){
-        return fromInputsAndSingleOutput(recipes,machineItem,null,consumption);
+        return fromInputsAndSingleOutput(recipes,machineItem,null,consumption,speed);
     }
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>>
     fromInputsAndSingleOutput(Collection<SimplePair<ItemStack[],ItemStack>> recipes,
                               ItemStack machineItem,
                               ItemStack catalyzer,
-                              long consumption){
-        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+                              long consumption,
+                              int speed){
+        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(recipes.size());
         for (SimplePair<ItemStack[],ItemStack> recipe:recipes){
             MachineRecipeInTicks machineRecipeInTicks = new MachineRecipeInTicks(1,recipe.first,new ItemStack[]{recipe.second});
             SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
@@ -149,5 +137,112 @@ public class SerializeMachineRecipeUtils {
             result.add(new SimplePair<>(serialized,catalyzer));
         }
         return result;
+    }
+
+    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromCraftingTableLikeRecipes(
+            Collection<SimplePair<ItemStack[], ItemStack>> recipes,
+            ItemStack machineItem,
+            ItemStack catalyzer,
+            long consumption
+            ){
+        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(recipes.size());
+        for (SimplePair<ItemStack[], ItemStack> workBenchRecipe:recipes){
+            MachineRecipeInTicks machineRecipeInTicks = new MachineRecipeInTicks(
+                    1,
+                    workBenchRecipe.first,
+                    new ItemStack[]{workBenchRecipe.second}
+            );
+            SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
+                    machineItem,
+                    machineRecipeInTicks,
+                    consumption
+            );
+            result.add(new SimplePair<>(serialized,catalyzer));
+        }
+        return result;
+    }
+    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromCraftingTableLikeRecipes(
+            SimplePair<ItemStack[], ItemStack>[] recipes,
+            ItemStack machineItem,
+            ItemStack catalyzer,
+            long consumption
+    ){
+        return fromCraftingTableLikeRecipes(List.of(recipes),machineItem,catalyzer,consumption);
+    }
+
+
+    public static List<SimplePair<SerializedMachine_MachineRecipe,ItemStack>> fromBioAndEnvOutputs(
+            Collection<SimplePair<BiomeAndEnvironment,SimplePair<ItemStack[], IntegerRational[]>>> recipes,
+            ItemStack machineItem,
+            ItemStack catalyzer,
+            long consumption,
+            int ticks
+    ){
+        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(recipes.size());
+        for (SimplePair<BiomeAndEnvironment,SimplePair<ItemStack[],IntegerRational[]>> r
+                :recipes){
+            BiomeAndEnvironment bioAndEnv = r.first;
+            SimplePair<ItemStack[],IntegerRational[]> outputPair = r.second;
+            SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
+                    machineItem,
+                    new MachineRecipeInTicks(
+                            ticks,
+                            null,
+                            outputPair.first),
+                    consumption,
+                    1,
+                    outputPair.second
+            );
+            serialized.env = bioAndEnv.environment();
+            serialized.biome = bioAndEnv.biome();
+            result.add(new SimplePair<>(serialized,catalyzer));
+        }
+        return result;
+    }
+    public static List<SimplePair<SerializedMachine_MachineRecipe,ItemStack>> fromCatalyzerAndOutputs(
+            SimplePair<ItemStack,ItemStack[]>[] recipes,
+            ItemStack machineItem,
+            int ticks,
+            long energyConsumption,
+            int speed
+    ){
+        return fromCatalyzerAndOutputs(List.of(recipes),machineItem,ticks,energyConsumption,speed);
+    }
+    public static List<SimplePair<SerializedMachine_MachineRecipe,ItemStack>> fromCatalyzerAndOutputs(
+            Collection<SimplePair<ItemStack,ItemStack[]>> recipes,
+            ItemStack machineItem,
+            int ticks,
+            long energyConsumption,
+            int speed
+    ){
+        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(recipes.size());
+        for (var recipe:recipes){
+            MachineRecipeInTicks machineRecipeInTicks =
+                    new MachineRecipeInTicks(
+                            Math.max(ticks/speed,1),
+                            new ItemStack[]{},
+                            recipe.second);
+            SerializedMachine_MachineRecipe serialized =
+                    new SerializedMachine_MachineRecipe(
+                            machineItem,
+                            machineRecipeInTicks,
+                            energyConsumption
+                    );
+            result.add(new SimplePair<>(serialized,recipe.first));
+        }
+        return result;
+    }
+
+    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromSolarGen(
+            SlimefunItem sfItem,
+            long energyPerTick,
+            long energyPerTickAtNight
+            ){
+        SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe();
+        serialized.sfItem = sfItem;
+        serialized.sfItemStack = sfItem.getItem();
+        serialized.energyPerTick = energyPerTick;
+        serialized.energyPerTickAtNight = energyPerTickAtNight;
+        return Collections.singletonList(new SimplePair<>(serialized,null));
     }
 }

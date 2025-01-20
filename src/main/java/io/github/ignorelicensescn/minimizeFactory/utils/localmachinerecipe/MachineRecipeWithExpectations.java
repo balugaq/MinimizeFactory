@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 //"Expectations" is rational
 public class MachineRecipeWithExpectations extends MachineRecipe {
-    public IntegerRational[] expectations;
+    public final IntegerRational[] expectations;
     public MachineRecipeWithExpectations(int seconds, ItemStack[] input, ItemStack[] output, IntegerRational[] expectations) {
         super(seconds, input, output);
         this.expectations = expectations;

@@ -1,6 +1,7 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil;
+import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil;
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.StorageUtils;
 import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BigRational;
@@ -89,7 +90,7 @@ public class MachineNetworkStorage extends NetworkNode{
             @Override
             public void newInstance(@Nonnull BlockMenu menu, @Nonnull Block b) {
                 buildMenu(menu, b);
-                showCoreLocation(b.getLocation(),HINT_SLOT,menu);;
+                showCoreLocation(b.getLocation(),HINT_SLOT,menu);
             }
 
             @Override
@@ -400,17 +401,10 @@ public class MachineNetworkStorage extends NetworkNode{
     public static void updateMenu(Block b, BlockMenu inv, boolean force) {
         BigInteger stored = getStored(b);
         BigDecimal storedBigDecimal = new BigDecimal(stored);
-        String itemName;
+        String itemName = NameUtil.findName(inv.getItemInSlot(DISPLAY_SLOT));
 
         BigDecimal maxStackSizeBigDecimal = BigDecimal.valueOf(inv.getItemInSlot(DISPLAY_SLOT).getMaxStackSize());
         String storedStacks = doubleRoundAndFade(storedBigDecimal.divide(maxStackSizeBigDecimal,4, RoundingMode.DOWN));
-
-        if (inv.getItemInSlot(DISPLAY_SLOT) != null && inv.getItemInSlot(DISPLAY_SLOT).getItemMeta().hasDisplayName()) {
-            itemName = inv.getItemInSlot(DISPLAY_SLOT).getItemMeta().getDisplayName();
-        }
-        else {
-            itemName = WordUtils.capitalizeFully(inv.getItemInSlot(DISPLAY_SLOT).getType().name().replace("_", " "));
-        }
 
         // This helps a bit with lag, but may have visual impacts
         if (inv.hasViewer() || force) {

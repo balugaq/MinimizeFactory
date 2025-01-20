@@ -1,11 +1,10 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class SimplePair<A,B> {
     public A first;
-    public B second;
+    public final B second;
     public SimplePair(A first,B second){
         this.first = first;
         this.second = second;
@@ -28,7 +27,6 @@ public class SimplePair<A,B> {
 
     @Override
     public String toString() {
-        String firstStr;
         return first + "|" + second;
     }
 }

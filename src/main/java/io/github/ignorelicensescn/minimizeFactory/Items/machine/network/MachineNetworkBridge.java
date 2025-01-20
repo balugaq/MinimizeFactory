@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
@@ -30,7 +31,9 @@ public class MachineNetworkBridge extends NetworkNode{
                     }
                 },
                 new BlockBreakHandler(false, false) {
+
                     @Override
+                    @ParametersAreNonnullByDefault
                     public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
                         Block b = e.getBlock();
                         Player p = e.getPlayer();

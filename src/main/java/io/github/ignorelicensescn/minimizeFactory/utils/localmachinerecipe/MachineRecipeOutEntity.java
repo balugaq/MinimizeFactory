@@ -4,7 +4,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecip
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionConsts.emptyItemStackArray;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.emptyItemStackArray;
 
 public class MachineRecipeOutEntity extends MachineRecipe {
     public int ticks;

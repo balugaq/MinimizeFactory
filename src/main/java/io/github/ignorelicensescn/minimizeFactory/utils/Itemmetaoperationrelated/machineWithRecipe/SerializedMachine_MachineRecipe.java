@@ -1,7 +1,9 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.MachineBlockRecipe;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.SingularityRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
+import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.MachineBlockRecipe;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.SingularityRecipe;
 import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.TweakedMachineFuel;
 import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeInTicksWithExpectations;
 import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.MachineRecipeOutEntity;
@@ -13,14 +15,19 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
+import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
+import static io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil.itemStackArrayEquals;
 import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.isBucket;
 
 public class SerializedMachine_MachineRecipe extends SerializedMachineWithRecipe{
+    @Nullable
     public String machineRecipeClassName = null;
     public int ticks = 1;
 //    public int[] expectation;//MachineRecipeWithExpectations
@@ -42,6 +49,7 @@ public class SerializedMachine_MachineRecipe extends SerializedMachineWithRecipe
     //rule:half of the time (not nether or end) and receive skylight -> day
     //nether and receive skylight -> day
     //end -> night
+    @Nullable
     public ItemStack[] extraItems = null;
     public SerializedMachine_MachineRecipe(ItemStack itemStack, MachineRecipe machineRecipe, long energyPerTick){
         super(itemStack.clone());
@@ -82,9 +90,9 @@ public class SerializedMachine_MachineRecipe extends SerializedMachineWithRecipe
         this.energyPerTick = energyPerTick;
         this.energyPerTickAtNight = this.energyPerTick;
         this.ticks = ticks;
-        this.inputs = new ItemStack[]{singularityRecipe.input};
-        this.outputs = new ItemStack[]{singularityRecipe.output};
-        this.Singularity_Material_amount = singularityRecipe.amount;
+        this.inputs = new ItemStack[]{singularityRecipe.input()};
+        this.outputs = new ItemStack[]{singularityRecipe.output()};
+        this.Singularity_Material_amount = singularityRecipe.amount();
     }
     public SerializedMachine_MachineRecipe(ItemStack itemStack, MachineRecipe machineRecipe, @Nullable World.Environment env, long energyPerTick, int speed, @Nullable IntegerRational[] outputExpectations){
         super(itemStack.clone());
@@ -184,8 +192,8 @@ public class SerializedMachine_MachineRecipe extends SerializedMachineWithRecipe
         if (obj instanceof SerializedMachine_MachineRecipe another){
             if (!Objects.equals(this.machineRecipeClassName,another.machineRecipeClassName)){return false;}
             if (!Objects.equals(this.ticks,another.ticks)){return false;}
-            if (!Arrays.equals(this.inputs, another.inputs)){return false;}
-            if (!Arrays.equals(this.outputs, another.outputs)){return false;}
+            if (!itemStackArrayEquals(this.inputs, another.inputs)){return false;}
+            if (!itemStackArrayEquals(this.outputs, another.outputs)){return false;}
             if (!Arrays.deepEquals(this.outputExpectations, another.outputExpectations)){return false;}
             if (!Objects.equals(this.env,another.env)){return false;}
             if (!Objects.equals(this.biome,another.biome)){return false;}
@@ -193,9 +201,7 @@ public class SerializedMachine_MachineRecipe extends SerializedMachineWithRecipe
             if (!Objects.equals(this.Singularity_Material_amount, another.Singularity_Material_amount)){return false;}
             if (!Objects.equals(this.energyPerTick,another.energyPerTick)){return false;}
             if (!Objects.equals(this.energyPerTickAtNight,another.energyPerTickAtNight)){return false;}
-            if (!Arrays.equals(this.extraItems, another.extraItems)){return false;}
-
-            return true;
+            return itemStackArrayEquals(this.extraItems, another.extraItems);
         }
         return super.equals(obj);
     }
@@ -212,8 +218,8 @@ public class SerializedMachine_MachineRecipe extends SerializedMachineWithRecipe
         result = 31 * result + (biome != null ? biome.ordinal() : 0);
         result = 31 * result + (entityClassName != null ? entityClassName.hashCode() : 0);
         result = 31 * result + Singularity_Material_amount;
-        result = 31 * result + (int) (energyPerTick ^ (energyPerTick >>> 32));
-        result = 31 * result + (int) (energyPerTickAtNight ^ (energyPerTickAtNight >>> 32));
+        result = 31 * result + Long.hashCode(energyPerTick);
+        result = 31 * result + Long.hashCode(energyPerTickAtNight);
         result = 31 * result + Arrays.hashCode(extraItems);
         return result;
     }
@@ -234,5 +240,13 @@ public class SerializedMachine_MachineRecipe extends SerializedMachineWithRecipe
                 "\n, energyPerTickAtNight=" + energyPerTickAtNight +
                 "\n, extraItems=" + Arrays.toString(extraItems) +
                 "\n}";
+    }
+
+    public static Optional<SerializedMachine_MachineRecipe> retrieveFromItemStack(ItemStack stack){
+        if (stack == null){return Optional.empty();}
+        if (!stack.hasItemMeta()){return Optional.empty();}
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null){return Optional.empty();}
+        return DataTypeMethods.getOptionalCustom(meta,SERIALIZED_MACHINE_RECIPE, PersistentSerializedMachineRecipeType.TYPE);
     }
 }

@@ -1,5 +1,6 @@
 package io.github.ignorelicensescn.minimizeFactory.utils;
 
+import io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil;
 import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import org.bukkit.ChatColor;
@@ -14,7 +15,7 @@ import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.propert
 public class NameUtil {
     public static final String NULL_STRING = "NULL";
     public static String findName(ItemStack itemStack){
-        if (itemStack == null || itemStack.getType().equals(Material.AIR)){return NULL_STRING;}
+        if (!ItemStackUtil.isItemStackValid(itemStack)){return NULL_STRING;}
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()){return itemStack.getItemMeta().getDisplayName();}
         return NameUtil.nameForMaterial(itemStack.getType());
     }
@@ -33,6 +34,7 @@ public class NameUtil {
         return m == null?NULL_STRING:m.name();
     }
 
+    //i hope it has least complexity(O(1))
     public static ChatColor colorForMaterial(Material m){
         try {
             MinecraftVersion current = Slimefun.getMinecraftVersion();

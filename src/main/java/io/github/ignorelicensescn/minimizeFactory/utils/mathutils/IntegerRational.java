@@ -42,8 +42,18 @@ public record IntegerRational(int numerator,int denominator,int hash) {
         return new IntegerRational(this.numerator*another.denominator + this.denominator * another.numerator,this.denominator * another.denominator);
     }
 
+    public IntegerRational add(int numerator,int denominator){
+        return new IntegerRational(this.numerator*denominator + this.denominator * numerator,this.denominator * denominator);
+    }
+
     public IntegerRational multiply(int another){
         return new IntegerRational(numerator*another,denominator);
+    }
+    public IntegerRational multiply(IntegerRational another){
+        return new IntegerRational(
+                numerator * another.numerator
+                ,denominator * another.denominator
+        );
     }
 
     public IntegerRational simplify(){
@@ -59,5 +69,12 @@ public record IntegerRational(int numerator,int denominator,int hash) {
     }
     public boolean lessThan(IntegerRational another){
         return this.numerator*another.denominator < this.denominator * another.numerator;
+    }
+
+    public IntegerRational divide(int another){
+        return new IntegerRational(numerator,denominator*another);
+    }
+    public IntegerRational divide(IntegerRational another){
+        return new IntegerRational(numerator*another.denominator,denominator*another.numerator);
     }
 }

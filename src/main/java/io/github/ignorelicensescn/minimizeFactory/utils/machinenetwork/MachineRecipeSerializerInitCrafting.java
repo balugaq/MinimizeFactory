@@ -124,7 +124,7 @@ public class MachineRecipeSerializerInitCrafting {
 
                 menu.addMenuClickHandler(
                         MachineRecipeSerializer.outputButton,
-                        MachineRecipeSerializer.initClickHandler(menu,recipe,recipePair.second,sfItem));
+                        MachineRecipeSerializer.initClickHandlerForOutput(menu,recipe,recipePair.second,sfItem));
                 p.sendMessage(properties.getReplacedProperty("Serializer_Recipe_Chose"));
                 return false;
             });

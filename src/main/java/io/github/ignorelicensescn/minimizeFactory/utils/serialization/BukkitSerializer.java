@@ -12,7 +12,8 @@ import java.util.Base64;
 
 public interface BukkitSerializer<T extends ConfigurationSerializable> extends UnifiedSerializer<T> {
     BukkitSerializer<ItemStack> ITEM_STACK_SERIALIZER = new BukkitSerializer<>(){};
-    BukkitSerializer<Location> LOCATION_SERIALIZER = new BukkitSerializer<Location>() {};
+    BukkitSerializer<Location> LOCATION_SERIALIZER = new BukkitSerializer<>() {
+    };
 
     @Override
     default String SerializableToString(T what){

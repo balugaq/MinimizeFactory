@@ -1,7 +1,5 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
-import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
 import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -22,7 +20,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,17 +29,16 @@ import java.util.Optional;
 
 import static io.github.ignorelicensescn.minimizeFactory.Items.Registers.MACHINE_STABILIZER;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
-import static io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil.isItemStackSimilar;
+import static io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil.isItemStackSimilar;
 import static io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils.getEmptyClickHandler;
 
 public class MachineRecipeDeserializer extends SlimefunItem {
-    public static int[] border = new int[]{
+    public static final int[] border = new int[]{
             27,28,29,         33,34,35
     };
-    public static int button = 31;
-    public static int inputBorder = 30;
-    public static int outputBorder = 32;
+    public static final int button = 31;
+    public static final int inputBorder = 30;
+    public static final int outputBorder = 32;
     public static final int[] input = new int[]{
             0,1,2,3,4,5,6,7,8,
             9,10,11,12,13,14,15,16,17,
@@ -52,6 +48,9 @@ public class MachineRecipeDeserializer extends SlimefunItem {
             36,37,38,39,40,41,42,43,44,
             45,46,47,48,49,50,51,52
     };
+    public static final ItemStack DESERIALIZER_INPUT_HINT_ITEM = new CustomItemStack(Material.GREEN_STAINED_GLASS_PANE, properties.getReplacedProperty("MachineRecipeDeserializer_Input_Serialized_Material_Machine_Stabilizer"));
+    public static final ItemStack DESERIALIZER_OUTPUT_HINT_ITEM = new CustomItemStack(Material.GREEN_STAINED_GLASS_PANE, properties.getReplacedProperty("MachineRecipeDeserializer_Output"));
+    public static final ItemStack DESERIALIZER_DESERIALIZE_ITEM = new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,properties.getReplacedProperty("MachineRecipeDeserializer_Deserialize"));
     public MachineRecipeDeserializer(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
@@ -95,40 +94,33 @@ public class MachineRecipeDeserializer extends SlimefunItem {
         for (int i:border){
             preset.addItem(i, new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE, ""), getEmptyClickHandler());
         }
-        preset.addItem(inputBorder, new CustomItemStack(Material.GREEN_STAINED_GLASS_PANE, properties.getReplacedProperty("MachineRecipeDeserializer_Input_Serialized_Material_Machine_Stabilizer")), getEmptyClickHandler());
-        preset.addItem(outputBorder, new CustomItemStack(Material.GREEN_STAINED_GLASS_PANE, properties.getReplacedProperty("MachineRecipeDeserializer_Output")), getEmptyClickHandler());
+        preset.addItem(inputBorder, DESERIALIZER_INPUT_HINT_ITEM.clone(), getEmptyClickHandler());
+        preset.addItem(outputBorder, DESERIALIZER_OUTPUT_HINT_ITEM.clone(), getEmptyClickHandler());
         preset.addItem(53,new ItemStack(Material.GRAY_STAINED_GLASS_PANE), getEmptyClickHandler());
     }
     public static void buttonInit(BlockMenuPreset menu){
-        menu.addItem(button, new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,properties.getReplacedProperty("MachineRecipeDeserializer_Deserialize")), getEmptyClickHandler());
+        menu.addItem(button, DESERIALIZER_DESERIALIZE_ITEM.clone(), getEmptyClickHandler());
     }
     public static void buttonInit(BlockMenu menu){
-        menu.replaceExistingItem(button, new CustomItemStack(Material.YELLOW_STAINED_GLASS_PANE,properties.getReplacedProperty("MachineRecipeDeserializer_Deserialize")));
+        menu.replaceExistingItem(button, DESERIALIZER_DESERIALIZE_ITEM.clone());
         menu.addMenuClickHandler(button, (p, slot, item, action) -> {
             for (int i:input){
                 ItemStack itemStack = menu.getItemInSlot(i);
-                if (itemStack == null){continue;}
-                if (!itemStack.getType().equals(Material.TRAPPED_CHEST)){continue;}
-                if (!itemStack.hasItemMeta()){continue;}
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                if (itemMeta != null){
-                    Optional<SerializedMachine_MachineRecipe> optional = DataTypeMethods.getOptionalCustom(itemMeta,SERIALIZED_MACHINE_RECIPE, PersistentSerializedMachineRecipeType.TYPE);
-
-                    optional.ifPresent(machineRecipe -> {
-                        outputItem(menu,MACHINE_STABILIZER.clone(), outputSlots,itemStack.getAmount());
-                        if (machineRecipe.sfItemStack != null){
-                            ItemStack out = machineRecipe.sfItemStack.clone();
-                            outputItem(menu,out, outputSlots,itemStack.getAmount() * out.getAmount());
+                Optional<SerializedMachine_MachineRecipe> optional = SerializedMachine_MachineRecipe.retrieveFromItemStack(itemStack);
+                optional.ifPresent(machineRecipe -> {
+                    outputItem(menu,MACHINE_STABILIZER.clone(), outputSlots,itemStack.getAmount());
+                    if (machineRecipe.sfItemStack != null){
+                        ItemStack out = machineRecipe.sfItemStack.clone();
+                        outputItem(menu,out, outputSlots,itemStack.getAmount() * out.getAmount());
+                    }
+                    if (machineRecipe.extraItems != null){
+                        for (ItemStack itemStack1:machineRecipe.extraItems){
+                            ItemStack out = itemStack1.clone();
+                            outputItem(menu, out, outputSlots,itemStack.getAmount() * out.getAmount());
                         }
-                        if (machineRecipe.extraItems != null){
-                            for (ItemStack itemStack1:machineRecipe.extraItems){
-                                ItemStack out = itemStack1.clone();
-                                outputItem(menu, out, outputSlots,itemStack.getAmount() * out.getAmount());
-                            }
-                        }
-                        menu.replaceExistingItem(i,null);
-                    });
-                }
+                    }
+                    menu.replaceExistingItem(i,null);
+                });
             }
             return false;
         });

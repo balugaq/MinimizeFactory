@@ -8,10 +8,12 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.DistinctiveItem;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.UnplaceableBlock;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,6 +26,10 @@ public class MachineStabilizer extends UnplaceableBlock implements DistinctiveIt
 
     @Override
     public boolean canStack(@Nonnull ItemMeta itemMetaOne, @Nonnull ItemMeta itemMetaTwo) {
+        return machineStabilizerCanStack(itemMetaOne,itemMetaTwo);
+    }
+
+    public static boolean machineStabilizerCanStack(@Nonnull ItemMeta itemMetaOne, @Nonnull ItemMeta itemMetaTwo){
         Optional<SerializedMachine_MachineRecipe> optionalA = DataTypeMethods.getOptionalCustom(itemMetaOne, SERIALIZED_MACHINE_RECIPE, PersistentSerializedMachineRecipeType.TYPE);
         Optional<SerializedMachine_MachineRecipe> optionalB = DataTypeMethods.getOptionalCustom(itemMetaTwo, SERIALIZED_MACHINE_RECIPE, PersistentSerializedMachineRecipeType.TYPE);
         if (optionalA.isEmpty() && optionalB.isEmpty()){
@@ -35,5 +41,25 @@ public class MachineStabilizer extends UnplaceableBlock implements DistinctiveIt
             return Objects.equals(serializedA,serializedB);
         }
         return false;
+    }
+
+    public static class MachineStabilizerStack extends SlimefunItemStack implements DistinctiveItem{
+        public final String id;
+        public MachineStabilizerStack(@Nonnull String id, @Nonnull Material type, @Nullable String name, String... lore){
+            super(id,type,name,lore);
+            this.id = id;
+        }
+
+        //see  io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil#isItemStackSimilar close to end of that method
+        @Override
+        public boolean canStack(@Nonnull ItemMeta itemMetaOne, @Nonnull ItemMeta itemMetaTwo) {
+            return MachineStabilizer.machineStabilizerCanStack(itemMetaOne,itemMetaTwo);
+        }
+
+        @Nonnull
+        @Override
+        public String getId() {
+            return id;
+        }
     }
 }

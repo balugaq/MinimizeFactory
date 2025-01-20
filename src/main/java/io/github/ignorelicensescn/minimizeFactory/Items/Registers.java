@@ -35,7 +35,7 @@ public class Registers {
             properties.getReplacedProperties("Material_Lens_Description",ChatColor.GRAY).toArray(emptyStringArray)
     );
 
-    public static final SlimefunItemStack MACHINE_STABILIZER = new SlimefunItemStack(
+    public static final MachineStabilizer.MachineStabilizerStack MACHINE_STABILIZER = new MachineStabilizer.MachineStabilizerStack(
             "MINIMIZEFACTORY_MACHINE_STABILIZER",
             Material.TRAPPED_CHEST,
             properties.getReplacedProperty("Material_Machine_Stabilizer"),

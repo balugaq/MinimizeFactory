@@ -27,7 +27,7 @@ public interface SerializedRecipeProvider<Machine> {
             return new String[0];
         }
 
-    };
+    }
     @Nonnull
     String[] getEnergyInfoStrings(@Nonnull Machine m);
 

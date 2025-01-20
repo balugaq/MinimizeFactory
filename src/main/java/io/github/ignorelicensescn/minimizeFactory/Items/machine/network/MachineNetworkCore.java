@@ -2,8 +2,6 @@ package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.calculation.ItemStackMapForOutputCalculation;
 import io.github.ignorelicensescn.minimizeFactory.utils.records.BiomeAndEnvironment;
-import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
-import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
 import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
 import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BigRational;
@@ -34,16 +32,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.math.BigInteger;
 import java.util.*;
 
-import static io.github.ignorelicensescn.minimizeFactory.Items.Registers.MACHINE_STABILIZER;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
 import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.BukkitSerializer.LOCATION_SERIALIZER;
 import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.Serializations.*;
@@ -381,21 +376,11 @@ public class MachineNetworkCore extends NetworkNode{
                                 if (itemStack == null) {
                                     continue;
                                 }
-                                if (!Objects.equals(MACHINE_STABILIZER.getType(),itemStack.getType())) {
-                                    continue;
-                                }
-                                if (!itemStack.hasItemMeta()) {
-                                    continue;
-                                }
-                                ItemMeta meta = itemStack.getItemMeta();
-                                if (meta == null){continue;}
                                 int machineAmount = itemStack.getAmount();
-                                Optional<SerializedMachine_MachineRecipe> optional = DataTypeMethods.getOptionalCustom(meta, SERIALIZED_MACHINE_RECIPE, PersistentSerializedMachineRecipeType.TYPE);
+                                Optional<SerializedMachine_MachineRecipe> optional = SerializedMachine_MachineRecipe.retrieveFromItemStack(itemStack);
                                 optional.ifPresent(
-                                        serializedMachineMachineRecipe -> {
-                                            serializedInContainer.add(new SimplePair<>(serializedMachineMachineRecipe, machineAmount));
-//                                                logger.log(Level.WARNING,serializedMachineMachineRecipe.toString());
-                                        }
+                                        serializedMachineMachineRecipe ->
+                                                serializedInContainer.add(new SimplePair<>(serializedMachineMachineRecipe, machineAmount))
                                 );
                             }
                             result = result.combineWith(ContainerCalculationResult.fromSerializedRecipes(bioAndEnv,serializedInContainer));

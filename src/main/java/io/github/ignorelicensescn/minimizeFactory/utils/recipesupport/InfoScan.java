@@ -6,7 +6,7 @@ import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry_Filter
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGenerator;
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedMaterialGenerator;
 import io.github.ignorelicensescn.minimizeFactory.utils.NameUtil;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.*;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.*;
 import io.github.ignorelicensescn.minimizeFactory.utils.localmachinerecipe.*;
 import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
@@ -52,8 +52,8 @@ import java.util.*;
 
 import static com.google.common.math.IntMath.gcd;
 import static dev.j3fftw.litexpansion.Items.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionConsts.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.LiteX.LiteXConsts.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.LiteX.LiteXConsts.*;
 import static io.github.mooy1.infinityexpansion.items.generators.Generators.*;
 import static io.github.mooy1.infinityexpansion.items.materials.Materials.INFINITE_INGOT;
 import static io.github.mooy1.infinityexpansion.items.materials.Materials.VOID_INGOT;
@@ -296,6 +296,18 @@ public final class InfoScan {
                     ,InfinityExpansionConsts.INFINITY_ENERGY
                     ,InfinityExpansionConsts.INFINITY_ENERGY * 100L
             };
+        }else if (sfItem.getId().equals(HYDRO.getItemId())){
+            energyInfo = new long[]{
+                    HYDRO_ENERGY,
+                    HYDRO_ENERGY,
+                    HYDRO_ENERGY*100L
+            };
+        }else if (sfItem.getId().equals(REINFORCED_HYDRO.getItemId())){
+            energyInfo = new long[]{
+                    ADVANCED_HYDRO_ENERGY,
+                    ADVANCED_HYDRO_ENERGY,
+                    ADVANCED_HYDRO_ENERGY*100L
+            };
         }
         return energyInfo;
     }
@@ -392,7 +404,7 @@ public final class InfoScan {
         return energyInfo;
     }
     
-    private static List<MachineRecipeWithExpectations> Recipes_ElectricDustWasher_List = new ArrayList<>();
+    private static final List<MachineRecipeWithExpectations> Recipes_ElectricDustWasher_List = new ArrayList<>();
     public static void initRecipes_ElectricDustWasher(){
         try {
             OreWasher oreWasher = SlimefunItems.ORE_WASHER.getItem(OreWasher.class);
@@ -493,7 +505,7 @@ public final class InfoScan {
 //        eGoldPanRecipeMap.put(netherGoldPan.getInputMaterial(), new SimplePair<>(outs,expectations));
 //    }
 
-    private static List<MachineRecipeWithExpectations> eGoldPanRecipes = new ArrayList<>();
+    private static final List<MachineRecipeWithExpectations> eGoldPanRecipes = new ArrayList<>();
     public static List<MachineRecipeWithExpectations> findRecipes_ElectricGoldPan(ElectricGoldPan sfItem){
         if (eGoldPanRecipes.isEmpty()){
             initRecipes_ElectricGoldPan();
@@ -568,15 +580,15 @@ public final class InfoScan {
     /**
      This solution could be messy,but once for all
      */
-    public static Map<String,Map<String,SimplePair<ItemStack[],IntegerRational[]>>> machineBlockRecipeMapWithExpectation = new HashMap<>();
+    public static final Map<String,Map<String,SimplePair<ItemStack[],IntegerRational[]>>> machineBlockRecipeMapWithExpectation = new HashMap<>();
     public static List<MachineRecipeInTicks> findRecipes_MachineBlock(MachineBlock sfItem){
         try {
             List<MachineRecipeInTicks> result = new ArrayList<>();
             MachineBlockInfo machineBlockInfo1 = getMachineBlockInfo(sfItem);
-            for (MachineBlockRecipe machineBlockRecipe:machineBlockInfo1.recipes){
+            for (MachineBlockRecipe machineBlockRecipe: machineBlockInfo1.recipes()){
                 ItemStack output = machineBlockRecipe.output;
                 if (!(output instanceof InfinityExpansion_RandomizedItemStack)){
-                    result.add(new MachineRecipeInTicks(machineBlockInfo1.ticksPerOutput, machineBlockRecipe.input, new ItemStack[]{machineBlockRecipe.output}));
+                    result.add(new MachineRecipeInTicks(machineBlockInfo1.ticksPerOutput(), machineBlockRecipe.input, new ItemStack[]{machineBlockRecipe.output}));
                 }
                 else {
                     int len = ((InfinityExpansion_RandomizedItemStack) output).items.length;
@@ -585,7 +597,7 @@ public final class InfoScan {
                     for (int i=0;i<len;i+=1){
                         ItemStack itemStack = ((InfinityExpansion_RandomizedItemStack) output).items[i];
                         result.add(
-                                new MachineRecipeInTicksWithExpectations(machineBlockInfo1.ticksPerOutput,
+                                new MachineRecipeInTicksWithExpectations(machineBlockInfo1.ticksPerOutput(),
                                         machineBlockRecipe.input,
                                         new ItemStack[]{itemStack},
                                         new IntegerRational[]{new IntegerRational(1, len)}));
@@ -673,7 +685,7 @@ public final class InfoScan {
         for (SingularityRecipe sr:SINGULARITY_RECIPES){
             result.add(new SimplePair<>(
                     sr,
-                    (double)sr.amount / (double)SingularityConstructorSpeed(sfItem.getId())
+                    (double) sr.amount() / (double)SingularityConstructorSpeed(sfItem.getId())
             ));
         }
         return result;
@@ -721,28 +733,4 @@ public final class InfoScan {
                 || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.FUEL_BUCKET, true) 
                 || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.OIL_BUCKET, true);
     }
-    public static void tryAddHeadSkin(ItemStack showItem, ItemStack headWithSkinMeta, String name, List<String> lore){
-        if (headWithSkinMeta.getType().equals(Material.PLAYER_HEAD)){
-            SkullMeta showItemMeta = (SkullMeta) headWithSkinMeta.getItemMeta();
-            if (showItemMeta != null){
-                showItemMeta = showItemMeta.clone();
-                SkullMeta fakeMeta =(SkullMeta)new CustomItemStack(
-                        showItem.getType()
-                        , name
-                        , lore
-                ).getItemMeta();
-                fakeMeta.setDisplayName(name);
-                fakeMeta.setLore(lore);
-                showItem.setItemMeta(fakeMeta);
-            }
-        }
-    }
-    public static int[] IntegerArrAsIntArr(Integer[] integers){
-        int[] result = new int[integers.length];
-        for (int i=0;i<integers.length;i+=1){
-            result[i] = integers[i];
-        }
-        return result;
-    }
-
 }

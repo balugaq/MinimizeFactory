@@ -1,6 +1,6 @@
 package io.github.ignorelicensescn.minimizeFactory.utils.records;
 
-import io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil;
+import io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

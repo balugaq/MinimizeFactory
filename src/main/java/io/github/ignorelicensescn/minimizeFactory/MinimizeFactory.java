@@ -3,15 +3,14 @@ package io.github.ignorelicensescn.minimizeFactory;
 import io.github.acdeasdff.infinityCompress.items.Multiblock_Autocrafter;
 import io.github.ignorelicensescn.minimizeFactory.Items.Registers;
 import io.github.ignorelicensescn.minimizeFactory.SFGroups.Groups;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.DynaTech.DynaTechSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.FNAmp.FNAmplificationSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.FluffyMachines.FluffyMachinesSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityCompress.InfinityCompressSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.LiteX.LiteXpansionSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.TweakedProperty2.TweakedProperty2;
-import io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun.SlimefunSerializedMachineRecipes;
-import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BlockLocationSign;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.DynaTech.DynaTechSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.FNAmp.FNAmplificationSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.FluffyMachines.FluffyMachinesSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityCompress.InfinityCompressSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityExpansionSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.LiteX.LiteXpansionSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizeFactory.utils.tweakedproperty2.TweakedProperty2;
+import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun.SlimefunSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizeFactory.utils.searchregistries.SearchRegistries;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.mooy1.infinityexpansion.InfinityExpansion;
@@ -37,13 +36,13 @@ import java.util.logging.Logger;
 import static io.github.acdeasdff.infinityCompress.items.FNFALsAmplifications.BlocksFN.*;
 import static io.github.acdeasdff.infinityCompress.items.LiteXpansion.BlocksLiteXpansion.*;
 import static io.github.ignorelicensescn.minimizeFactory.Items.Registers.emptyStringArray;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.Slimefun.SlimefunConsts.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.DynaTech.DynaTechConsts.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.FNAmp.FNAmpConsts.getMaterialGeneratorsOutput;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityCompress.InfinityCompressConsts.getMultiblockAutocrafterRecipes;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compabilities.InfinityExpansion.InfinityExpansionConsts.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun.SlimefunConsts.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.DynaTech.DynaTechConsts.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.FNAmp.FNAmpConsts.getMaterialGeneratorsOutput;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityCompress.InfinityCompressConsts.getMultiblockAutocrafterRecipes;
+import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.initAutoTableSawRecipes;
-import static io.github.ignorelicensescn.minimizeFactory.utils.ItemStackUtil.RecipeChoiceListToItemStackArray_formated;
+import static io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil.RecipeChoiceListToItemStackArray_formated;
 import static io.github.mooy1.infinityexpansion.items.quarries.Quarries.*;
 import static io.ncbpfluffybear.fluffymachines.utils.FluffyItems.AUTO_TABLE_SAW;
 import static ne.fnfal113.fnamplifications.items.FNAmpItems.*;
@@ -71,12 +70,12 @@ public class MinimizeFactory extends AbstractAddon {
     public static long NETWORK_CONNECTOR_DELAY_FOR_ALL = 5000;
     public static long NETWORK_CONNECTOR_DELAY_FOR_ONE = 15000;
     public static boolean isTest = true;//remember to turn false!
-    public static Map<String,Long> msgSendDelay = new HashMap<>();
-    public static Map<String,Integer> blockMessageCounter = new HashMap<>();
+    public static final Map<String,Long> msgSendDelay = new HashMap<>();
+    public static final Map<String,Integer> blockMessageCounter = new HashMap<>();
     public static long lastConnectorUsedTime = 0;
-    public static Map<UUID,Long> PlayerLastConnectorUsedTime = new HashMap<>();
+    public static final Map<UUID,Long> PlayerLastConnectorUsedTime = new HashMap<>();
     public static SimplePair<ItemStack[],ItemStack>[] vanillaRecipeArray = new SimplePair[0];
-    public static List<SimplePair<ItemStack[],ItemStack>> altarRecipes = new ArrayList<>();
+    public static final List<SimplePair<ItemStack[],ItemStack>> altarRecipes = new ArrayList<>();
 
     public MinimizeFactory(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file,
@@ -144,10 +143,7 @@ public class MinimizeFactory extends AbstractAddon {
 
         logger.log(Level.INFO, "Installed plugins Checked.");
 
-        new Thread(){
-            @Override
-            public void run() {shapeRecipes();}
-        }.start();
+        new Thread(() -> shapeRecipes()).start();
 
         language = getConfig().getString("language");
         logger.log(Level.INFO,"Loading language properties...");
@@ -183,33 +179,21 @@ public class MinimizeFactory extends AbstractAddon {
                 SlimefunSerializedMachineRecipes.init();
             }).start();
             if (InfinityExpansionFlag){
-                new Thread(() -> {try{getInfinitySingularities();} catch (Exception e){
-                        e.printStackTrace();
-                    }}).start();
-                new Thread(() -> {try{getRandomizedItemStackClass();} catch (Exception e){
+                {
+                    try{getEnergyConsts();} catch (Exception e){
                     e.printStackTrace();
-                }}).start();
-                new Thread(() -> {try{getEnergyConsts();} catch (Exception e){
-                    e.printStackTrace();
-                }}).start();
-                new Thread(() -> {try{initInfinityWorkbenchRecipes();} catch (Exception e){
-                    e.printStackTrace();
-                }}).start();
-                new Thread(() -> {try{initGearTransformerRecipes();} catch (Exception e){
-                    e.printStackTrace();
-                }}).start();
-                new Thread(() -> {try{getStoneworksFactoryRecipes();} catch (Exception e){
-                    e.printStackTrace();
-                }}).start();
+                    }
+                }
                 new Thread(() -> {try{
+                    getInfinitySingularities();
+                    getRandomizedItemStackClass();
+                    initInfinityWorkbenchRecipes();
+                    initGearTransformerRecipes();
+                    getStoneworksFactoryRecipes();
                     getOscillators();
-                    quarryInfo((Quarry) SlimefunItem.getByItem(BASIC_QUARRY));
-                    quarryInfo((Quarry) SlimefunItem.getByItem(ADVANCED_QUARRY));
-                    quarryInfo((Quarry) SlimefunItem.getByItem(VOID_QUARRY));
-                    quarryInfo((Quarry) SlimefunItem.getByItem(INFINITY_QUARRY));
-                } catch (Exception e){
-                    e.printStackTrace();
-                }}).start();
+                } catch (Exception e){e.printStackTrace();}
+                }).start();
+
                 InfinityExpansionSerializedMachineRecipes.init();
                 if (InfinityCompressFlag){
                     if (LiteXpansionFlag){
@@ -242,9 +226,11 @@ public class MinimizeFactory extends AbstractAddon {
                 }
             }
             if (DynaTechFlag){
-                try{getStardustReactorFuels();} catch (Exception e){e.printStackTrace();}
-                try{getCulinaryGeneratorFuels();} catch (Exception e){e.printStackTrace();}
-                try{getGrowthChambersRecipes();} catch (Exception e){e.printStackTrace();}
+                try{
+                    getStardustReactorFuels();
+                    getCulinaryGeneratorFuels();
+                    getGrowthChambersRecipes();
+                } catch (Exception e){e.printStackTrace();}
                 SearchRegistries.scan();
                 DynaTechSerializedMachineRecipes.init();
             }
@@ -253,28 +239,12 @@ public class MinimizeFactory extends AbstractAddon {
             }
             if (FNAmplificationsFlag){
                 new Thread(() -> {
-
-                    for (ItemStack i:new ItemStack[]{
-                            FMG_GENERATOR_CLAY,
-                            FMG_GENERATOR_BONE,
-                            FMG_GENERATOR_DIAMOND,
-                            FMG_GENERATOR_DIRT,
-                            FMG_GENERATOR_EMERALD,
-                            FMG_GENERATOR_HONEYCOMB,
-                            FMG_GENERATOR_WARPED
-                    }){
-                        try {
-                            getMaterialGeneratorsOutput((CustomMaterialGenerator) SlimefunItem.getByItem(i));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
                     FNAmplificationSerializedMachineRecipes.init();
+                    SearchRegistries.scan();
                 }).start();
             }
             if (FluffyMachinesFlag){
                 new Thread(() -> {
-
                     try{initAutoTableSawRecipes((AutoTableSaw) AUTO_TABLE_SAW.getItem());} catch (Exception e){e.printStackTrace();}
                     FluffyMachinesSerializedMachineRecipes.init();
                 }).start();
@@ -300,38 +270,36 @@ public class MinimizeFactory extends AbstractAddon {
      * I don't know whether a new thread will bring better performance.
      */
     public void msgSend(Player p, List<String> msgs){
-        new Thread(){
-            @Override
-            public void run() {
-                
-                if (msgs.size() >= LONG_MESSAGE_COUNT
+        if (msgs == null){return;}
+        if (msgs.isEmpty()){return;}
+        new Thread(() -> {
+
+            if (msgs.size() >= LONG_MESSAGE_COUNT
+            ){
+                if (
+                        (msgSendDelay.get(p.getPlayerListName()) != null
+                                && ((System.currentTimeMillis() - msgSendDelay.get(p.getPlayerListName())) >= LONG_MESSAGE_DELAY))
+                                || (msgSendDelay.get(p.getPlayerListName())==null)
                 ){
-                    if (
-                            (msgSendDelay.get(p.getPlayerListName()) != null
-                                    && ((System.currentTimeMillis() - msgSendDelay.get(p.getPlayerListName())) >= LONG_MESSAGE_DELAY))
-                                    || (msgSendDelay.get(p.getPlayerListName())==null)
-                    ){
-                        p.sendMessage(msgs.toArray(emptyStringArray));
-                        blockMessageCounter.remove(p.getPlayerListName());
-                        msgSendDelay.put(p.getPlayerListName(),System.currentTimeMillis());
-                    }else {
-                        blockMessageCounter.put(p.getPlayerListName(), blockMessageCounter.get(p.getPlayerListName()) == null ? 1 : blockMessageCounter.get(p.getPlayerListName()) + 1);
-                        if (blockMessageCounter.get(p.getPlayerListName()) <= LONG_MESSAGE_BLOCK_NOTIFICATION_COUNT){
-                            p.sendMessage(properties.getReplacedProperty("PLEASE_TRY_AGAIN_LATER") + LONG_MESSAGE_DELAY + properties.getReplacedProperty("PLEASE_TRY_AGAIN_LATER_UNIT"));
-                        }
+                    p.sendMessage(msgs.toArray(emptyStringArray));
+                    blockMessageCounter.remove(p.getPlayerListName());
+                    msgSendDelay.put(p.getPlayerListName(),System.currentTimeMillis());
+                }else {
+                    blockMessageCounter.put(p.getPlayerListName(), blockMessageCounter.get(p.getPlayerListName()) == null ? 1 : blockMessageCounter.get(p.getPlayerListName()) + 1);
+                    if (blockMessageCounter.get(p.getPlayerListName()) <= LONG_MESSAGE_BLOCK_NOTIFICATION_COUNT){
+                        p.sendMessage(properties.getReplacedProperty("PLEASE_TRY_AGAIN_LATER") + LONG_MESSAGE_DELAY + properties.getReplacedProperty("PLEASE_TRY_AGAIN_LATER_UNIT"));
                     }
                 }
-                else{
-                    blockMessageCounter.remove(p.getPlayerListName());
-                    p.sendMessage(msgs.toArray(emptyStringArray));
-                }
             }
-        }.start();
+            else{
+                blockMessageCounter.remove(p.getPlayerListName());
+                p.sendMessage(msgs.toArray(emptyStringArray));
+            }
+        }).start();
     }
     
     public static void shapeRecipes(){
         logger.log(Level.INFO,"Loading vanilla recipes");
-
 
         HashMap<List<RecipeChoice>, SimplePair<ItemStack, Recipe>> shapedVanillaRecipes = new HashMap<>();
         HashMap<List<RecipeChoice>, SimplePair<ItemStack, Recipe>> shapelessVanillaRecipes = new HashMap<>();
@@ -339,8 +307,7 @@ public class MinimizeFactory extends AbstractAddon {
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
         while (recipeIterator.hasNext()) {
             Recipe r = recipeIterator.next();
-            if (r instanceof ShapedRecipe) {
-                ShapedRecipe sr = (ShapedRecipe) r;
+            if (r instanceof ShapedRecipe sr) {
                 List<RecipeChoice> rc = new ArrayList<>();
                 for (RecipeChoice choice : sr.getChoiceMap().values()) {
                     if (choice != null) {
