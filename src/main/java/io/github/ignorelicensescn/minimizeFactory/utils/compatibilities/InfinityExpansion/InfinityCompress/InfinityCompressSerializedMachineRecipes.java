@@ -24,6 +24,8 @@ import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.*;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils.fromCraftingTableLikeRecipes;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils.fromInputsAndSingleOutput;
 import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun.SlimefunConsts.geoResourcesInfo;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun.SlimefunConsts.geoResourcesInfo_ResourcesList;
@@ -318,7 +320,7 @@ public class InfinityCompressSerializedMachineRecipes {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{Multiblock_Autocrafter.ENERGY_CONSUMPTION,1,Multiblock_Autocrafter.CAPACITY};
                             List<SimplePair<ItemStack[],ItemStack>> machineRecipes = getMultiblockAutocrafterRecipes(m);
-                            return SerializeMachineRecipeUtils.fromInputsAndSingleOutput(machineRecipes,m,
+                            return fromInputsAndSingleOutput(machineRecipes,m,
                                     energyInfo[0],1);
                         }
 
@@ -343,21 +345,7 @@ public class InfinityCompressSerializedMachineRecipes {
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoInfinityWorkbench m) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{m.getCapacity(),1,m.getCapacity()};
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
-                            for (SimplePair<ItemStack[], ItemStack> workBenchRecipe:INFINITY_WORKBENCH_RECIPES){
-                                MachineRecipeInTicks machineRecipeInTicks = new MachineRecipeInTicks(
-                                        1,
-                                        workBenchRecipe.first,
-                                        new ItemStack[]{workBenchRecipe.second}
-                                );
-                                SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
-                                        m.getItem(),
-                                        machineRecipeInTicks,
-                                        energyInfo[0]
-                                );
-                                result.add(new SimplePair<>(serialized,null));
-                            }
-                            return result;
+                            return fromInputsAndSingleOutput(INFINITY_WORKBENCH_RECIPES,m,energyInfo[0],1);
                         }
 
                         @Nonnull
@@ -381,20 +369,7 @@ public class InfinityCompressSerializedMachineRecipes {
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGenerator m) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{m.getCapacity(),1,m.getCapacity()};
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
-                            for (SimplePair<ItemStack[], ItemStack> recipeInfo : GEAR_TRANSFORMER_RECIPES) {
-                                MachineRecipeInTicks machineRecipeInTicks = new MachineRecipeInTicks(
-                                        1,
-                                        recipeInfo.first,
-                                        new ItemStack[]{recipeInfo.second});
-                                SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
-                                        m.getItem(),
-                                        machineRecipeInTicks,
-                                        energyInfo[0]
-                                );
-                                result.add(new SimplePair<>(serialized,null));
-                            }
-                            return result;
+                            return fromCraftingTableLikeRecipes(GEAR_TRANSFORMER_RECIPES,m.getItem(),null,energyInfo[0]);
                         }
 
                         @Nonnull

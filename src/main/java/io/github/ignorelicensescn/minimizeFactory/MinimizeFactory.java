@@ -14,11 +14,9 @@ import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun
 import io.github.ignorelicensescn.minimizeFactory.utils.searchregistries.SearchRegistries;
 import io.github.ignorelicensescn.minimizeFactory.utils.simpleStructure.SimplePair;
 import io.github.mooy1.infinityexpansion.InfinityExpansion;
-import io.github.mooy1.infinityexpansion.items.quarries.Quarry;
 import io.github.mooy1.infinitylib.core.AbstractAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.ncbpfluffybear.fluffymachines.machines.AutoTableSaw;
-import ne.fnfal113.fnamplifications.materialgenerators.implementations.CustomMaterialGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
@@ -38,14 +36,11 @@ import static io.github.acdeasdff.infinityCompress.items.LiteXpansion.BlocksLite
 import static io.github.ignorelicensescn.minimizeFactory.Items.Registers.emptyStringArray;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun.SlimefunConsts.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.DynaTech.DynaTechConsts.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.FNAmp.FNAmpConsts.getMaterialGeneratorsOutput;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityCompress.InfinityCompressConsts.getMultiblockAutocrafterRecipes;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.initAutoTableSawRecipes;
 import static io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil.RecipeChoiceListToItemStackArray_formated;
-import static io.github.mooy1.infinityexpansion.items.quarries.Quarries.*;
 import static io.ncbpfluffybear.fluffymachines.utils.FluffyItems.AUTO_TABLE_SAW;
-import static ne.fnfal113.fnamplifications.items.FNAmpItems.*;
 
 public class MinimizeFactory extends AbstractAddon {
     public static long LONG_MESSAGE_DELAY = 3000;
@@ -69,7 +64,6 @@ public class MinimizeFactory extends AbstractAddon {
     public static long NETWORK_MAX_DISTANCE = 5;
     public static long NETWORK_CONNECTOR_DELAY_FOR_ALL = 5000;
     public static long NETWORK_CONNECTOR_DELAY_FOR_ONE = 15000;
-    public static boolean isTest = true;//remember to turn false!
     public static final Map<String,Long> msgSendDelay = new HashMap<>();
     public static final Map<String,Integer> blockMessageCounter = new HashMap<>();
     public static long lastConnectorUsedTime = 0;

@@ -408,7 +408,7 @@ public class InfinityExpansionConsts {
         logger.log(Level.WARNING,"RandomizedItemStack Class NOT FOUND!");
     }
 
-    public static ItemStack[] getItemStacksFromRandomizedItemStack(ItemStack output) throws Exception{
+    public static ItemStack[] getItemStacksFromRandomizedItemStack(ItemStack output){
         Field targetField = null;
         for (Field f:output.getClass().getDeclaredFields()){
             if (f.getName().equals("items")){
