@@ -24,8 +24,7 @@ import java.util.List;
 
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.InfoScan.*;
-import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils.fromCraftingTableLikeRecipes;
-import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils.fromInputsAndSingleOutput;
+import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializeMachineRecipeUtils.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun.SlimefunConsts.geoResourcesInfo;
 import static io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.Slimefun.SlimefunConsts.geoResourcesInfo_ResourcesList;
@@ -48,12 +47,7 @@ public class InfinityCompressSerializedMachineRecipes {
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGenerator m) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityCompress_TweakedGenerator(m);
-                            SerializedMachine_MachineRecipe recipe1 = new SerializedMachine_MachineRecipe();
-                            recipe1.sfItem = m;
-                            recipe1.sfItemStack = m.getItem();
-                            recipe1.energyPerTick = energyInfo[0];
-                            recipe1.energyPerTickAtNight = energyInfo[0];
-                            return Collections.singletonList(new SimplePair<>(recipe1,null));
+                            return fromSolarGen(m,energyInfo[0],energyInfo[0]);
                         }
 
                         @Nonnull
