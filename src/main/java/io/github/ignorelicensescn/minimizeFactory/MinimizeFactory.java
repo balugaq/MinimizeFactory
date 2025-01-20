@@ -76,6 +76,7 @@ public class MinimizeFactory extends AbstractAddon {
                 "ignorelicensescn", "MinimizeFactory", "master", "auto-update");
     }
     public MinimizeFactory() {
+        //but i didn't set auto-update
         super("ignorelicensescn", "MinimizeFactory", "master", "auto-update");
     }
 

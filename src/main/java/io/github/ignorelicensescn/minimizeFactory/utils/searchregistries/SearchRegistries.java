@@ -6,6 +6,9 @@ import com.google.common.collect.Multimaps;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 
+/**
+ * my ideas to get SlimefunItem instances and retrieve recipes inside
+ */
 public class SearchRegistries {
     public static final Multimap<Class<? extends SlimefunItem>,OnScannedSlimefunItemInstanceListener> listeners = Multimaps.synchronizedSetMultimap(HashMultimap.create());
     public static final Multimap<Class<? extends SlimefunItem>,OnScannedSlimefunItemInstanceListener> tempListeners = Multimaps.synchronizedSetMultimap(HashMultimap.create());
@@ -21,6 +24,7 @@ public class SearchRegistries {
         listeners.remove(scanClass,onScannedSlimefunItemInstanceListener);
         tempListeners.remove(scanClass,onScannedSlimefunItemInstanceListener);
     }
+
     public static void scan(){
         if (listeners.isEmpty() && tempListeners.isEmpty()){return;}
         for (SlimefunItem sfItem: Slimefun.getRegistry().getEnabledSlimefunItems()){

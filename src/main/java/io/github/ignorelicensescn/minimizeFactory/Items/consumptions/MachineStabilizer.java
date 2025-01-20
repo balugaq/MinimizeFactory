@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizeFactory.Items.Consumptions;
+package io.github.ignorelicensescn.minimizeFactory.Items.consumptions;
 
 import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.DataTypeMethods;
 import io.github.ignorelicensescn.minimizeFactory.utils.Itemmetaoperationrelated.PersistentSerializedMachineRecipeType;
@@ -50,7 +50,11 @@ public class MachineStabilizer extends UnplaceableBlock implements DistinctiveIt
             this.id = id;
         }
 
-        //see  io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil#isItemStackSimilar close to end of that method
+        /**
+         * see  {@link io.github.ignorelicensescn.minimizeFactory.utils.itemstackrelated.ItemStackUtil#isItemStackSimilar}
+         * close to end of that method
+         *
+         */
         @Override
         public boolean canStack(@Nonnull ItemMeta itemMetaOne, @Nonnull ItemMeta itemMetaTwo) {
             return MachineStabilizer.machineStabilizerCanStack(itemMetaOne,itemMetaTwo);

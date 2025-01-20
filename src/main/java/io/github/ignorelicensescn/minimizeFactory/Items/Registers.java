@@ -1,6 +1,6 @@
 package io.github.ignorelicensescn.minimizeFactory.Items;
 
-import io.github.ignorelicensescn.minimizeFactory.Items.Consumptions.MachineStabilizer;
+import io.github.ignorelicensescn.minimizeFactory.Items.consumptions.MachineStabilizer;
 import io.github.ignorelicensescn.minimizeFactory.Items.machine.MachineRecipeDeserializer;
 import io.github.ignorelicensescn.minimizeFactory.Items.machine.MachineRecipeSerializer;
 import io.github.ignorelicensescn.minimizeFactory.Items.machine.network.*;
