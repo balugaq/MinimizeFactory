@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.instance;
+import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.minimizeFactoryInstance;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 /**
@@ -50,7 +50,7 @@ public class TweakedProperty2 extends Properties {
         if (times <= 30){
             while (matcher.find()) {
                 sval = matcher.replaceFirst(
-                        String.valueOf(instance.getConfig().get(matcher.group().substring(2, matcher.group().length() - 1),"NULL"))
+                        String.valueOf(minimizeFactoryInstance.getConfig().get(matcher.group().substring(2, matcher.group().length() - 1),"NULL"))
                 );
                 matcher = pattern.matcher(sval);
             }

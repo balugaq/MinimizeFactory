@@ -6,14 +6,14 @@ import org.bukkit.NamespacedKey;
 
 import javax.annotation.Nonnull;
 
-import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.instance;
+import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.minimizeFactoryInstance;
 
 @Data
 @UtilityClass
 public class Keys {
     @Nonnull
     public static NamespacedKey newKey(@Nonnull String value) {
-        return new NamespacedKey(instance, value);
+        return new NamespacedKey(minimizeFactoryInstance, value);
     }
 }
 

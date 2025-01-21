@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.instance;
+import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.minimizeFactoryInstance;
 import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizeFactory.utils.LoreGetter.tryGetLore;
 import static io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems.ENERGIZED_CAPACITOR;
@@ -120,7 +120,7 @@ public class MachineRecipeSerializerInitCrafting {
             );
 
             menu.addMenuClickHandler(i, (p, slot, item, action) -> {
-                instance.msgSend(p,tryGetLore(menu.getItemInSlot(slot)));
+                minimizeFactoryInstance.msgSend(p,tryGetLore(menu.getItemInSlot(slot)));
 
                 menu.addMenuClickHandler(
                         MachineRecipeSerializer.outputButton,

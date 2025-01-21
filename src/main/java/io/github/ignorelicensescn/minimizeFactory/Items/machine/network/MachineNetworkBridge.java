@@ -27,6 +27,7 @@ public class MachineNetworkBridge extends NetworkNode{
                 new BlockPlaceHandler(false) {
                     @Override
                     public void onPlayerPlace(@Nonnull BlockPlaceEvent e) {
+
                         initNode(e.getBlock().getLocation());
                     }
                 },

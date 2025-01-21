@@ -1,5 +1,13 @@
 package io.github.ignorelicensescn.minimizeFactory.Items.machine.network;
 
+import io.github.ignorelicensescn.minimizeFactory.datastorage.bytebasedserialization.implementations.BridgeInfoSerializer;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.bytebasedserialization.implementations.ContainerInfoSerializer;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.bytebasedserialization.implementations.CoreInfoSerializer;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.bytebasedserialization.implementations.StorageInfoSerializer;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.database.operators.implementations.NodeTypeOperator;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.machinenetwork.CoreInfo;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.machinenetwork.StorageInfo;
 import io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BlockGeometry;
 import io.github.ignorelicensescn.minimizeFactory.utils.mathutils.BlockLocation;
@@ -23,24 +31,34 @@ import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.machinenetwork.NodeKeys.*;
 import static io.github.ignorelicensescn.minimizeFactory.utils.serialization.BukkitSerializer.LOCATION_SERIALIZER;
 
-public class NetworkNode extends SlimefunItem {
+public abstract class NetworkNode extends SlimefunItem {
     public static final JSONArray emptyJSONArray = new JSONArray();
     public final NodeType nodeType;
 
     public NetworkNode(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,NodeType nodeType) {
         super(itemGroup, item, recipeType, recipe);
-        this.nodeType = nodeType;
+        this.nodeType = nodeType == null? NodeType.INVALID : nodeType;
     }
     public NetworkNode(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,NodeType nodeType,ItemStack out) {
         super(itemGroup, item, recipeType, recipe,out);
-        this.nodeType = nodeType;
+        this.nodeType = nodeType == null? NodeType.INVALID : nodeType;
     }
 
     public void initNode(Location location){
-        BlockStorage.addBlockInfo(location,MINIMIZEFACTORY_NODE_TYPE,nodeType.name());
+        SerializeFriendlyBlockLocation sfLocation = SerializeFriendlyBlockLocation.fromLocation(location);
+        NodeTypeOperator.INSTANCE.set(sfLocation,nodeType);
+        switch (nodeType){
+            case STORAGE -> StorageInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
+            case CONTROLLER -> CoreInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
+            case BRIDGE -> BridgeInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
+            case MACHINE_CONTAINER -> ContainerInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
+            default -> new Exception("trying to init unexpected node " + nodeType + " at " + location).printStackTrace();
+        }
+//        BlockStorage.addBlockInfo(location,MINIMIZEFACTORY_NODE_TYPE,nodeType.name());
     }
 
-    public static void lockNode(Location location){
+    public static void lockNode(Location location)
+    {
         BlockStorage.addBlockInfo(location,MINIMIZEFACTORY_NODE_LOCKED,TRUE);
     }
     public static void unlockNode(Location location){

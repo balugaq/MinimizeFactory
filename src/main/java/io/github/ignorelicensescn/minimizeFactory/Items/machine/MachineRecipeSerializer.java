@@ -116,7 +116,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
 
                     @Override
                     public boolean onClick(InventoryClickEvent e, Player p, int slot, ItemStack cursor, ClickAction action) {
-                        Bukkit.getScheduler().runTask(instance, p::updateInventory);
+                        Bukkit.getScheduler().runTask(minimizeFactoryInstance, p::updateInventory);
                         SlimefunItem sfItem = SlimefunItem.getByItem(cursor);
                         if (sfItem == null){
                             borderReset(menu);
@@ -178,7 +178,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
         for (int i:border){
             preset.replaceExistingItem(i, new CustomItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE, ""));
             preset.addMenuClickHandler(i, (p, slot, item, action) -> {
-                instance.msgSend(p,tryGetLore(preset.getItemInSlot(slot)));
+                minimizeFactoryInstance.msgSend(p,tryGetLore(preset.getItemInSlot(slot)));
 //                if (preset.getItemInSlot(slot).hasItemMeta() && preset.getItemInSlot(slot).getItemMeta().hasLore()){
 //                    instance.msgSend(p,preset.getItemInSlot(slot).getItemMeta().getLore());
 //                }
@@ -224,7 +224,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
         for (int i:border){
             preset.addItem(i, new CustomItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE, ""));
             preset.addMenuClickHandler(i, (p, slot, item, action) -> {
-                instance.msgSend(p,tryGetLore(preset.getItemInSlot(slot)));
+                minimizeFactoryInstance.msgSend(p,tryGetLore(preset.getItemInSlot(slot)));
                 return false;
             });
         }
@@ -319,7 +319,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
     }
     public static ChestMenu.MenuClickHandler initClickHandlerForOutput(BlockMenu menu, SerializedMachine_MachineRecipe machineRecipe, ItemStack catalyzer, SlimefunItem sfItem){
         return (p, slot, item, action) -> {
-            Bukkit.getScheduler().runTask(instance, p::updateInventory);
+            Bukkit.getScheduler().runTask(minimizeFactoryInstance, p::updateInventory);
             ItemStack inSlotItem = menu.getItemInSlot(inputSlot);
             SlimefunItem sfInSlot = SlimefunItem.getByItem(inSlotItem);
             if (inSlotItem == null || sfInSlot == null || !sfInSlot.equals(sfItem)){

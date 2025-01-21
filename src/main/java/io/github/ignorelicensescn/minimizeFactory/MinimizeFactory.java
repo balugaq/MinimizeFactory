@@ -3,6 +3,7 @@ package io.github.ignorelicensescn.minimizeFactory;
 import io.github.acdeasdff.infinityCompress.items.Multiblock_Autocrafter;
 import io.github.ignorelicensescn.minimizeFactory.Items.Registers;
 import io.github.ignorelicensescn.minimizeFactory.SFGroups.Groups;
+import io.github.ignorelicensescn.minimizeFactory.datastorage.database.SQLiteBlockDataStorageManager;
 import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.DynaTech.DynaTechSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.FNAmp.FNAmplificationSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizeFactory.utils.compatibilities.FluffyMachines.FluffyMachinesSerializedMachineRecipes;
@@ -48,7 +49,7 @@ public class MinimizeFactory extends AbstractAddon {
     public static int LONG_MESSAGE_BLOCK_NOTIFICATION_COUNT = 5;
     public static int GEOMINER_BIOME_EVERY_LINE = 3;
 
-    public static MinimizeFactory instance;
+    public static MinimizeFactory minimizeFactoryInstance;
     public static Logger logger;
     public static String language;
     public static TweakedProperty2 properties;
@@ -80,20 +81,28 @@ public class MinimizeFactory extends AbstractAddon {
         super("ignorelicensescn", "MinimizeFactory", "master", "auto-update");
     }
 
+    public static SQLiteBlockDataStorageManager databaseInstance = null;
+    public void getDatabaseInstance(){
+        if (databaseInstance == null){
+            databaseInstance = new SQLiteBlockDataStorageManager(this);
+            databaseInstance.load();
+        }
+    }
     @Override
     protected void enable() {
-        instance = this;
+
+        minimizeFactoryInstance = this;
         logger = this.getLogger();
         logger.log(Level.INFO,"Logger loaded.");
 
         logger.log(Level.INFO,"Loading configs.");
-        GEOMINER_BIOME_EVERY_LINE = instance.getConfig().getInt("geominer_info_lore_biome_every_line", 1, 100);
-        LONG_MESSAGE_DELAY = instance.getConfig().getLong("long_message_delay", 3000);
-        LONG_MESSAGE_COUNT = instance.getConfig().getInt("long_message_count", 5);
-        LONG_MESSAGE_BLOCK_NOTIFICATION_COUNT = instance.getConfig().getInt("long_message_block_notification_time", 5);
-        NETWORK_MAX_DISTANCE = instance.getConfig().getLong("machine_network_max_distance", 5);
-        NETWORK_CONNECTOR_DELAY_FOR_ALL = instance.getConfig().getLong("machine_network_remote_connector_delay_millseconds_for_all",5000);
-        NETWORK_CONNECTOR_DELAY_FOR_ONE = instance.getConfig().getLong("machine_network_remote_connector_delay_millseconds_for_one",15000);
+        GEOMINER_BIOME_EVERY_LINE = minimizeFactoryInstance.getConfig().getInt("geominer_info_lore_biome_every_line", 1, 100);
+        LONG_MESSAGE_DELAY = minimizeFactoryInstance.getConfig().getLong("long_message_delay", 3000);
+        LONG_MESSAGE_COUNT = minimizeFactoryInstance.getConfig().getInt("long_message_count", 5);
+        LONG_MESSAGE_BLOCK_NOTIFICATION_COUNT = minimizeFactoryInstance.getConfig().getInt("long_message_block_notification_time", 5);
+        NETWORK_MAX_DISTANCE = minimizeFactoryInstance.getConfig().getLong("machine_network_max_distance", 5);
+        NETWORK_CONNECTOR_DELAY_FOR_ALL = minimizeFactoryInstance.getConfig().getLong("machine_network_remote_connector_delay_millseconds_for_all",5000);
+        NETWORK_CONNECTOR_DELAY_FOR_ONE = minimizeFactoryInstance.getConfig().getLong("machine_network_remote_connector_delay_millseconds_for_one",15000);
         logger.log(Level.INFO,"Configs loaded.");
 
         logger.log(Level.INFO, "Checking installed plugins.");
@@ -138,7 +147,7 @@ public class MinimizeFactory extends AbstractAddon {
 
         logger.log(Level.INFO, "Installed plugins Checked.");
 
-        new Thread(() -> shapeRecipes()).start();
+        new Thread(MinimizeFactory::shapeRecipes).start();
 
         language = getConfig().getString("language");
         logger.log(Level.INFO,"Loading language properties...");
@@ -149,6 +158,7 @@ public class MinimizeFactory extends AbstractAddon {
                 InputStreamReader inputStreamReader = new InputStreamReader(inStream, StandardCharsets.UTF_8);
                 properties.load(inputStreamReader);
             }else {
+                logger.log(Level.WARNING,"Invalid property name:" + language);
                 inStream = this.getClassLoader().getResourceAsStream("language/zh_CN.properties");
                 InputStreamReader inputStreamReader = new InputStreamReader(inStream, StandardCharsets.UTF_8);
                 properties.load(inputStreamReader);
@@ -160,8 +170,8 @@ public class MinimizeFactory extends AbstractAddon {
         }
 
         logger.log(Level.INFO,"Loading Groups.");
-        Groups.setup(instance);
-        Registers.setup(instance);
+        Groups.setup(minimizeFactoryInstance);
+        Registers.setup(minimizeFactoryInstance);
         logger.log(Level.INFO,"Groups loaded.");
 
         //if u have lots of cores.
@@ -250,7 +260,7 @@ public class MinimizeFactory extends AbstractAddon {
         if (period < 0) {
             period = Long.MAX_VALUE;
         }
-        Bukkit.getServer().getScheduler().runTaskTimer(instance, () -> {
+        Bukkit.getServer().getScheduler().runTaskTimer(minimizeFactoryInstance, () -> {
             msgSendDelay.clear();
             blockMessageCounter.clear();
             PlayerLastConnectorUsedTime.clear();

@@ -26,3 +26,7 @@ Use in this way:Put all machines into one box(called MachineNetworkContainer) or
 ![img example](/images/machine-serializer.png)
 ![img example](/images/machine-network-container.png)
 ![img example](/images/machine-network-storage.png)
+
+
+
+* and [Kryo](https://github.com/EsotericSoftware/kryo) is really fast.

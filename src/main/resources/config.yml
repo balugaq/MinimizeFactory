@@ -17,3 +17,5 @@ long_message_block_notification_time: 5
 machine_network_max_distance: 5
 machine_network_remote_connector_delay_millseconds_for_all: 1000
 machine_network_remote_connector_delay_millseconds_for_one: 5000
+
+minimizefactory_database_name: minimizefactory_database

@@ -21,14 +21,16 @@ public class NodeKeys {
     public static final String NETWORK_CONTROLLER_LOCKING = "network_controller_locking";
     public static final String NETWORK_CONTROLLER_LOCKED = "network_controller_locked";
     public static final String NETWORK_CONTROLLER_UNLOCKING = "network_controller_unlocking";
-    public static final String NETWORK_CONTROLLER_LOCK_TIME = "network_controller_lock_time";
     public static final String NETWORK_CONTROLLER_DISABLING = "network_controller_disabling";
+    public static final String NETWORK_CONTROLLER_LOCK_TIME = "network_controller_lock_time";
+
     public static final String MINIMIZEFACTORY_INPUT_ARRAY = "network_input_array";
     public static final String MINIMIZEFACTORY_INPUT_AMOUNT_ARRAY = "network_input_amount_array";
     public static final String MINIMIZEFACTORY_OUTPUT_ARRAY = "network_output_array";
     public static final String MINIMIZEFACTORY_OUTPUT_AMOUNT_ARRAY = "network_output_amount_array";
     public static final String MINIMIZEFACTORY_STABLE_OUTPUT_ARRAY = "network_stable_output_array";
     public static final String MINIMIZEFACTORY_STABLE_OUTPUT_AMOUNT_ARRAY = "network_stable_output_amount_array";
+
     public static final String MINIMIZEFACTORY_ENERGY_PRODUCTION = "network_energy_production";
     public static final String MINIMIZEFACTORY_ENERGY_CONSUMPTION = "network_energy_consumption";
     public static final String MINIMIZEFACTORY_ENERGY_PRODUCTION_STABLE = "network_energy_production_stable";

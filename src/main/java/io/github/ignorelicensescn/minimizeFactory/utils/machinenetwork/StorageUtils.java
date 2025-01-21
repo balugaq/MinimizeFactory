@@ -10,10 +10,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 
-import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.instance;
+import static io.github.ignorelicensescn.minimizeFactory.MinimizeFactory.minimizeFactoryInstance;
 
 public class StorageUtils {
-    private static final NamespacedKey mfkey = new NamespacedKey(instance, "mfkey");
+    private static final NamespacedKey mfkey = new NamespacedKey(minimizeFactoryInstance, "mfkey");
 
     public static ItemStack unKeyItem(ItemStack item) {
         if (item == null){return null;}

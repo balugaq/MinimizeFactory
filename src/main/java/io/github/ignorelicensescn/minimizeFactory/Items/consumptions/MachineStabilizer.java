@@ -43,7 +43,7 @@ public class MachineStabilizer extends UnplaceableBlock implements DistinctiveIt
         return false;
     }
 
-    public static class MachineStabilizerStack extends SlimefunItemStack implements DistinctiveItem{
+    public static class MachineStabilizerStack extends SlimefunItemStack implements DistinctiveItem {
         public final String id;
         public MachineStabilizerStack(@Nonnull String id, @Nonnull Material type, @Nullable String name, String... lore){
             super(id,type,name,lore);
