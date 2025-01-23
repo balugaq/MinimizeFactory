@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.ignorelicensescn</groupId>
     <artifactId>MinimizeFactory</artifactId>
-    <version>0.12</version>
+    <version>0.13</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>com.github.Slimefun</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-37</version>
+            <version>RC-37-marked-modified</version>
             <scope>provided</scope>
         </dependency>
 
@@ -204,16 +204,16 @@
                     <relocations>
                         <relocation>
                             <pattern>io.github.mooy1.infinitylib</pattern>
-                            <shadedPattern>io.github.ignorelicensescn.minimizeFactory.infinitylib</shadedPattern>
+                            <shadedPattern>io.github.ignorelicensescn.minimizefactory.infinitylib</shadedPattern>
                         </relocation>
 
                         <relocation>
                             <pattern>com.jeff_media.morepersistentdatatypes</pattern>
-                            <shadedPattern>io.github.ignorelicensescn.minimizeFactory.morepersistentdatatypes</shadedPattern>
+                            <shadedPattern>io.github.ignorelicensescn.minimizefactory.morepersistentdatatypes</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.jeff_media.customblockdata</pattern>
-                            <shadedPattern>io.github.ignorelicensescn.minimizeFactory.customblockdata</shadedPattern>
+                            <shadedPattern>io.github.ignorelicensescn.minimizefactory.customblockdata</shadedPattern>
                         </relocation>
                     </relocations>
 

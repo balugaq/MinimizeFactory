@@ -1,7 +1,7 @@
 name: MinimizeFactory
 author: ignoreLicensesCN
 description: Calculate and compress a Slimefun factory into a block as your wish.
-main: io.github.ignorelicensescn.minimizeFactory.MinimizeFactory
+main: io.github.ignorelicensescn.minimizefactory.MinimizeFactory
 website: 127.0.0.1
 depend: [Slimefun]
 softdepend: [Galactifun,InfinityExpansion,InfinityCompress,LiteXpansion,FNAmplifications,SlimeFrame,DynaTech,SlimefunWarfare,FluffyMachines]
