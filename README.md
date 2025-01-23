@@ -1,6 +1,6 @@
 *Slimefun extension*
 
-**汉化组的粘液我没做兼容,用的是CookieSlime的api,汉化版暂时用不了**
+**现在汉化组粘液也能用了**
 
 **I didn't translate into english**,but you can try it yourself.See [/src/main/resources/language/](/src/main/resources/language).You may want to add en_US.properties or st.else.
 **Remember to change the config when switching language!**
