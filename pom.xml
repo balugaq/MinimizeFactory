@@ -52,6 +52,8 @@
         </dependency>
 <!--        end getting angry-->
 
+<!--        compiled Slimefun RC-37 locally to give some annotations for myself,see my repos:RemovedBySFCNInspection and Slimefun4-RC-37-modified-->
+<!--        compiled locally-->
         <dependency>
             <groupId>com.github.Slimefun</groupId>
             <artifactId>Slimefun4</artifactId>
@@ -59,6 +61,7 @@
             <scope>provided</scope>
         </dependency>
 
+<!--        I don't know how to download dependencies below,so i built them locally-->
 <!--        compiled locally-->
         <dependency>
             <groupId>me.profelements</groupId>

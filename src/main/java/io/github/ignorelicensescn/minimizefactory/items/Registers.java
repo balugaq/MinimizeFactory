@@ -21,6 +21,8 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +30,11 @@ import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.propert
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_ITEM_STACK_ARRAY;
 import static io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems.*;
 
+/**
+ * <p>SlimefunItems declared here will be registered with {@link java.lang.reflect}.So SuppressWarnings</p>
+ * Learned from SlimeFrame.
+ */
+@SuppressWarnings("unused")
 public class Registers {
     public static final SlimefunItemStack LENS = new SlimefunItemStack(
             "MINIMIZEFACTORY_LENS",
@@ -92,6 +99,7 @@ public class Registers {
     static {
         MACHINE_NETWORK_BRIDGE_OUT.setAmount(64);
     }
+
     public static final UnplaceableBlock LENS_FOR_REGISTER = new UnplaceableBlock(
             Groups.MATERIALS
             , new SlimefunItemStack(LENS, 16)
@@ -200,6 +208,7 @@ public class Registers {
             properties.getReplacedProperty("Serializable_Auto_Cactus"),
             properties.getReplacedProperties("Serializable_Auto_Cactus_Lore_1",ChatColor.GRAY).toArray(EmptyArrays.EMPTY_STRING_ARRAY)
     );
+
     //assume that a random tick costs 47.35 seconds in average
     public static final SerializeOnly AUTO_SUGAR_CANE_FOR_REGISTER = new SerializeOnly(
             Groups.SERIALIZABLE,
@@ -249,17 +258,66 @@ public class Registers {
             return result;
         }
     };
+
+
+    public static final SlimefunItemStack SERIALIZED_WITHER = new SlimefunItemStack(
+            "MINIMIZEFACTORY_SERIALIZED_WITHER",
+            Material.WITHER_SKELETON_SKULL,
+            properties.getReplacedProperty("Material_Serialized_Wither"),
+            properties.getReplacedProperties("Material_Serialized_Wither_Description",ChatColor.GRAY).toArray(EmptyArrays.EMPTY_STRING_ARRAY)
+    );
+    public static final UnplaceableBlock SERIALIZED_WITHER_FOR_REGISTER = new UnplaceableBlock(
+            Groups.MATERIALS
+            , SERIALIZED_WITHER
+            , RecipeType.ENHANCED_CRAFTING_TABLE
+            , new ItemStack[]{
+            new ItemStack(Material.WITHER_SKELETON_SKULL), new ItemStack(Material.WITHER_SKELETON_SKULL),   new ItemStack(Material.WITHER_SKELETON_SKULL),
+            new ItemStack(Material.SOUL_SAND), MACHINE_STABILIZER, new ItemStack(Material.SOUL_SAND),
+            WITHER_PROOF_OBSIDIAN, new ItemStack(Material.SOUL_SAND), WITHER_PROOF_OBSIDIAN
+    }
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void setup(MinimizeFactory plugin){
-        LENS_FOR_REGISTER.register(plugin);
-        MACHINE_STABILIZER_FOR_REGISTER.register(plugin);
-        MACHINE_RECIPE_SERAILIZER_FOR_REGISTER.register(plugin);
-        MACHINE_DESERIALIZER_FOR_REGISTER.register(plugin);
-        MACHINE_NETWORK_STORAGE_FOR_REGISTER.register(plugin);
-        MACHINE_NETWORK_CONTAINER_FOR_REGISTER.register(plugin);
-        MACHINE_NETWORK_BRIDGE_FOR_REGISTER.register(plugin);
-        MACHINE_NETWORK_CORE_FOR_REGISTER.register(plugin);
-        MACHINE_NETWORK_CONNECTOR_FOR_REGISTER.register(plugin);
-        AUTO_SUGAR_CANE_FOR_REGISTER.register(plugin);
-        AUTO_CACTUS_FOR_REGISTER.register(plugin);
+        for (Field f:Registers.class.getDeclaredFields()){
+            if (Modifier.isStatic(f.getModifiers())){
+                try {
+                    Object o = f.get(null);
+                    if (o instanceof SlimefunItem item){
+                        item.register(plugin);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

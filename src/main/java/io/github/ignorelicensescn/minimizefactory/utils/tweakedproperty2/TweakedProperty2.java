@@ -15,9 +15,10 @@ import static org.bukkit.ChatColor.translateAlternateColorCodes;
  * maybe I should consider slimefun-like yml way
  */
 public class TweakedProperty2 extends Properties {
+    public static final int MAX_REPLACE_TIMES = 30;
 
     public String getReplacedProperty(String key) {
-        return translateAlternateColorCodes('&',getReplacedProperty(key, 0));
+        return getColorReplacedProperty(translateAlternateColorCodes('&',getReplacedProperty(key, 0)),0);
     }
 
     /**
@@ -28,7 +29,7 @@ public class TweakedProperty2 extends Properties {
         String regex = "\\$\\{[^}]+}";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(sval);
-        if (times <= 30){
+        if (times <= MAX_REPLACE_TIMES){
             while (matcher.find()) {
                 sval = matcher.replaceFirst(
                         getReplacedProperty(matcher.group().substring(2, matcher.group().length() - 1)
@@ -39,6 +40,22 @@ public class TweakedProperty2 extends Properties {
         }
         return sval;
     }
+
+    public String getColorReplacedProperty(String key,int times){
+        String regex = "#\\{[^}]+}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(key);
+        if (times <= MAX_REPLACE_TIMES){
+            while (matcher.find()) {
+                String found = matcher.group().substring(2, matcher.group().length() - 1);
+                key = matcher.replaceFirst(net.md_5.bungee.api.ChatColor.of("#" + found).toString());
+                matcher = pattern.matcher(key);
+            }
+        }
+        return key;
+
+    }
+
     /**
      * replace @{XXXXXX} from config
      **/
@@ -47,7 +64,7 @@ public class TweakedProperty2 extends Properties {
         String regex = "@\\{[^}]+}";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(sval);
-        if (times <= 30){
+        if (times <= MAX_REPLACE_TIMES){
             while (matcher.find()) {
                 sval = matcher.replaceFirst(
                         String.valueOf(minimizeFactoryInstance.getConfig().get(matcher.group().substring(2, matcher.group().length() - 1),"NULL"))
