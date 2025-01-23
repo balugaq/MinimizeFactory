@@ -1,7 +1,9 @@
 package io.github.ignorelicensescn.minimizefactory.items.machine.network;
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.implementations.StorageInfoSerializer;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnRemover;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.CoreLocationOperator;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.DataRemover;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.StorageInfo;
 import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
@@ -108,14 +110,13 @@ public class MachineNetworkStorage extends NetworkNode{
                     int stackSize = storageInfo.storeItem.getMaxStackSize();
                     ItemStack unKeyed = getStoredItem(b);
 
-                    if (unKeyed.getType() == Material.BARRIER) {
+                    if (ItemStackUtil.isItemStackSimilar(unKeyed,EMPTY_ITEM)) {
                         setStored(b, BigInteger.ZERO);
                         updateMenu(b, inv, true);
                         return;
                     }
 
                     if (stored.compareTo(OVERFLOW_AMOUNT) > 0) {
-
                         p.sendMessage(properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Dropping_Item_Part1")
                                 +OVERFLOW_AMOUNT+properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Dropping_Item_Part2"));
                         int toRemove = 3240;
@@ -152,12 +153,14 @@ public class MachineNetworkStorage extends NetworkNode{
                             b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
                         }
 
-                        // In case they use an explosive pick
+                        // In case they use an explosive pickaxe
                         setStored(b, BigInteger.ZERO);
                         updateMenu(b, inv, true);
+                        {
+                            DataRemover.INSTANCE.remove(storageLocationKey);
+                        }
                     }
                 }
-
             }
         }
     };
@@ -334,7 +337,6 @@ public class MachineNetworkStorage extends NetworkNode{
             registerItem(b, inv, slot, item, stored);
         }
         else {
-
             SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
             StorageInfo storageInfo = StorageInfoSerializer.INSTANCE.getOrDefault(storageLocationKey);
 
@@ -380,12 +382,17 @@ public class MachineNetworkStorage extends NetworkNode{
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
         StorageInfo storageInfo = StorageInfoSerializer.INSTANCE.getOrDefault(storageLocationKey);
         storageInfo.storeItem = item;
+        storageInfo.storeAmount = stored;
         StorageInfoSerializer.INSTANCE.saveToLocationNoThrow(storageInfo,storageLocationKey);
         inv.replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
         storeItem(b, inv, slot, item, stored);
     }
 
     public static void setStoredStackNoThrow(Location l, ItemStack item){
+        SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(l);
+        StorageInfo storageInfo = StorageInfoSerializer.INSTANCE.getOrDefault(storageLocationKey);
+        storageInfo.storeItem = item;
+        StorageInfoSerializer.INSTANCE.saveToLocationNoThrow(storageInfo,storageLocationKey);
         BlockStorage.getInventory(l).replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
     }
 
@@ -580,12 +587,11 @@ public class MachineNetworkStorage extends NetworkNode{
         updateMenu(l.getBlock(),BlockStorage.getInventory(l),true);
     }
     public static void addStored(Location l, BigRational amount){
-        BigRational rational = amount.add(getStored(l));
-        if (rational.denominator().compareTo(BigInteger.ZERO) == 0){
-            new ArithmeticException("(at:" + l + ")\n divide by zero:"+rational).printStackTrace();
+        if (amount.denominator().compareTo(BigInteger.ZERO) == 0){
+            new ArithmeticException("(at:" + l + ")\n divide by zero:"+ amount).printStackTrace();
             return;
         }
-        BigInteger result = rational.numerator().divide(rational.denominator());
+        BigInteger result = amount.numerator().divide(amount.denominator());
         addStored(l,result);
     }
 

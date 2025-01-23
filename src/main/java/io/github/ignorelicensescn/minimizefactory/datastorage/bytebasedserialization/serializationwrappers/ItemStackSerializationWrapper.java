@@ -7,9 +7,13 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import static io.github.thebusybiscuit.slimefun4.libraries.commons.lang.ArrayUtils.EMPTY_BYTE_ARRAY;
+
 public class ItemStackSerializationWrapper {
 
-    private final byte[] bytes;
+    private byte[] bytes;
+    //for kryo
+    private ItemStackSerializationWrapper(){}
     private ItemStackSerializationWrapper(byte[] bytes){
         this.bytes = bytes;
     }
@@ -24,6 +28,7 @@ public class ItemStackSerializationWrapper {
     }
 
     public static ItemStackSerializationWrapper fromItemStack(ItemStack from){
+        from = new ItemStack(from);
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              BukkitObjectOutputStream so = new BukkitObjectOutputStream(byteArrayOutputStream)){
             so.writeObject(from);

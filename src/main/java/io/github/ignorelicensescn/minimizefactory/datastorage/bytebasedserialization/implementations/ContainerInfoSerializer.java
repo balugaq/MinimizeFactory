@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.util.HashMapReferenceResolver;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Initializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.LocationBasedInfoProvider;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Serializer;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnAdder;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.BlockDataOperator;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.NodeTypeOperator;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.ContainerInfo;
@@ -60,6 +61,7 @@ public class ContainerInfoSerializer implements Serializer<ContainerInfo>, Locat
         ContainerInfo info = getFromLocation(location);
         if (info == null){
             info = new ContainerInfo();
+            initializeAtLocation(location);
         }
         return info;
     }
@@ -82,6 +84,8 @@ public class ContainerInfoSerializer implements Serializer<ContainerInfo>, Locat
 
     @Override
     public void initializeAtLocation(SerializeFriendlyBlockLocation location) {
+        if (LocationBasedColumnAdder.INSTANCE.checkExistence(location)){return;}
+        LocationBasedColumnAdder.INSTANCE.addIfNotExist(location);
         NodeTypeOperator.INSTANCE.set(location,TYPE);
         saveToLocationNoThrow(new ContainerInfo(),location);
     }

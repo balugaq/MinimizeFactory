@@ -105,7 +105,7 @@ public class ItemStackUtil {
     }
     public static boolean isItemStackValid(@Nullable ItemStack stack){
         if (stack == null){return false;}
-        return validItemSet.contains(stack.getType());
+        return !validItemSet.contains(stack.getType());
     }
     public static boolean itemStackArrayEquals(@Nullable ItemStack[] A,@Nullable ItemStack[] B){
         if (A == null && B != null){return false;}

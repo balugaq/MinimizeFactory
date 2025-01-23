@@ -28,7 +28,9 @@ public class MachineRecipeSerializerInitCrafting {
                                                              List<SimplePair<SerializedMachine_MachineRecipe,ItemStack>> machineRecipes,
                                                              SlimefunItem sfItem,
                                                              SerializedRecipeProvider<SlimefunItem> provider){
+
         for (int i: MachineRecipeSerializer.recipeSlots){
+            page = Math.abs(page);
             int indexAtList = (page*18 + ( i - 26 )) % machineRecipes.size();
             SimplePair<SerializedMachine_MachineRecipe,ItemStack> recipePair = machineRecipes.get(indexAtList);
             SerializedMachine_MachineRecipe recipe = recipePair.first;

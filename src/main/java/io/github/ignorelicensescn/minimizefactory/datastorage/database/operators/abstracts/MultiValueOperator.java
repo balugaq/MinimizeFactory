@@ -55,7 +55,8 @@ public abstract class MultiValueOperator<KeyType> {
         if (databaseInstance == null){
             minimizeFactoryInstance.getDatabaseInstance();
         }
-        try (Connection conn = databaseInstance.getSQLConnection();
+        Connection conn = databaseInstance.getSQLConnection();
+        try (
              PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
 
             for (int i=0;i<operateItems.length;i++){
@@ -78,7 +79,8 @@ public abstract class MultiValueOperator<KeyType> {
         Arrays.fill(result,null);
 
         ResultSet rs = null;
-        try (Connection conn = databaseInstance.getSQLConnection();
+        Connection conn = databaseInstance.getSQLConnection();
+        try (
              PreparedStatement pstmt = conn.prepareStatement(selectSQL);
         ){
             keySetter.setValue(pstmt,1, key);

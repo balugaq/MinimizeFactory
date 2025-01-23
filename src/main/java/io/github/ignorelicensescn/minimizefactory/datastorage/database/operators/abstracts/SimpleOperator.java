@@ -48,7 +48,8 @@ public abstract class SimpleOperator<InType,OutType,KeyType> {
         if (databaseInstance == null){
             minimizeFactoryInstance.getDatabaseInstance();
         }
-        try (Connection conn = databaseInstance.getSQLConnection();
+        Connection conn = databaseInstance.getSQLConnection();
+        try (
              PreparedStatement pstmt = conn.prepareStatement(updateSQLStatement)) {
 
             // set parameters
@@ -66,7 +67,8 @@ public abstract class SimpleOperator<InType,OutType,KeyType> {
             minimizeFactoryInstance.getDatabaseInstance();
         }
         ResultSet rs = null;
-        try (Connection conn = databaseInstance.getSQLConnection();
+        Connection conn = databaseInstance.getSQLConnection();
+        try (
              PreparedStatement pstmt = conn.prepareStatement(selectSQLStatement);
         ){
             keySetter.setValue(pstmt,1,key);

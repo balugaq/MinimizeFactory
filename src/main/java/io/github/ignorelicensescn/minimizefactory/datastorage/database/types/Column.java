@@ -1,7 +1,7 @@
 package io.github.ignorelicensescn.minimizefactory.datastorage.database.types;
 
 public enum Column {
-    KEY_LOCATION_VARCHAR("location",DataType.VARCHAR,80),
+    KEY_LOCATION_VARCHAR("location",DataType.VARCHAR,80),//place at first
     VALUE_CORE_LOCATION_VARCHAR("core_location",DataType.VARCHAR,80),
     VALUE_DATA_BLOB("data",DataType.BLOB,0),
     VALUE_NODE_TYPE_INT("nodetype",DataType.INTEGER,5),

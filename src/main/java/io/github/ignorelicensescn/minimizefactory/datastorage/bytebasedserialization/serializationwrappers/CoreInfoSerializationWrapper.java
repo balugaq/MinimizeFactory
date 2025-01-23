@@ -13,25 +13,25 @@ import java.math.BigInteger;
 public class CoreInfoSerializationWrapper {
     
     @Nullable
-    public final SerializeFriendlyBlockLocation coreLocation;
+    public SerializeFriendlyBlockLocation coreLocation;
     @Nonnull
-    public final NodeType nodeType;
+    public NodeType nodeType;
     
-    public final ItemStackSerializationWrapper[] inputs;
-    public final ItemStackSerializationWrapper[] outputs;
-    public final ItemStackSerializationWrapper[] stableOutputs;
-    public final BigRational[] inputAmount;
-    public final BigRational[] outputAmount;
-    public final BigRational[] stableOutputAmount;
-    public final long lockTime;
-    public final SerializeFriendlyBlockLocation[] bridgeLocations;
-    public final SerializeFriendlyBlockLocation[] containerLocations;
-    public final SerializeFriendlyBlockLocation[] storageLocations;
-    public final String networkStatus;
-    public final BigInteger energyProduction;
-    public final BigInteger energyConsumption;
-    public final BigInteger energyProductionStable;
-    public final BigInteger energyConsumptionStable;
+    public ItemStackSerializationWrapper[] inputs;
+    public ItemStackSerializationWrapper[] outputs;
+    public ItemStackSerializationWrapper[] stableOutputs;
+    public BigRational[] inputAmount;
+    public BigRational[] outputAmount;
+    public BigRational[] stableOutputAmount;
+    public long lockTime;
+    public SerializeFriendlyBlockLocation[] bridgeLocations;
+    public SerializeFriendlyBlockLocation[] containerLocations;
+    public SerializeFriendlyBlockLocation[] storageLocations;
+    public String networkStatus;
+    public BigInteger energyProduction;
+    public BigInteger energyConsumption;
+    public BigInteger energyProductionStable;
+    public BigInteger energyConsumptionStable;
     
     public CoreInfo toCoreInfo(){
         CoreInfo coreInfo = new CoreInfo();
@@ -69,8 +69,11 @@ public class CoreInfoSerializationWrapper {
         coreInfo.energyProductionStable = this.energyProductionStable;
         coreInfo.energyConsumptionStable = this.energyConsumptionStable;
         coreInfo.lockTime = this.lockTime;
+        coreInfo.networkStatus = this.networkStatus;
         return coreInfo;
     }
+    //for kryo
+    public CoreInfoSerializationWrapper(){}
     public CoreInfoSerializationWrapper(CoreInfo coreInfo){
         this.coreLocation = coreInfo.coreLocation;
         this.nodeType = coreInfo.nodeType;

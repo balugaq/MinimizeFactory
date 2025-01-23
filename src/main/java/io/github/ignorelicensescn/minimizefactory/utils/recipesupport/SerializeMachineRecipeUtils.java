@@ -36,7 +36,8 @@ public class SerializeMachineRecipeUtils {
             int speed){
         List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(machineRecipes.size());
         for (MachineRecipe recipe : machineRecipes) {
-            MachineRecipeInTicks inTicks = new MachineRecipeInTicks(Math.max(1,recipe.getTicks() / speed),recipe.getInput(),recipe.getOutput());
+            //cookieSlime has already divided speed
+            MachineRecipeInTicks inTicks = new MachineRecipeInTicks(Math.max(1,/*recipe.getTicks() / speed*/ recipe.getTicks()),recipe.getInput(),recipe.getOutput());
             SerializedMachine_MachineRecipe serialized =
                     new SerializedMachine_MachineRecipe(
                             slimefunItemStack,

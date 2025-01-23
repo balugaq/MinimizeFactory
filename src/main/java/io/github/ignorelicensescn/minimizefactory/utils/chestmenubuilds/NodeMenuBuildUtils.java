@@ -46,7 +46,7 @@ public class NodeMenuBuildUtils {
                 NodeType coreNodeType = NodeTypeOperator.INSTANCE.get(coreLocationKey);
                 boolean validCoreTypeFlag = coreNodeType == NodeType.CONTROLLER;
                 if (!BlockStorage.hasInventory(coreLocation.getBlock())
-                        || !BlockStorage.hasBlockInfo(coreLocation)
+//                        || !BlockStorage.hasBlockInfo(coreLocation)
                         || !validCoreTypeFlag
                 ){
                     nodeMenu.replaceExistingItem(hintSlot, new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE,""));

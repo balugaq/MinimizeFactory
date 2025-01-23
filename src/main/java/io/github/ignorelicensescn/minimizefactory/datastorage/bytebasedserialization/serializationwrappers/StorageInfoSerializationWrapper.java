@@ -12,11 +12,13 @@ import java.math.BigInteger;
 
 public class StorageInfoSerializationWrapper {
     @Nullable
-    public final SerializeFriendlyBlockLocation coreLocation;
-    @Nonnull
-    public final NodeType nodeType;
-    public final ItemStackSerializationWrapper storeItem;
-    public final BigInteger storeAmount;
+    public SerializeFriendlyBlockLocation coreLocation;
+    public NodeType nodeType;
+    public ItemStackSerializationWrapper storeItem;
+    public BigInteger storeAmount;
+    //for kryo
+    public StorageInfoSerializationWrapper(){}
+
 
     public StorageInfoSerializationWrapper(StorageInfo info){
         this.storeItem = ItemStackSerializationWrapper.fromItemStack(info.storeItem);

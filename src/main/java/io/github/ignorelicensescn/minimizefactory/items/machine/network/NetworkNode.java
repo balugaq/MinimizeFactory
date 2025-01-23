@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.*;
+import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_ITEM_STACK_ARRAY;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
 import static io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeKeys.*;
 
@@ -55,10 +56,10 @@ public abstract class NetworkNode extends SlimefunItem {
 
     public static void lockNode(Location location)
     {
-        BlockStorage.addBlockInfo(location,MINIMIZEFACTORY_NODE_LOCKED,TRUE);
+        LockStatusOperator.INSTANCE.set(SerializeFriendlyBlockLocation.fromLocation(location),true);
     }
     public static void unlockNode(Location location){
-        BlockStorage.addBlockInfo(location,MINIMIZEFACTORY_NODE_LOCKED,FALSE);
+        LockStatusOperator.INSTANCE.set(SerializeFriendlyBlockLocation.fromLocation(location),false);
     }
 
 

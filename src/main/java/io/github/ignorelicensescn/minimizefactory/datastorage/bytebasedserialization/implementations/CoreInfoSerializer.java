@@ -3,13 +3,14 @@ package io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserializ
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.util.HashMapReferenceResolver;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Initializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.LocationBasedInfoProvider;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Serializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.serializationwrappers.CoreInfoSerializationWrapper;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.serializationwrappers.ItemStackSerializationWrapper;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnAdder;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.BlockDataOperator;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.CoreLocationOperator;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.NodeTypeOperator;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.CoreInfo;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.NodeInfo;
@@ -17,11 +18,12 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.sql.Blob;
+import java.util.logging.Level;
+
+import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
 
 public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapper>, LocationBasedInfoProvider<CoreInfo>, Initializer<CoreInfo> {
     public static final CoreInfoSerializer INSTANCE = new CoreInfoSerializer();
@@ -74,8 +76,9 @@ public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapp
     public CoreInfo getOrDefault(SerializeFriendlyBlockLocation location){
         CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getFromLocation(location);
         if (coreInfo == null){
+            initializeAtLocation(location);
             coreInfo = new CoreInfo();
-            coreInfo.coreLocation = location;
+            CoreLocationOperator.INSTANCE.set(location,location);
         }
         return coreInfo;
     }
@@ -99,6 +102,8 @@ public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapp
 
     @Override
     public void initializeAtLocation(SerializeFriendlyBlockLocation location) {
+        if (LocationBasedColumnAdder.INSTANCE.checkExistence(location)){return;}
+        LocationBasedColumnAdder.INSTANCE.addIfNotExist(location);
         NodeTypeOperator.INSTANCE.set(location,TYPE);
         saveToLocationNoThrow(new CoreInfo(),location);
     }

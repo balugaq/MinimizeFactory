@@ -1,6 +1,7 @@
 package io.github.ignorelicensescn.minimizefactory.datastorage.database;
 import io.github.ignorelicensescn.minimizefactory.MinimizeFactory;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.types.Column;
+import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class SQLiteBlockDataStorageManager extends Database{
         dbname = plugin.getConfig().getString("minimizefactory_database_name", "minimizefactory_database"); // Set the table name here e.g player_kills
     }
 
-    public static String SQLiteCreateTokensTable = null;
+    public static String SQLiteCreateTokensTableStatement = null;
     public static void initializeSQLiteCreateTokensTable(){
         StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" (");
         for (Column c:Column.values()){
@@ -35,7 +36,8 @@ public class SQLiteBlockDataStorageManager extends Database{
         }
         sb.append("PRIMARY KEY (`").append(KEY_COLUMN.columnInnerName).append("`)")
                 .append(");");
-        SQLiteCreateTokensTable = sb.toString();
+        SQLiteCreateTokensTableStatement = sb.toString();
+
 //        what we want↓
 //        SQLiteCreateTokensTable =
 //            "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" (" +
@@ -58,7 +60,8 @@ public class SQLiteBlockDataStorageManager extends Database{
             }
         }
         try {
-            if(connection!=null&&!connection.isClosed()){
+            if(connection!=null
+                    &&!connection.isClosed()){
                 return connection;
             }
             Class.forName("org.sqlite.JDBC");
@@ -74,12 +77,12 @@ public class SQLiteBlockDataStorageManager extends Database{
 
     public void load() {
         connection = getSQLConnection();
-        if (SQLiteCreateTokensTable == null){
+        if (SQLiteCreateTokensTableStatement == null){
             initializeSQLiteCreateTokensTable();
         }
         try {
             Statement s = connection.createStatement();
-            s.executeUpdate(SQLiteCreateTokensTable);
+            s.executeUpdate(SQLiteCreateTokensTableStatement);
             s.close();
         } catch (SQLException e) {
             e.printStackTrace();

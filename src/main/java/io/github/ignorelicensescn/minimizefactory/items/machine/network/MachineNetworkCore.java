@@ -1,6 +1,9 @@
 package io.github.ignorelicensescn.minimizefactory.items.machine.network;
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.implementations.CoreInfoSerializer;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnAdder;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnRemover;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.DataRemover;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.CoreInfo;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculation.ItemStackMapForOutputCalculation;
@@ -113,7 +116,6 @@ public class MachineNetworkCore extends NetworkNode{
             Material.GRAY_STAINED_GLASS_PANE,""
     );
 
-    public static final int COUNTER_SLOT = 53;
     private static final BlockBreakHandler CORE_BREAK_HANDLER = new BlockBreakHandler(false,false) {
         @Override
         @ParametersAreNonnullByDefault
@@ -123,6 +125,8 @@ public class MachineNetworkCore extends NetworkNode{
             if (!Objects.equals(coreInfo.networkStatus, NETWORK_CONTROLLER_OFFLINE)){
                 e.getPlayer().sendMessage(properties.getReplacedProperty("MachineNetworkCore_Cannot_Break"));
                 e.setCancelled(true);
+            }else {
+                DataRemover.INSTANCE.remove(coreLocationKey);
             }
         }
     };
@@ -142,12 +146,11 @@ public class MachineNetworkCore extends NetworkNode{
             public void newInstance(@Nonnull BlockMenu menu, @Nonnull Block b) {
                 super.newInstance(menu, b);
                 SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-                initNode(coreLocationKey,NodeType.CONTROLLER);
+
+                if (!LocationBasedColumnAdder.INSTANCE.checkExistence(coreLocationKey)){
+                    initNode(coreLocationKey,NodeType.CONTROLLER);
+                }
                 CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
-
-                menu.addMenuClickHandler(COUNTER_SLOT,ChestMenuUtils.getEmptyClickHandler());
-
-                CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfo,coreLocationKey);
                 refresh(menu,b, coreInfo.networkStatus);
             }
 
@@ -172,6 +175,11 @@ public class MachineNetworkCore extends NetworkNode{
     }
     public static void refresh(BlockMenu menu,Block b,String status){
         SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
+
+        CoreInfo coreInfoForSettingStatus = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
+        coreInfoForSettingStatus.networkStatus = status;
+        CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfoForSettingStatus,coreLocationKey);
+
         switch (status){
             case NETWORK_CONTROLLER_OFFLINE -> {
                 menu.replaceExistingItem(BUTTON_LOCK_MACHINE_NETWORK,BORDER_ITEM.clone());
@@ -289,7 +297,7 @@ public class MachineNetworkCore extends NetworkNode{
                     new Thread(() -> {
                         CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
 
-                        clearCoreInputsAndOutputsInfo(coreInfo);
+                        coreInfo = clearCoreInputsAndOutputsInfo(coreInfo);
 
                         ContainerCalculationResult result = ContainerCalculationResult.EMPTY;
 
@@ -325,6 +333,8 @@ public class MachineNetworkCore extends NetworkNode{
                             }
                             result = result.combineWith(ContainerCalculationResult.fromSerializedRecipes(bioAndEnv,serializedInContainer));
                         }
+
+                        result = result.simplify();
                         coreInfo.networkStatus = NETWORK_CONTROLLER_LOCKED;
 
                         {
@@ -418,6 +428,7 @@ public class MachineNetworkCore extends NetworkNode{
                                     ));
                             menu.addMenuClickHandler(SHOW_STABLE_OUTPUT, ChestMenuUtils.getEmptyClickHandler());
                         }
+                        coreInfo.networkStatus = NETWORK_CONTROLLER_LOCKED;
                         CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfo,coreLocationKey);
                         refresh(BlockStorage.getInventory(b), b, NETWORK_CONTROLLER_LOCKED);
                     }).start();
@@ -435,9 +446,6 @@ public class MachineNetworkCore extends NetworkNode{
                     menu.replaceExistingItem(SHOW_POWER_SLOT,BORDER_ITEM.clone());
                     menu.replaceExistingItem(BUTTON_UNLOCK_MACHINE_NETWORK,ITEM_UNLOCKING_MACHINE_NETWORK.clone());
                     menu.addMenuClickHandler(BUTTON_UNLOCK_MACHINE_NETWORK,ChestMenuUtils.getEmptyClickHandler());
-                    CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
-                    coreInfo.networkStatus = NETWORK_CONTROLLER_UNLOCKING;
-                    CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfo,coreLocationKey);
                     refresh(menu,b,NETWORK_CONTROLLER_UNLOCKING);
                     return false;
                 });
@@ -515,6 +523,11 @@ public class MachineNetworkCore extends NetworkNode{
                     lockNode(b.getLocation());
                     unregisterNodes(b.getLocation());
                     unlockNode(b.getLocation());
+
+                    CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
+                    coreInfo.networkStatus = NETWORK_CONTROLLER_OFFLINE;
+                    CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfo,coreLocationKey);
+
                     refresh(menu, b, NETWORK_CONTROLLER_OFFLINE);
                 }
             }.start();
@@ -525,7 +538,7 @@ public class MachineNetworkCore extends NetworkNode{
      * clear inputs and outputs info,or every lock operation increases production.
      * @param coreInfo MachineNetworkCore info(json) to clear in and outs.
      */
-    private static void clearCoreInputsAndOutputsInfo(CoreInfo coreInfo) {
+    private static CoreInfo clearCoreInputsAndOutputsInfo(CoreInfo coreInfo) {
         coreInfo.inputAmount = EMPTY_BIG_RATIONAL_ARRAY;
         coreInfo.outputAmount = EMPTY_BIG_RATIONAL_ARRAY;
         coreInfo.stableOutputAmount = EMPTY_BIG_RATIONAL_ARRAY;
@@ -538,7 +551,7 @@ public class MachineNetworkCore extends NetworkNode{
         coreInfo.energyProduction = BigInteger.ZERO;
         coreInfo.energyConsumptionStable = BigInteger.ZERO;
         coreInfo.energyProductionStable = BigInteger.ZERO;
-
+        return coreInfo;
     }
 
 

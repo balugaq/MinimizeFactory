@@ -130,6 +130,8 @@ public record BigRational(@Nonnull BigInteger numerator,@Nonnull BigInteger deno
         return this;
     }
     public BigRational simplify(){
+        if (this.numerator.equals(BigInteger.ZERO)){return BigRational.ZERO;}
+        if (this.denominator.equals(BigInteger.ZERO)){new ArithmeticException("division by zero").printStackTrace();}
         BigInteger gcd = this.numerator.gcd(this.denominator);
         return new BigRational(this.numerator.divide(gcd),this.denominator.divide(gcd)).unifySign();
     }

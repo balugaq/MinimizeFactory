@@ -3,11 +3,14 @@ package io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculat
 import io.github.ignorelicensescn.minimizefactory.utils.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
+import io.github.ignorelicensescn.minimizefactory.utils.records.ItemStackAsKey;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
 
 import static io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculation.UnmodifiableItemStackMapForContainerCalculation.EMPTY_ITEM_STACK_MAP;
 
@@ -119,6 +122,40 @@ public record ContainerCalculationResult(@Nonnull ItemStackMapForContainerCalcul
                         BigInteger.ZERO,
                         tryConsumeEnergy
                 );
+            }
+        }
+        return new ContainerCalculationResult(inputMap,outputMap,stableOutputMap,energyConsumption,energyConsumptionStable);
+    }
+
+    public ContainerCalculationResult simplify(){
+        ItemStackMapForContainerCalculation inputMap = new ItemStackMapForContainerCalculation();
+        ItemStackMapForContainerCalculation outputMap = new ItemStackMapForContainerCalculation();
+        ItemStackMapForContainerCalculation stableOutputMap = new ItemStackMapForContainerCalculation();
+        BigInteger energyConsumption = this.energyConsumption;
+        BigInteger energyConsumptionStable = this.energyConsumptionStable;
+        for (Map.Entry<ItemStackAsKey,BigRational> item:this.stableOutputs.entrySet()){
+            if (Objects.equals(BigInteger.ZERO,item.getValue().numerator())){continue;}
+            stableOutputMap.put(item.getKey(),item.getValue().simplify());
+        }
+        for (Map.Entry<ItemStackAsKey,BigRational> item:this.outputs.entrySet()){
+            if (Objects.equals(BigInteger.ZERO,item.getValue().numerator())){continue;}
+            BigRational provided = item.getValue();
+            if (this.inputs.containsKey(item.getKey())){
+                BigRational required = this.inputs.get(item.getKey());
+                int requiredTooMuch = required.compareTo(provided);// <0 enough >0 too much
+                if (requiredTooMuch < 0){
+                    outputMap.put(item.getKey(),provided.subtract(required));
+                }else if (requiredTooMuch > 0){
+                    inputMap.put(item.getKey(),required.subtract(provided));
+                }
+            }else {
+                outputMap.put(item.getKey(),item.getValue());
+            }
+        }
+
+        for (Map.Entry<ItemStackAsKey,BigRational> item:this.inputs.entrySet()){
+            if (!inputMap.containsKey(item.getKey())){
+                inputMap.put(item.getKey(),item.getValue());
             }
         }
         return new ContainerCalculationResult(inputMap,outputMap,stableOutputMap,energyConsumption,energyConsumptionStable);

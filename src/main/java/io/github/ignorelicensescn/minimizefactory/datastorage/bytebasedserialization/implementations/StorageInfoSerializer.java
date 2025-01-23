@@ -9,6 +9,7 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserializa
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Serializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.serializationwrappers.ItemStackSerializationWrapper;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.serializationwrappers.StorageInfoSerializationWrapper;
+import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnAdder;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.BlockDataOperator;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.NodeTypeOperator;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.NodeInfo;
@@ -68,6 +69,7 @@ public class StorageInfoSerializer implements Serializer<StorageInfoSerializatio
         StorageInfo info = getFromLocation(location);
         if (info == null){
             info = new StorageInfo();
+            initializeAtLocation(location);
         }
         return info;
     }
@@ -90,6 +92,8 @@ public class StorageInfoSerializer implements Serializer<StorageInfoSerializatio
 
     @Override
     public void initializeAtLocation(SerializeFriendlyBlockLocation location) {
+        if (LocationBasedColumnAdder.INSTANCE.checkExistence(location)){return;}
+        LocationBasedColumnAdder.INSTANCE.addIfNotExist(location);
         NodeTypeOperator.INSTANCE.set(location,TYPE);
         saveToLocationNoThrow(new StorageInfo(),location);
     }
