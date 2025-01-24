@@ -279,33 +279,6 @@ public class Registers {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static void setup(MinimizeFactory plugin){
         for (Field f:Registers.class.getDeclaredFields()){
             if (Modifier.isStatic(f.getModifiers())){

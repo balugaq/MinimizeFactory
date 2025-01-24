@@ -28,6 +28,19 @@ public record BigRational(@Nonnull BigInteger numerator,@Nonnull BigInteger deno
         this(BigInteger.valueOf(value),BigInteger.ONE);
     }
 
+    public BigRational pow(int x){
+        BigRational result = BigRational.ONE;
+        BigRational base = this.simplify();
+        for (int i = 0;i<Math.abs(x);i++){
+            if (x > 0){
+                result = result.multiply(base);
+            }else {
+                result = result.divide(base);
+            }
+        }
+        return result;
+    }
+
     public BigRational add(BigRational another){
         return new BigRational(
                 this.numerator.multiply(another.denominator())
