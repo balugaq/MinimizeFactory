@@ -208,8 +208,7 @@ public class Registers {
             properties.getReplacedProperty("Serializable_Auto_Cactus"),
             properties.getReplacedProperties("Serializable_Auto_Cactus_Lore_1",ChatColor.GRAY).toArray(EmptyArrays.EMPTY_STRING_ARRAY)
     );
-
-    //assume that a random tick costs 47.35 seconds in average
+    //ticks are slimefun ticks(sft,1sft=10gt)
     public static final SerializeOnly AUTO_SUGAR_CANE_FOR_REGISTER = new SerializeOnly(
             Groups.SERIALIZABLE,
             AUTO_SUGAR_CANE,
@@ -225,7 +224,7 @@ public class Registers {
                         new SerializedMachine_MachineRecipe(
                                 AUTO_SUGAR_CANE,
                                 new MachineRecipeInTicks(
-                                        15152,
+                                        2048,//based on mcp 1.12 random tick
                                         EMPTY_ITEM_STACK_ARRAY,
                                         new ItemStack[]{new ItemStack(Material.SUGAR_CANE)}
                                 ),
@@ -249,7 +248,9 @@ public class Registers {
     ) {
         final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = Collections.singletonList(new SimplePair<>(new SerializedMachine_MachineRecipe(
                 AUTO_CACTUS,
-                new MachineRecipeInTicks(7576,EMPTY_ITEM_STACK_ARRAY,new ItemStack[]{new ItemStack(Material.CACTUS)}),
+                new MachineRecipeInTicks(
+                        2048,//based on mcp 1.12 random tick
+                        EMPTY_ITEM_STACK_ARRAY,new ItemStack[]{new ItemStack(Material.CACTUS)}),
                 0
         ),null));
         @Nonnull
@@ -276,6 +277,52 @@ public class Registers {
             WITHER_PROOF_OBSIDIAN, new ItemStack(Material.SOUL_SAND), WITHER_PROOF_OBSIDIAN
     }
     );
+    public static final SlimefunItemStack SERIALIZED_SNOWMAN = new SlimefunItemStack(
+            "MINIMIZEFACTORY_SERIALIZED_SNOWMAN",
+            Material.CARVED_PUMPKIN,
+            properties.getReplacedProperty("Material_Serialized_SnowMan"),
+            properties.getReplacedProperties("Material_Serialized_SnowMan_Description",ChatColor.GRAY).toArray(EmptyArrays.EMPTY_STRING_ARRAY)
+    );
+    public static final UnplaceableBlock SERIALIZED_SNOWMAN_FOR_REGISTER = new UnplaceableBlock(
+            Groups.MATERIALS
+            , SERIALIZED_SNOWMAN
+            , RecipeType.ENHANCED_CRAFTING_TABLE
+            , new ItemStack[]{
+            null, new ItemStack(Material.CARVED_PUMPKIN),   null,
+            null, MACHINE_STABILIZER, null,
+            null, new ItemStack(Material.SNOW_BLOCK), null
+    }
+    );
+    public static final SlimefunItemStack COBBLESTONE_GENERATOR = new SlimefunItemStack(
+            "MINIMIZEFACTORY_COBBLESTONE_GENERATOR",
+            Material.PISTON,
+            properties.getReplacedProperty("Serializable_Cobblestone_Generator"),
+            properties.getReplacedProperty("Serializable_Cobblestone_Generator_Description")
+    );
+    public static final SerializeOnly COBBLESTONE_GENERATOR_FOR_REGISTER = new SerializeOnly(
+            Groups.SERIALIZABLE,
+            COBBLESTONE_GENERATOR,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            new ItemStack[]{
+                    new ItemStack(Material.LAVA_BUCKET),WITHER_PROOF_OBSIDIAN,new ItemStack(Material.WATER_BUCKET),
+                    new ItemStack(Material.LAVA_BUCKET),SERIALIZED_WITHER,new ItemStack(Material.WATER_BUCKET),
+                    new ItemStack(Material.LAVA_BUCKET),SERIALIZED_SNOWMAN,new ItemStack(Material.WATER_BUCKET),
+            }
+    ) {
+        final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = Collections.singletonList(new SimplePair<>(new SerializedMachine_MachineRecipe(
+                COBBLESTONE_GENERATOR,
+                new MachineRecipeInTicks(
+                        4,
+                        EMPTY_ITEM_STACK_ARRAY,
+                        new ItemStack[]{new ItemStack(Material.COBBLESTONE,3)}),
+                0
+        ),null));
+        @Nonnull
+        @Override
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m) {
+            return result;
+        }
+    };
 
 
 
