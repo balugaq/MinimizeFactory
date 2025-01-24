@@ -1,3 +1,5 @@
+it's not quite helpful because i don't know how to combine cobbblestone-generation with wither break block period
+
 read mcp and got cobblestone generate frequency:
 LAVA update rate:10 ticks in nether and 30 ticks other.(hard-coded)(mark as P)
 also receives random tick.
@@ -39,4 +41,16 @@ so in P ticks we have total expectation:
 ```math
 \frac{\frac{1-(1-A)^{P-1}}{P}\cdot(P-1)+1}{P}=\frac{(1-(1-A)^{P-1})\cdot(P-1)+P}{P^2}=\frac{2P-1-(1-A)^{P-1}\cdot(P-1)}{P^2}
 ```
-These above assume that we break cobblestone costs no ticks.
+These above assume that we break cobblestone costs no ticks.(this cannot happen)
+
+```
+wither break block condition:
+a wither has a int:blockBreakCounter
+once ai update(trigger in every tick),blockBreakCounter -= 1.
+wither breaks block once (blockBreakCounter==0) after above
+once attacked and (blockBreakCounter<0),set value (blockBreakCounter=20)
+
+use snow golem as attack source.it's attack period is also 20
+we can assume that wither is damaged once break block.So that wither break block every 20 ticks.
+```
+In fact I didn't learn statistics before.I don't know how to calculate next.
