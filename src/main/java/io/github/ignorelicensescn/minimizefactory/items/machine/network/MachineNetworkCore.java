@@ -176,9 +176,12 @@ public class MachineNetworkCore extends NetworkNode{
     public static void refresh(BlockMenu menu,Block b,String status){
         SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
 
-        CoreInfo coreInfoForSettingStatus = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
-        coreInfoForSettingStatus.networkStatus = status;
-        CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfoForSettingStatus,coreLocationKey);
+        if (!Objects.equals(status,NETWORK_CONTROLLER_LOCKING))//prevent deadlock
+        {
+            CoreInfo coreInfoForSettingStatus = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
+            coreInfoForSettingStatus.networkStatus = status;
+            CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfoForSettingStatus, coreLocationKey);
+        }
 
         switch (status){
             case NETWORK_CONTROLLER_OFFLINE -> {
