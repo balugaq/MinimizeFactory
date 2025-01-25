@@ -26,6 +26,7 @@ import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags.CultivationFlag;
 import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.getInUnsafe;
+import static io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft.RandomizeSetSolving.solveRandomizeSet;
 import static io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 
 public class CultivationSerializedMachineRecipes {
@@ -63,84 +64,14 @@ public class CultivationSerializedMachineRecipes {
                                 logger.log(Level.WARNING, String.valueOf(METHOD_HarvestablePlant_getHarvestingResults));
                             }
                             RandomizedSet<ItemStack> randomOutput = (RandomizedSet<ItemStack>) METHOD_HarvestablePlant_getHarvestingResults.invoke(plant);
-//                            if (METHOD_RandomizedSet_size == null){
-//                                METHOD_RandomizedSet_size = randomOutput.getClass().getDeclaredMethod("size");
-//                            }
-                            int size = randomOutput.size();//(int) METHOD_RandomizedSet_size.invoke(randomOutput);
-                            ItemStack[] outputs = new ItemStack[size];
-                            IntegerRational[] outputExpectations = new IntegerRational[size];
-                            Set<WeightedNode<ItemStack>> weightedSet = null;
-                            try {
-                                if (FIELD_RandomizedSet_internalSet == null){
-                                    FIELD_RandomizedSet_internalSet = randomOutput.getClass().getDeclaredField("internalSet");
-                                    weightedSet = (Set<WeightedNode<ItemStack>>) getInUnsafe(randomOutput,FIELD_RandomizedSet_internalSet);
-                                }
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-
-//                            if (METHOD_RandomizedSet_sumWeights == null){
-//                                METHOD_RandomizedSet_sumWeights = randomOutput.getClass().getDeclaredMethod("sumWeights");
-//                            }
-                            int counter = 0;
-//                            if (METHOD_RandomizedSet_sumWeights == null){
-//                                METHOD_RandomizedSet_toMap = RandomizedSet.class.getDeclaredMethod("toMap");
-//                            }
-
-                            if (weightedSet == null){
-                                Map<ItemStack, Float> randomMap = randomOutput.toMap();//(Map<ItemStack, Float>) METHOD_RandomizedSet_toMap.invoke(randomOutput);
-                                for (Map.Entry<ItemStack, Float> entry : randomMap.entrySet()) {
-                                    float currentWeight = entry.getValue();
-                                    int dropAmount = plant.getDropAmount(level, entry.getKey().getAmount());
-                                    outputs[counter] = entry.getKey().clone();
-                                    outputs[counter].setAmount(1);
-                                    IntegerRational currentChance = Approximation.find(
-                                            currentWeight
-                                    );
-                                    outputExpectations[counter] =
-                                            new IntegerRational(dropAmount, 1)
-                                                    .multiply(currentChance)
-                                                    .divide(Approximation.find((float) growthRate))
-                                    ;
-                                    counter += 1;
-                                }
-                            }else {
-                                BigRational totalWeightBig = BigRational.ZERO;
-                                IntegerRational totalWeight = null;
-                                double totalWeightDouble = 0.;
-                                Map<ItemStack,IntegerRational> weights = new HashMap<>(weightedSet.size(),1);
-                                for (WeightedNode<ItemStack> node : weightedSet){
-                                    IntegerRational approxWeight = Approximation.find(node.getWeight());
-                                    weights.put(node.getObject(),approxWeight);
-                                    totalWeightBig = totalWeightBig.add(approxWeight);
-                                    totalWeightDouble += node.getWeight();
-                                }
-                                totalWeightBig = totalWeightBig.simplify();
-                                if (totalWeightBig.canSaveConvertToIntegerRational()){
-                                    totalWeight = totalWeightBig.toIntegerRational();
-                                }else {
-                                    totalWeight = Approximation.find((float)totalWeightDouble);
-                                }
-                                for (Map.Entry<ItemStack,IntegerRational> entry : weights.entrySet()) {
-                                    int dropAmount = plant.getDropAmount(level, entry.getKey().getAmount());
-                                    outputs[counter] = entry.getKey().clone();
-                                    outputs[counter].setAmount(1);
-                                    IntegerRational currentChance = entry.getValue();
-                                    outputExpectations[counter] =
-                                            new IntegerRational(dropAmount, 1)
-                                                    .multiply(currentChance).divide(totalWeight)
-                                                    .divide(Approximation.find((float) growthRate))
-                                    ;
-                                    counter += 1;
-                                }
-                            }
+                            SimplePair<ItemStack[],IntegerRational[]> outputsAndExpectations = solveRandomizeSet(randomOutput);
                             SerializedMachine_MachineRecipe serialized =
                             new SerializedMachine_MachineRecipe(
                                     stack.clone()
-                                    ,new MachineRecipeInTicks(growthTicks,null,outputs)
+                                    ,new MachineRecipeInTicks(growthTicks,null,outputsAndExpectations.first)
                                     ,energyInfo[0]
                                     ,1
-                                    ,outputExpectations
+                                    ,outputsAndExpectations.second
                             );
                             return Collections.singletonList(
                                     new SimplePair<>(serialized,GARDEN_CLOCHE.getItem())

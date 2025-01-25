@@ -21,9 +21,6 @@ import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.util.logging.Level;
-
-import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
 
 public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapper>, LocationBasedInfoProvider<CoreInfo>, Initializer<CoreInfo> {
     public static final ThreadLocal<CoreInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(CoreInfoSerializer::new);
