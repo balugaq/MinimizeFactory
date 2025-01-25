@@ -25,6 +25,14 @@ public record BiomeAndEnvironment(@Nonnull Biome biome,@Nonnull World.Environmen
         return hash;
     }
 
+    @Override
+    public String toString() {
+        return "BiomeAndEnvironment{" +
+                "biome=" + biome +
+                ", environment=" + environment +
+                '}';
+    }
+
     public static BiomeAndEnvironment fromLocation(@Nonnull Location l){
         World w = l.getWorld();
         if (w != null){
