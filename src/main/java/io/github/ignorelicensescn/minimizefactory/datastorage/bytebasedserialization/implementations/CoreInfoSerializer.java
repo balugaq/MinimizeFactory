@@ -29,35 +29,41 @@ public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapp
     public static final CoreInfoSerializer INSTANCE = new CoreInfoSerializer();
     private CoreInfoSerializer(){}
     private static final NodeType TYPE = NodeType.CONTROLLER;
-    private static final Kryo kryoInstance = new Kryo();
-    static  {
-        kryoInstance.register(byte.class);
-        kryoInstance.register(byte[].class);
-        kryoInstance.register(SerializeFriendlyBlockLocation.class);
-        kryoInstance.register(SerializeFriendlyBlockLocation[].class);
-        kryoInstance.register(BigRational.class);
-        kryoInstance.register(BigRational[].class);
-        kryoInstance.register(BigInteger.class);
-        kryoInstance.register(NodeType.class);
-        kryoInstance.register(NodeInfo.class);
-        kryoInstance.register(ItemStackSerializationWrapper.class);
-        kryoInstance.register(ItemStackSerializationWrapper[].class);
-        kryoInstance.register(CoreInfoSerializationWrapper.class);
-    }
+    private  final Kryo kryoInstance = new Kryo(){
+        {
+            register(byte.class);
+            register(byte[].class);
+            register(SerializeFriendlyBlockLocation.class);
+            register(SerializeFriendlyBlockLocation[].class);
+            register(BigRational.class);
+            register(BigRational[].class);
+            register(BigInteger.class);
+            register(NodeType.class);
+            register(NodeInfo.class);
+            register(ItemStackSerializationWrapper.class);
+            register(ItemStackSerializationWrapper[].class);
+            register(CoreInfoSerializationWrapper.class);
+        }
+    };
+      
 
     @Override
     public void serialize(CoreInfoSerializationWrapper nodeInfo, OutputStream outTo) {
-        Output output = new Output(outTo);
-        kryoInstance.writeObject(output,nodeInfo);
-        output.close();
+        synchronized (kryoInstance){
+            Output output = new Output(outTo);
+            kryoInstance.writeObject(output, nodeInfo);
+            output.close();
+        }
     }
 
     @Override
     public CoreInfoSerializationWrapper deserialize(InputStream from) {
-        Input input = new Input(from);
-        CoreInfoSerializationWrapper info = kryoInstance.readObject(input, CoreInfoSerializationWrapper.class);
-        input.close();
-        return info;
+        synchronized (kryoInstance){
+            Input input = new Input(from);
+            CoreInfoSerializationWrapper info = kryoInstance.readObject(input, CoreInfoSerializationWrapper.class);
+            input.close();
+            return info;
+        }
     }
 
     @Override

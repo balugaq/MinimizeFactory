@@ -22,27 +22,33 @@ public class ContainerInfoSerializer implements Serializer<ContainerInfo>, Locat
     public static final ContainerInfoSerializer INSTANCE = new ContainerInfoSerializer();
     private ContainerInfoSerializer(){}
     private static final NodeType TYPE = NodeType.MACHINE_CONTAINER;
-    private static final Kryo kryoInstance = new Kryo();
-    static  {
-        kryoInstance.register(SerializeFriendlyBlockLocation.class);
-        kryoInstance.register(NodeType.class);
-        kryoInstance.register(NodeInfo.class);
-        kryoInstance.register(ContainerInfo.class);
-    }
+    private  final Kryo kryoInstance = new Kryo(){
+        {
+            kryoInstance.register(SerializeFriendlyBlockLocation.class);
+            kryoInstance.register(NodeType.class);
+            kryoInstance.register(NodeInfo.class);
+            kryoInstance.register(ContainerInfo.class);
+        }
+    };
+
 
     @Override
     public void serialize(ContainerInfo nodeInfo, OutputStream outTo) {
-        Output output = new Output(outTo);
-        kryoInstance.writeObject(output,nodeInfo);
-        output.close();
+        synchronized (kryoInstance){
+            Output output = new Output(outTo);
+            kryoInstance.writeObject(output, nodeInfo);
+            output.close();
+        }
     }
 
     @Override
     public ContainerInfo deserialize(InputStream from) {
-        Input input = new Input(from);
-        ContainerInfo info = kryoInstance.readObject(input, ContainerInfo.class);
-        input.close();
-        return info;
+        synchronized (kryoInstance){
+            Input input = new Input(from);
+            ContainerInfo info = kryoInstance.readObject(input, ContainerInfo.class);
+            input.close();
+            return info;
+        }
     }
 
     @Override

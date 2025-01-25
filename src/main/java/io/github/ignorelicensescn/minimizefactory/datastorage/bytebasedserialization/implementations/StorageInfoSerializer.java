@@ -24,32 +24,38 @@ import java.sql.Blob;
 public class StorageInfoSerializer implements Serializer<StorageInfoSerializationWrapper>, LocationBasedInfoProvider<StorageInfo>, Initializer<StorageInfo> {
     public static final StorageInfoSerializer INSTANCE = new StorageInfoSerializer();
     private StorageInfoSerializer(){}
-    private static final Kryo kryoInstance = new Kryo();
+    private final Kryo kryoInstance = new Kryo(){
+        {
+            register(byte.class);
+            register(byte[].class);
+            register(SerializeFriendlyBlockLocation.class);
+            register(NodeType.class);
+            register(NodeInfo.class);
+            register(BigInteger.class);
+            register(ItemStackSerializationWrapper.class);
+            register(StorageInfoSerializationWrapper.class);
+        }
+    };
     private static final NodeType TYPE = NodeType.STORAGE;
-    static  {
-        kryoInstance.register(byte.class);
-        kryoInstance.register(byte[].class);
-        kryoInstance.register(SerializeFriendlyBlockLocation.class);
-        kryoInstance.register(NodeType.class);
-        kryoInstance.register(NodeInfo.class);
-        kryoInstance.register(BigInteger.class);
-        kryoInstance.register(ItemStackSerializationWrapper.class);
-        kryoInstance.register(StorageInfoSerializationWrapper.class);
-    }
+    
 
     @Override
     public void serialize(StorageInfoSerializationWrapper nodeInfo, OutputStream outTo) {
-        Output output = new Output(outTo);
-        kryoInstance.writeObject(output,nodeInfo);
-        output.close();
+        synchronized (kryoInstance){
+            Output output = new Output(outTo);
+            kryoInstance.writeObject(output, nodeInfo);
+            output.close();
+        }
     }
 
     @Override
     public StorageInfoSerializationWrapper deserialize(InputStream from) {
-        Input input = new Input(from);
-        StorageInfoSerializationWrapper info = kryoInstance.readObject(input, StorageInfoSerializationWrapper.class);
-        input.close();
-        return info;
+        synchronized (kryoInstance){
+            Input input = new Input(from);
+            StorageInfoSerializationWrapper info = kryoInstance.readObject(input, StorageInfoSerializationWrapper.class);
+            input.close();
+            return info;
+        }
     }
 
     @Override

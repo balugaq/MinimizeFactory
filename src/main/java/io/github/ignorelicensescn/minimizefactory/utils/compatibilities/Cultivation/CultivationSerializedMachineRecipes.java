@@ -35,7 +35,6 @@ public class CultivationSerializedMachineRecipes {
     private static Method METHOD_RandomizedSet_size = null;
     private static Method METHOD_RandomizedSet_sumWeights = null;
     private static Method METHOD_RandomizedSet_toMap = null;
-    private static Field FIELD_RandomizedSet_internalSet = null;
     public static void init(){
         if (initFlag){return;}
         if (CultivationFlag){

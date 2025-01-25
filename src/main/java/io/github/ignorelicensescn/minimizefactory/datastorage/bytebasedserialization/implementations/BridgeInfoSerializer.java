@@ -24,26 +24,32 @@ public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBased
     private BridgeInfoSerializer(){}
     private static final NodeType TYPE = NodeType.BRIDGE;
 
-    private static final Kryo kryoInstance = new Kryo();
-    static  {
-        kryoInstance.register(SerializeFriendlyBlockLocation.class);
-        kryoInstance.register(NodeType.class);
-        kryoInstance.register(NodeInfo.class);
-    }
+    private final Kryo kryoInstance = new Kryo(){
+        {
+            register(SerializeFriendlyBlockLocation.class);
+            register(NodeType.class);
+            register(NodeInfo.class);
+        }
+    };
+    
 
     @Override
     public void serialize(NodeInfo nodeInfo, OutputStream outTo) {
-        Output output = new Output(outTo);
-        kryoInstance.writeObject(output,nodeInfo);
-        output.close();
+        synchronized (kryoInstance){
+            Output output = new Output(outTo);
+            kryoInstance.writeObject(output, nodeInfo);
+            output.close();
+        }
     }
 
     @Override
     public NodeInfo deserialize(InputStream from) {
-        Input input = new Input(from);
-        NodeInfo info = kryoInstance.readObject(input, NodeInfo.class);
-        input.close();
-        return info;
+        synchronized (kryoInstance){
+            Input input = new Input(from);
+            NodeInfo info = kryoInstance.readObject(input, NodeInfo.class);
+            input.close();
+            return info;
+        }
     }
 
     @Override
