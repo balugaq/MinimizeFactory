@@ -1,16 +1,17 @@
 package io.github.ignorelicensescn.minimizefactory.utils;
 
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
-import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
+import static io.github.ignorelicensescn.minimizefactory.utils.MaterialColorMaps.legacyMaterialColorMap;
+import static io.github.ignorelicensescn.minimizefactory.utils.MaterialColorMaps.materialColorMap;
 
 public class NameUtil {
     public static final String NULL_STRING = "NULL";
@@ -31,76 +32,22 @@ public class NameUtil {
         return colorForMaterial(m) + nameForMaterialNoColor(m);
     }
     public static String nameForMaterialNoColor(@Nullable Material m){
-        return m == null?NULL_STRING:m.name();
+        if (m == null){return NULL_STRING;}
+        return m.name();
     }
 
-    //i hope it has least complexity(O(1))
-    public static ChatColor colorForMaterial(Material m){
-        try {
-            MinecraftVersion current = Slimefun.getMinecraftVersion();
-            if (current.isBefore(MinecraftVersion.MINECRAFT_1_16)) {
-                return switch (m){
-                    case COBBLESTONE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Cobblestone"));
-                    case NETHERRACK,LEGACY_NETHERRACK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Netherrack"));
-                    case DIAMOND,DIAMOND_ORE,DIAMOND_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Diamond"));
-                    case COAL,COAL_BLOCK,COAL_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Coal"));
-                    case LAPIS_LAZULI,LAPIS_BLOCK,LAPIS_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Lapis"));
-                    case EMERALD ,EMERALD_BLOCK,EMERALD_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Emerald"));
-                    case IRON_INGOT ,IRON_BLOCK,IRON_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Iron"));
-                    case GOLD_INGOT ,GOLD_BLOCK,GOLD_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Gold"));
-                    case REDSTONE ,REDSTONE_BLOCK,REDSTONE_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Redstone"));
-                    case QUARTZ ,QUARTZ_BLOCK,NETHER_QUARTZ_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Quartz"));
-                    default -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Default"));
-                };
-            }else if (current.isBefore(MinecraftVersion.MINECRAFT_1_17)){
-                return switch (m){
-                    case COBBLESTONE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Cobblestone"));
-                    case NETHERRACK,LEGACY_NETHERRACK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Netherrack"));
-                    case DIAMOND,DIAMOND_ORE,DIAMOND_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Diamond"));
-                    case COAL,COAL_BLOCK,COAL_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Coal"));
-                    case LAPIS_LAZULI,LAPIS_BLOCK,LAPIS_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Lapis"));
-                    case EMERALD ,EMERALD_BLOCK,EMERALD_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Emerald"));
-                    case IRON_INGOT ,IRON_BLOCK,IRON_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Iron"));
-                    case GOLD_INGOT ,GOLD_BLOCK,GOLD_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Gold"));
-                    case REDSTONE ,REDSTONE_BLOCK,REDSTONE_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Redstone"));
-                    case QUARTZ ,QUARTZ_BLOCK,NETHER_QUARTZ_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Quartz"));
-                    case NETHERITE_SCRAP ,ANCIENT_DEBRIS ,NETHERITE_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Netherite"));
-                    default -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Default"));
-                };
-            }else /*if (current.isBefore(MinecraftVersion.MINECRAFT_1_19))*/{
-                return switch (m){
-                    case COBBLESTONE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Cobblestone"));
-                    case NETHERRACK,LEGACY_NETHERRACK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Netherrack"));
-                    case COPPER_BLOCK,COPPER_INGOT,COPPER_ORE,RAW_COPPER,RAW_COPPER_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Copper"));
-                    case DIAMOND,DIAMOND_ORE,DIAMOND_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Diamond"));
-                    case COAL,COAL_BLOCK,COAL_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Coal"));
-                    case LAPIS_LAZULI,LAPIS_BLOCK,LAPIS_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Lapis"));
-                    case EMERALD ,EMERALD_BLOCK,EMERALD_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Emerald"));
-                    case IRON_INGOT ,IRON_BLOCK,IRON_ORE,RAW_IRON,RAW_IRON_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Iron"));
-                    case GOLD_INGOT ,GOLD_BLOCK,GOLD_ORE,RAW_GOLD,RAW_GOLD_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Gold"));
-                    case REDSTONE ,REDSTONE_BLOCK,REDSTONE_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Redstone"));
-                    case QUARTZ ,QUARTZ_BLOCK,NETHER_QUARTZ_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Quartz"));
-                    case NETHERITE_SCRAP ,ANCIENT_DEBRIS ,NETHERITE_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Netherite"));
-                    case AMETHYST_BLOCK ,AMETHYST_SHARD -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Amethyst"));
-                    default -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Default"));
-                };
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            return switch (m){
-                case COBBLESTONE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Cobblestone"));
-                case NETHERRACK,LEGACY_NETHERRACK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Netherrack"));
-                case DIAMOND,DIAMOND_ORE,DIAMOND_BLOCK -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Diamond"));
-                case COAL,COAL_BLOCK,COAL_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Coal"));
-                case LAPIS_LAZULI,LAPIS_BLOCK,LAPIS_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Lapis"));
-                case EMERALD ,EMERALD_BLOCK,EMERALD_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Emerald"));
-                case IRON_INGOT ,IRON_BLOCK,IRON_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Iron"));
-                case GOLD_INGOT ,GOLD_BLOCK,GOLD_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Gold"));
-                case REDSTONE ,REDSTONE_BLOCK,REDSTONE_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Redstone"));
-                case QUARTZ ,QUARTZ_BLOCK,NETHER_QUARTZ_ORE -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Quartz"));
-                default -> ChatColor.getByChar(properties.getReplacedProperty("ColorForItem_Default"));
-            };
+    @Nonnull
+    public static net.md_5.bungee.api.ChatColor colorForMaterial(@Nullable Material m){
+        if (m == null){return net.md_5.bungee.api.ChatColor.GRAY;}
+        String materialName = m.name();
+        if (materialName.startsWith("LEGACY_")){
+            materialName = materialName.substring(7);
         }
+        net.md_5.bungee.api.ChatColor result = materialColorMap.get(materialName);
+        if (result == null){
+            result = legacyMaterialColorMap.getOrDefault(materialName,net.md_5.bungee.api.ChatColor.GRAY);
+        }
+        return result;
     }
 
     public static String nameForBiome(@Nullable Biome biome) {
