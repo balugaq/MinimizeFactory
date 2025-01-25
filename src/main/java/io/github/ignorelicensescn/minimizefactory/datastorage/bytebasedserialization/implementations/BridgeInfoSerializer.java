@@ -20,7 +20,7 @@ import java.io.*;
 import java.sql.Blob;
 
 public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBasedInfoProvider<NodeInfo>, Initializer<NodeInfo>{
-    public static final ThreadLocal<BridgeInfoSerializer> THREAD_LOCAL = new ThreadLocal<>();
+    public static final ThreadLocal<BridgeInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(BridgeInfoSerializer::new);
     private BridgeInfoSerializer(){}
     private static final NodeType TYPE = NodeType.BRIDGE;
 

@@ -23,7 +23,7 @@ import java.sql.Blob;
 
 public class StorageInfoSerializer implements Serializer<StorageInfoSerializationWrapper>, LocationBasedInfoProvider<StorageInfo>, Initializer<StorageInfo> {
 
-    public static final  ThreadLocal<StorageInfoSerializer> THREAD_LOCAL = new ThreadLocal<>();
+    public static final  ThreadLocal<StorageInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(StorageInfoSerializer::new);
 
     private StorageInfoSerializer(){}
     private final Kryo kryoInstance = new Kryo(){
