@@ -61,7 +61,7 @@ public class CultivationSerializedMachineRecipes {
                             //else generate 'growthRate' time per tick(or Math.ceil(1/growthRate) ticks to generate)
                             if (METHOD_HarvestablePlant_getHarvestingResults == null){
                                 METHOD_HarvestablePlant_getHarvestingResults = plant.getClass().getDeclaredMethod("getHarvestingResults");
-                                logger.log(Level.WARNING, String.valueOf(METHOD_HarvestablePlant_getHarvestingResults));
+//                                logger.log(Level.WARNING, String.valueOf(METHOD_HarvestablePlant_getHarvestingResults));
                             }
                             RandomizedSet<ItemStack> randomOutput = (RandomizedSet<ItemStack>) METHOD_HarvestablePlant_getHarvestingResults.invoke(plant);
                             SimplePair<ItemStack[],IntegerRational[]> outputsAndExpectations = solveRandomizeSet(randomOutput, ItemStack.class);

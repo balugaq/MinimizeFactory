@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.I
 public class RandomizeSetSolving {
 
     private static Field FIELD_RandomizedSet_internalSet = null;
+    public static final Map<float[],IntegerRational[]> calculatedMap = new HashMap<>(128);
 
     @Nonnull
     public static <T> SimplePair<T[], IntegerRational[]> solveRandomizeSet(@Nonnull RandomizedSet<T> randomizedSet,Class<T> tClass){
@@ -35,9 +37,18 @@ public class RandomizeSetSolving {
             Set<WeightedNode<T>> weightedNodes = (Set<WeightedNode<T>>) getInUnsafe(randomizedSet,FIELD_RandomizedSet_internalSet);
 
             int minExp = 129;
+            float[] key = new float[weightedNodes.size()];
+            int keyCounter = 0;
             for (WeightedNode<T> node:weightedNodes){
+                result[keyCounter] = node.getObject();
                 int currentExp = Math.getExponent(node.getWeight());
                 minExp = Math.min(minExp,currentExp);
+                key[keyCounter] = node.getWeight();
+                keyCounter += 1;
+            }
+            IntegerRational[] tryGetResult = calculatedMap.getOrDefault(key,null);
+            if (tryGetResult != null){
+                return new SimplePair<>(result,tryGetResult);
             }
             BigInteger gcd = BigInteger.ZERO;
             int counter = 0;
@@ -46,8 +57,7 @@ public class RandomizeSetSolving {
 
             BigInteger binaryZeroes = minExp >= 0 ?BigInteger.TWO.pow(minExp):BigInteger.TWO.pow(minExp*(-1));
             for (WeightedNode<T> node:weightedNodes){
-                result[counter] = node.getObject();
-                int intPart = Float.floatToIntBits(node.getWeight())  & 0x7FFFFF;
+                int intPart = (int) (node.getWeight() / Math.pow(2,minExp));
                 BigInteger current = BigInteger.valueOf(intPart);
                 if(minExp >=0){
                     current = current.divide(binaryZeroes);
@@ -77,9 +87,11 @@ public class RandomizeSetSolving {
                 if (currentRational.canSaveConvertToIntegerRational()){
                     expectations[i] = currentRational.toIntegerRational();
                 }else {
+                    //i hope this won't happen
                     expectations[i] = Approximation.find(new BigDecimal(currentRational.numerator()).divide(new BigDecimal(currentRational.denominator()),100).floatValue());
                 }
             }
+            calculatedMap.put(key,expectations);
         }catch (Exception e){
             e.printStackTrace();
             int counter = 0;
