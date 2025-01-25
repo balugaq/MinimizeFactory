@@ -16,13 +16,21 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.StorageInfo;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.sql.Blob;
 
-public class StorageInfoSerializer implements Serializer<StorageInfoSerializationWrapper>, LocationBasedInfoProvider<StorageInfo>, Initializer<StorageInfo> {
-
+public class StorageInfoSerializer implements Serializer<StorageInfoSerializationWrapper>, LocationBasedInfoProvider<StorageInfo>, Initializer<StorageInfo> , AutoCloseable{
+    @Override
+    public void close() throws Exception {
+        if (!Bukkit.isPrimaryThread()){
+            THREAD_LOCAL.remove();
+        }
+    }
     public static final  ThreadLocal<StorageInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(StorageInfoSerializer::new);
 
     private StorageInfoSerializer(){}

@@ -68,99 +68,103 @@ public class MachineNetworkStorage extends NetworkNode{
     private static final BlockBreakHandler STORAGE_BREAK_HANDLER = new BlockBreakHandler(false, false) {
         @Override
         public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
-            Block b = e.getBlock();
-            Player p = e.getPlayer();
+            try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+                Block b = e.getBlock();
+                Player p = e.getPlayer();
 
-            SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-            StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
+                SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
+                StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
 
-            BlockMenu inv = BlockStorage.getInventory(b);
+                BlockMenu inv = BlockStorage.getInventory(b);
 
-            BigInteger stored = storageInfo.storeAmount;
+                BigInteger stored = storageInfo.storeAmount;
 
 
-            boolean hasCore =CoreLocationOperator.INSTANCE.has(SerializeFriendlyBlockLocation.fromLocation(b.getLocation()));
-            if (hasCore){
-                p.sendMessage(properties.getReplacedProperty("MachineNetworkStorage_Core_Bounded"));
-                e.setCancelled(true);
-                return;
-            }
-
-            if (inv != null) {
-
-                BigInteger itemCount = BigInteger.ZERO;
-                int storedCompareToZero = stored.compareTo(BigInteger.ZERO);
-
-                for (Entity en : p.getNearbyEntities(5, 5, 5)) {
-                    if (en instanceof Item) {
-                        itemCount = itemCount.add(BigInteger.ONE);
-                    }
-                }
-
-                if (itemCount.compareTo(BIGINTEGER_FIVE) > 0) {
-                    p.sendMessage(properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Item_Nearby"));
+                boolean hasCore = CoreLocationOperator.INSTANCE.has(SerializeFriendlyBlockLocation.fromLocation(b.getLocation()));
+                if (hasCore) {
+                    p.sendMessage(properties.getReplacedProperty("MachineNetworkStorage_Core_Bounded"));
                     e.setCancelled(true);
                     return;
                 }
 
-                inv.dropItems(b.getLocation(), INPUT_SLOTS);
-                inv.dropItems(b.getLocation(), OUTPUT_SLOTS);
+                if (inv != null) {
 
-                if (storedCompareToZero > 0) {
-                    int stackSize = storageInfo.storeItem.getMaxStackSize();
-                    ItemStack unKeyed = getStoredItem(b);
+                    BigInteger itemCount = BigInteger.ZERO;
+                    int storedCompareToZero = stored.compareTo(BigInteger.ZERO);
 
-                    if (ItemStackUtil.isItemStackSimilar(unKeyed,EMPTY_ITEM)) {
-                        setStored(b, BigInteger.ZERO);
-                        updateMenu(b, inv, true);
+                    for (Entity en : p.getNearbyEntities(5, 5, 5)) {
+                        if (en instanceof Item) {
+                            itemCount = itemCount.add(BigInteger.ONE);
+                        }
+                    }
+
+                    if (itemCount.compareTo(BIGINTEGER_FIVE) > 0) {
+                        p.sendMessage(properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Item_Nearby"));
+                        e.setCancelled(true);
                         return;
                     }
 
-                    if (stored.compareTo(OVERFLOW_AMOUNT) > 0) {
-                        p.sendMessage(properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Dropping_Item_Part1")
-                                +OVERFLOW_AMOUNT+properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Dropping_Item_Part2"));
-                        int toRemove = 3240;
-                        while (toRemove >= stackSize) {
-                            unKeyed = unKeyed.clone();
-                            unKeyed.setAmount(stackSize);
-                            b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
-                            toRemove = toRemove - stackSize;
-                        }
-                        if (toRemove > 0) {
-                            unKeyed = unKeyed.clone();
-                            unKeyed.setAmount(toRemove);
-                            b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
-                        }
-                        setStored(b, stored.subtract(OVERFLOW_AMOUNT));
-                        updateMenu(b, inv, false);
-                        e.setCancelled(true);
-                    }
-                    else {
-                        BigInteger stackSizeBigInteger = BigInteger.valueOf(stackSize);
-                        // Everything greater than 1 stack
-                        while (stored.compareTo(stackSizeBigInteger) > 0) {
-                            unKeyed = unKeyed.clone();
-                            unKeyed.setAmount(stackSize);
-                            b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
+                    inv.dropItems(b.getLocation(), INPUT_SLOTS);
+                    inv.dropItems(b.getLocation(), OUTPUT_SLOTS);
 
-                            stored = stored.subtract(stackSizeBigInteger);
+                    if (storedCompareToZero > 0) {
+                        int stackSize = storageInfo.storeItem.getMaxStackSize();
+                        ItemStack unKeyed = getStoredItem(b);
+
+                        if (ItemStackUtil.isItemStackSimilar(unKeyed, EMPTY_ITEM)) {
+                            setStored(b, BigInteger.ZERO);
+                            updateMenu(b, inv, true);
+                            return;
                         }
 
-                        // Drop remaining, if there is any
-                        if (stored.compareTo(BigInteger.ZERO) > 0) {
-                            unKeyed = unKeyed.clone();
-                            unKeyed.setAmount(stored.intValue());
-                            b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
-                        }
+                        if (stored.compareTo(OVERFLOW_AMOUNT) > 0) {
+                            p.sendMessage(properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Dropping_Item_Part1")
+                                    + OVERFLOW_AMOUNT + properties.getReplacedProperty("MachineNetworkStorage_FluffyMachine_Dropping_Item_Part2"));
+                            int toRemove = 3240;
+                            while (toRemove >= stackSize) {
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(stackSize);
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
+                                toRemove = toRemove - stackSize;
+                            }
+                            if (toRemove > 0) {
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(toRemove);
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
+                            }
+                            setStored(b, stored.subtract(OVERFLOW_AMOUNT));
+                            updateMenu(b, inv, false);
+                            e.setCancelled(true);
+                        } else {
+                            BigInteger stackSizeBigInteger = BigInteger.valueOf(stackSize);
+                            // Everything greater than 1 stack
+                            while (stored.compareTo(stackSizeBigInteger) > 0) {
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(stackSize);
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
 
-                        // In case they use an explosive pickaxe
-                        setStored(b, BigInteger.ZERO);
-                        updateMenu(b, inv, true);
-                        {
-                            DataRemover.INSTANCE.remove(storageLocationKey);
+                                stored = stored.subtract(stackSizeBigInteger);
+                            }
+
+                            // Drop remaining, if there is any
+                            if (stored.compareTo(BigInteger.ZERO) > 0) {
+                                unKeyed = unKeyed.clone();
+                                unKeyed.setAmount(stored.intValue());
+                                b.getWorld().dropItemNaturally(b.getLocation(), unKeyed.clone());
+                            }
+
+                            // In case they use an explosive pickaxe
+                            setStored(b, BigInteger.ZERO);
+                            updateMenu(b, inv, true);
+                            {
+                                DataRemover.INSTANCE.remove(storageLocationKey);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
             }
         }
     };
@@ -196,7 +200,11 @@ public class MachineNetworkStorage extends NetworkNode{
 
             @Override
             public void newInstance(@Nonnull BlockMenu menu, @Nonnull Block b) {
-                buildMenu(menu, b);
+                try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+                    buildMenu(menu, b, storageInfoSerializer);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -233,11 +241,11 @@ public class MachineNetworkStorage extends NetworkNode{
         ChestMenuUtils.drawBackground(preset, plainBorder);
     }
 
-    protected void buildMenu(BlockMenu menu, Block b) {
+    protected void buildMenu(BlockMenu menu, Block b, StorageInfoSerializer storageInfoSerializer) {
 
         // Initialize an empty barrel
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
+        StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
 
         BigInteger stored = storageInfo.storeAmount;
         BigDecimal storedBigDecimal = new BigDecimal(stored);
@@ -338,61 +346,72 @@ public class MachineNetworkStorage extends NetworkNode{
         }
         else {
             SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-            StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-
-            if (storedCompareToZero > 0 && ItemStackUtil.isItemStackSimilar(storageInfo.storeItem, item)) {
-                storeItem(b, inv, slot, item, stored);
+            try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+                StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+                if (storedCompareToZero > 0 && ItemStackUtil.isItemStackSimilar(storageInfo.storeItem, item)) {
+                    storeItem(b, inv, slot, item, stored);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
+
         }
     }
 
     static void pushOutput(BlockMenu inv, Block b) {
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-        ItemStack displayItem = storageInfo.storeItem;
-        if (displayItem != null && displayItem.getType() != Material.BARRIER) {
-            BigInteger stored = getStored(b);
-            // Output stack
-            if (stored.compareTo(BigInteger.valueOf(displayItem.getMaxStackSize())) > 0) {
-                ItemStack clone = StorageUtils.unKeyItem(displayItem);
-                clone.setAmount(clone.getMaxStackSize());
-                if (inv.fits(clone, OUTPUT_SLOTS)) {
-                    int amount = clone.getMaxStackSize();
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+            ItemStack displayItem = storageInfo.storeItem;
+            if (displayItem != null && displayItem.getType() != Material.BARRIER) {
+                BigInteger stored = getStored(b);
+                // Output stack
+                if (stored.compareTo(BigInteger.valueOf(displayItem.getMaxStackSize())) > 0) {
+                    ItemStack clone = StorageUtils.unKeyItem(displayItem);
+                    clone.setAmount(clone.getMaxStackSize());
+                    if (inv.fits(clone, OUTPUT_SLOTS)) {
+                        int amount = clone.getMaxStackSize();
 
-                    setStored(b, stored.subtract(BigInteger.valueOf(amount)));
-                    inv.pushItem(clone, OUTPUT_SLOTS);
-                    updateMenu(b, inv, false);
+                        setStored(b, stored.subtract(BigInteger.valueOf(amount)));
+                        inv.pushItem(clone, OUTPUT_SLOTS);
+                        updateMenu(b, inv, false);
+                    }
+                } else if (stored.compareTo(BigInteger.ZERO) == 0) {   // Output remaining
+
+                    ItemStack clone = StorageUtils.unKeyItem(displayItem);
+                    clone.setAmount(stored.intValue());
+
+                    if (inv.fits(clone, OUTPUT_SLOTS)) {
+                        setStored(b, BigInteger.ZERO);
+                        inv.pushItem(clone, OUTPUT_SLOTS);
+                        updateMenu(b, inv, false);
+                    }
                 }
             }
-            else if (stored.compareTo(BigInteger.ZERO) == 0) {   // Output remaining
-
-                ItemStack clone = StorageUtils.unKeyItem(displayItem);
-                clone.setAmount(stored.intValue());
-
-                if (inv.fits(clone, OUTPUT_SLOTS)) {
-                    setStored(b, BigInteger.ZERO);
-                    inv.pushItem(clone, OUTPUT_SLOTS);
-                    updateMenu(b, inv, false);
-                }
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     private static void registerItem(Block b, BlockMenu inv, int slot, ItemStack item, BigInteger stored) {
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-        storageInfo.storeItem = item;
-        storageInfo.storeAmount = stored;
-        StorageInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(storageInfo,storageLocationKey);
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+            storageInfo.storeItem = item;
+            storageInfo.storeAmount = stored;
+            storageInfoSerializer.saveToLocationNoThrow(storageInfo, storageLocationKey);
+        }catch (Exception e){e.printStackTrace();}
         inv.replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
         storeItem(b, inv, slot, item, stored);
     }
 
     public static void setStoredStackNoThrow(Location l, ItemStack item){
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-        storageInfo.storeItem = item;
-        StorageInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(storageInfo,storageLocationKey);
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+            storageInfo.storeItem = item;
+            storageInfoSerializer.saveToLocationNoThrow(storageInfo, storageLocationKey);
+        }catch (Exception e){e.printStackTrace();}
         BlockStorage.getInventory(l).replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
     }
 
@@ -413,60 +432,72 @@ public class MachineNetworkStorage extends NetworkNode{
     public static void updateMenu(Block b, BlockMenu inv, boolean force) {
 
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-        ItemStack storedItem = storageInfo.storeItem;
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+            ItemStack storedItem = storageInfo.storeItem;
 
-        BigInteger stored = getStored(b);
-        BigDecimal storedBigDecimal = new BigDecimal(stored);
-        String itemName = NameUtil.findName(storedItem);
+            BigInteger stored = getStored(b);
+            BigDecimal storedBigDecimal = new BigDecimal(stored);
+            String itemName = NameUtil.findName(storedItem);
 
-        BigDecimal maxStackSizeBigDecimal = BigDecimal.valueOf(storedItem.getMaxStackSize());
-        String storedStacks = doubleRoundAndFade(storedBigDecimal.divide(maxStackSizeBigDecimal,4, RoundingMode.DOWN));
+            BigDecimal maxStackSizeBigDecimal = BigDecimal.valueOf(storedItem.getMaxStackSize());
+            String storedStacks = doubleRoundAndFade(storedBigDecimal.divide(maxStackSizeBigDecimal, 4, RoundingMode.DOWN));
 
-        // This helps a bit with lag, but may have visual impacts
-        if (inv.hasViewer() || force) {
-            inv.replaceExistingItem(STATUS_SLOT, new CustomItemStack(
-                    Material.LIME_STAINED_GLASS_PANE,itemName ,
-                    properties.getReplacedProperty("MachineNetworkStorage_Items_Stored") + stored,
-                    ChatColor.GRAY + storedStacks + properties.getReplacedProperty("MachineNetworkStorage_Stacks")));
+            // This helps a bit with lag, but may have visual impacts
+            if (inv.hasViewer() || force) {
+                inv.replaceExistingItem(STATUS_SLOT, new CustomItemStack(
+                        Material.LIME_STAINED_GLASS_PANE, itemName,
+                        properties.getReplacedProperty("MachineNetworkStorage_Items_Stored") + stored,
+                        ChatColor.GRAY + storedStacks + properties.getReplacedProperty("MachineNetworkStorage_Stacks")));
+            }
+
+            checkEmpty(b, inv);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        checkEmpty(b,inv);
     }
     public static void checkEmpty(Block b,BlockMenu inv){
         BigInteger stored = getStored(b);
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-        if (stored.compareTo(BigInteger.ZERO) == 0) {
-            inv.replaceExistingItem(DISPLAY_SLOT, EMPTY_ITEM);
-            storageInfo.storeItem = EMPTY_ITEM;
-            StorageInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(storageInfo,storageLocationKey);
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+            if (stored.compareTo(BigInteger.ZERO) == 0) {
+                inv.replaceExistingItem(DISPLAY_SLOT, EMPTY_ITEM);
+                storageInfo.storeItem = EMPTY_ITEM;
+                storageInfoSerializer.saveToLocationNoThrow(storageInfo, storageLocationKey);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     public void insertAll(Player p, BlockMenu menu, Block b) {
 
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-        ItemStack storedItem = storageInfo.storeItem;
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+            ItemStack storedItem = storageInfo.storeItem;
 
-        PlayerInventory inv = p.getInventory();
+            PlayerInventory inv = p.getInventory();
 
-        BigInteger stored = getStored(b);
+            BigInteger stored = getStored(b);
 
-        for (int i = 0; i < inv.getContents().length; i+=1) {
-            ItemStack item = inv.getItem(i);
-            if (item == null) {
-                continue;
+            for (int i = 0; i < inv.getContents().length; i += 1) {
+                ItemStack item = inv.getItem(i);
+                if (item == null) {
+                    continue;
+                }
+                int amount = item.getAmount();
+                if (ItemStackUtil.isItemStackSimilar(item, storedItem)) {
+                    inv.setItem(i, null);
+                    stored = stored.add(BigInteger.valueOf(amount));
+                }
             }
-            int amount = item.getAmount();
-            if (ItemStackUtil.isItemStackSimilar(item, storedItem)) {
-                inv.setItem(i, null);
-                stored = stored.add(BigInteger.valueOf(amount));
-            }
+            setStored(b, stored);
+            updateMenu(b, menu, false);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        setStored(b,stored);
-        updateMenu(b, menu, false);
     }
 
     public void extract(Player p, BlockMenu menu, Block b, ClickAction action) {
@@ -565,15 +596,24 @@ public class MachineNetworkStorage extends NetworkNode{
     }
     public static BigInteger getStored(Location l) {
         SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(locationKey);
-        return storageInfo.storeAmount;
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
+            return storageInfo.storeAmount;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return BigInteger.ZERO;
     }
 
     public static void setStored(Location l, BigInteger amount) {
         SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(locationKey);
-        storageInfo.storeAmount = amount;
-        StorageInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(storageInfo,locationKey);
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
+            storageInfo.storeAmount = amount;
+            storageInfoSerializer.saveToLocationNoThrow(storageInfo, locationKey);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         updateMenu(l.getBlock(),BlockStorage.getInventory(l),true);
     }
     public static void setStored(Block b, BigInteger amount) {
@@ -581,9 +621,13 @@ public class MachineNetworkStorage extends NetworkNode{
     }
     public static void addStored(Location l,BigInteger amount){
         SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(locationKey);
-        storageInfo.storeAmount = storageInfo.storeAmount.add(amount);
-        StorageInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(storageInfo,locationKey);
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
+            storageInfo.storeAmount = storageInfo.storeAmount.add(amount);
+            storageInfoSerializer.saveToLocationNoThrow(storageInfo,locationKey);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         updateMenu(l.getBlock(),BlockStorage.getInventory(l),true);
     }
     public static void addStored(Location l, BigRational amount){
@@ -600,10 +644,15 @@ public class MachineNetworkStorage extends NetworkNode{
     }
     public static ItemStack getStoredItem(Location l) {
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        StorageInfo storageInfo = StorageInfoSerializer.THREAD_LOCAL.get().getOrDefault(storageLocationKey);
-        ItemStack result = storageInfo.storeItem;
-        if (ItemStackUtil.isItemStackSimilar(result,EMPTY_ITEM)){return null;}
-        return result;
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get())  {
+            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
+            ItemStack result = storageInfo.storeItem;
+            if (ItemStackUtil.isItemStackSimilar(result,EMPTY_ITEM)){return null;}
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void showCoreLocation(Location nodeLocation,int hintSlot){

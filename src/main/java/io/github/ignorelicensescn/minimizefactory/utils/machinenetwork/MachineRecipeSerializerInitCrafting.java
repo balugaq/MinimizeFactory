@@ -22,6 +22,62 @@ import static io.github.ignorelicensescn.minimizefactory.utils.LoreGetter.tryGet
 import static io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems.ENERGIZED_CAPACITOR;
 
 public class MachineRecipeSerializerInitCrafting {
+    public static String generateDefaultName(SerializedMachine_MachineRecipe recipe){
+        return properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime")
+                + (((double)recipe.ticks))
+                + properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime_Unit");
+    }
+
+    public static List<String> generateDefaultLore(SerializedMachine_MachineRecipe recipe){
+        List<String> lore = new ArrayList<>();
+        lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Input"));
+        if (recipe.inputs != null){
+            if (recipe.inputs.length == 1 && recipe.Singularity_Material_amount != -1){
+                lore.add(ChatColor.WHITE + NameUtil.findName(recipe.inputs[0]) + properties.getReplacedProperty("Stabilizer_Input_Unit") + recipe.Singularity_Material_amount);
+            }else {
+                for (ItemStack itemStack : recipe.inputs) {
+                    lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(itemStack));
+                }
+            }
+        }
+
+        if (recipe.outputs != null && recipe.outputs.length > 0) {
+            lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
+            if (recipe.outputExpectations != null && recipe.outputExpectations.length > 0) {
+                for (int outIndex = 0; outIndex < recipe.outputs.length; outIndex+=1) {
+                    ItemStack outputItem = recipe.outputs[outIndex];
+                    String nameInLore = NameUtil.findName(outputItem);
+                    lore.add(ChatColor.WHITE + nameInLore
+                            + properties.getReplacedProperty("Stabilizer_Output_Unit") + outputItem.getAmount()
+                            + properties.getReplacedProperty("Stabilizer_Output_Expectation")
+                            + recipe.outputExpectations[outIndex]);
+                }
+            } else {
+                for (ItemStack itemStack : recipe.outputs) {
+                    lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(itemStack));
+                }
+            }
+        }
+
+        if (recipe.env != null) {
+            switch (recipe.env) {
+                case NORMAL ->
+                        lore.add(ChatColor.GREEN + properties.getReplacedProperty("Test_InfoProvider_Info_Need_MainWorld"));
+                case NETHER ->
+                        lore.add(ChatColor.RED + properties.getReplacedProperty("Test_InfoProvider_Info_Need_Nether"));
+                case THE_END ->
+                        lore.add(ChatColor.LIGHT_PURPLE + properties.getReplacedProperty("Test_InfoProvider_Info_Need_End"));
+                default ->
+                        lore.add(ChatColor.GRAY + properties.getReplacedProperty("Test_InfoProvider_Info_Need_CUSTOM"));
+            }
+        }
+
+        if (recipe.biome != null) {
+            lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Need_Biome") + NameUtil.nameForBiome(recipe.biome));
+        }
+        return lore;
+    }
+
     //rewrite the code until there is only 1 method
     public static void initCraftingRecipes_SerializedRecipes(BlockMenu menu,
                                                              int page,
@@ -39,60 +95,10 @@ public class MachineRecipeSerializerInitCrafting {
             String name = nameAndLore == null?null:nameAndLore.first;
             List<String> lore = nameAndLore == null?null:nameAndLore.second;
             if (lore == null){
-                lore = new ArrayList<>();
-                lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Input"));
-                if (recipe.inputs != null){
-                    if (recipe.inputs.length == 1 && recipe.Singularity_Material_amount != -1){
-                        lore.add(ChatColor.WHITE + NameUtil.findName(recipe.inputs[0]) + properties.getReplacedProperty("Stabilizer_Input_Unit") + recipe.Singularity_Material_amount);
-                    }else {
-                        for (ItemStack itemStack : recipe.inputs) {
-                            lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(itemStack));
-                        }
-                    }
-                }
-
-                if (recipe.outputs != null && recipe.outputs.length > 0) {
-                    lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
-                    if (recipe.outputExpectations != null && recipe.outputExpectations.length > 0) {
-                        for (int outIndex = 0; outIndex < recipe.outputs.length; outIndex+=1) {
-                            ItemStack outputItem = recipe.outputs[outIndex];
-                            String nameInLore = name;
-                            if (nameInLore == null){
-                                nameInLore = NameUtil.findName(outputItem);
-                            }
-                            lore.add(ChatColor.WHITE + nameInLore
-                                    + properties.getReplacedProperty("Stabilizer_Output_Unit") + outputItem.getAmount()
-                                    + properties.getReplacedProperty("Stabilizer_Output_Expectation")
-                                    + recipe.outputExpectations[outIndex]);
-                        }
-                    } else {
-                        for (ItemStack itemStack : recipe.outputs) {
-                            lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(itemStack));
-                        }
-                    }
-                }
-
-                if (recipe.env != null) {
-                    switch (recipe.env) {
-                        case NORMAL ->
-                                lore.add(ChatColor.GREEN + properties.getReplacedProperty("Test_InfoProvider_Info_Need_MainWorld"));
-                        case NETHER ->
-                                lore.add(ChatColor.RED + properties.getReplacedProperty("Test_InfoProvider_Info_Need_Nether"));
-                        case THE_END ->
-                                lore.add(ChatColor.LIGHT_PURPLE + properties.getReplacedProperty("Test_InfoProvider_Info_Need_End"));
-                        default ->
-                                lore.add(ChatColor.GRAY + properties.getReplacedProperty("Test_InfoProvider_Info_Need_CUSTOM"));
-                    }
-                }
-
-                if (recipe.biome != null) {
-                    lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Need_Biome") + NameUtil.nameForBiome(recipe.biome));
-                }
+                lore = generateDefaultLore(recipe);
             }
             if (name == null){
-                name = properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime")
-                        + (((double)recipe.ticks))
-                        + properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime_Unit");
+                name = generateDefaultName(recipe);
             }
 
             ItemStack showItemTemplate;

@@ -15,11 +15,18 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
+import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.sql.Blob;
 
-public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBasedInfoProvider<NodeInfo>, Initializer<NodeInfo>{
+public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBasedInfoProvider<NodeInfo>, Initializer<NodeInfo>, AutoCloseable{
+    @Override
+    public void close() throws Exception {
+        if (!Bukkit.isPrimaryThread()){
+            THREAD_LOCAL.remove();
+        }
+    }
     public static final ThreadLocal<BridgeInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(BridgeInfoSerializer::new);
     private BridgeInfoSerializer(){}
     private static final NodeType TYPE = NodeType.BRIDGE;

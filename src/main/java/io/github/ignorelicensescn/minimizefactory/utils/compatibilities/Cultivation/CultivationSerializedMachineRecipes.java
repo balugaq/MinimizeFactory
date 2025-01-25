@@ -2,6 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Cultiva
 
 import dev.sefiraat.cultivation.api.datatypes.instances.FloraLevelProfile;
 import dev.sefiraat.cultivation.api.slimefun.items.plants.HarvestablePlant;
+import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
@@ -19,6 +20,8 @@ import java.util.*;
 import static dev.sefiraat.cultivation.implementation.slimefun.items.Machines.GARDEN_CLOCHE;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags.CultivationFlag;
+import static io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.MachineRecipeSerializerInitCrafting.generateDefaultLore;
+import static io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.MachineRecipeSerializerInitCrafting.generateDefaultName;
 import static io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft.RandomizedSetSolving.solveRandomizedSet;
 import static io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 
@@ -26,9 +29,6 @@ public class CultivationSerializedMachineRecipes {
 
     private static boolean initFlag = false;
     private static Method METHOD_HarvestablePlant_getHarvestingResults = null;
-    private static Method METHOD_RandomizedSet_size = null;
-    private static Method METHOD_RandomizedSet_sumWeights = null;
-    private static Method METHOD_RandomizedSet_toMap = null;
     public static void init(){
         if (initFlag){return;}
         if (CultivationFlag){
@@ -69,13 +69,20 @@ public class CultivationSerializedMachineRecipes {
                             return Collections.singletonList(
                                     new SimplePair<>(serialized,GARDEN_CLOCHE.getItem())
                             );
-
                         }
                     }catch (Exception e){
                         e.printStackTrace();
                     }
 
                     return Collections.emptyList();
+                }
+
+                @Nullable
+                @Override
+                public SimplePair<String, List<String>> getNameAndLoreForRecipe(@Nullable HarvestablePlant m, SimplePair<SerializedMachine_MachineRecipe, ItemStack> serialized, int index) {
+                    List<String> lore = generateDefaultLore(serialized.first);
+                    lore.add(properties.getReplacedProperty("Serializer_Need_Catalyzer")+ " : " + NameUtil.findName(GARDEN_CLOCHE.getItem()));
+                    return new SimplePair<>(generateDefaultName(serialized.first),lore);
                 }
 
                 @Nonnull

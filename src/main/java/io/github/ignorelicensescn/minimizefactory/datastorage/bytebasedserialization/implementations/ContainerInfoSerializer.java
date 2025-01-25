@@ -14,11 +14,18 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Con
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.NodeInfo;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
+import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.sql.Blob;
 
-public class ContainerInfoSerializer implements Serializer<ContainerInfo>, LocationBasedInfoProvider<ContainerInfo>, Initializer<ContainerInfo> {
+public class ContainerInfoSerializer implements Serializer<ContainerInfo>, LocationBasedInfoProvider<ContainerInfo>, Initializer<ContainerInfo>, AutoCloseable{
+    @Override
+    public void close() throws Exception {
+        if (!Bukkit.isPrimaryThread()){
+            THREAD_LOCAL.remove();
+        }
+    }
     public static final ThreadLocal<ContainerInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(ContainerInfoSerializer::new);
     private ContainerInfoSerializer(){}
     private static final NodeType TYPE = NodeType.MACHINE_CONTAINER;

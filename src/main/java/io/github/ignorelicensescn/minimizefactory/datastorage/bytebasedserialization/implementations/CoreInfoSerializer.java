@@ -18,11 +18,22 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
+import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.math.BigInteger;
 
-public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapper>, LocationBasedInfoProvider<CoreInfo>, Initializer<CoreInfo> {
+public class CoreInfoSerializer implements
+        Serializer<CoreInfoSerializationWrapper>,
+        LocationBasedInfoProvider<CoreInfo>,
+        Initializer<CoreInfo>, AutoCloseable{
+    @Override
+    public void close() throws Exception {
+        if (!Bukkit.isPrimaryThread()){
+            THREAD_LOCAL.remove();
+        }
+    }
+
     public static final ThreadLocal<CoreInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(CoreInfoSerializer::new);
     private CoreInfoSerializer(){}
     private static final NodeType TYPE = NodeType.CONTROLLER;
@@ -77,7 +88,7 @@ public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapp
 
     @Override
     public CoreInfo getOrDefault(SerializeFriendlyBlockLocation location){
-        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getFromLocation(location);
+        CoreInfo coreInfo = getFromLocation(location);
         if (coreInfo == null){
             initializeAtLocation(location);
             coreInfo = new CoreInfo();

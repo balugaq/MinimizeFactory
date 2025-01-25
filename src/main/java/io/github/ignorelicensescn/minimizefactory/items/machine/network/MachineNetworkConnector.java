@@ -47,20 +47,26 @@ public class MachineNetworkConnector extends SlimefunItem {
                         if (p.isSneaking()){
                             e.getClickedBlock().ifPresentOrElse(
                                     block -> {
-                                        SerializeFriendlyBlockLocation key = SerializeFriendlyBlockLocation.fromLocation(block.getLocation());
-                                        NodeType nodeType = NodeTypeOperator.INSTANCE.get(key);
-                                        if (nodeType != NodeType.CONTROLLER){return;}
-                                        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getFromLocation(key);
-                                        if (coreInfo != null){
-                                            connectorSettings.coreLocation = LOCATION_SERIALIZER.SerializableToString(block.getLocation());
-                                            DataTypeMethods.setCustom(connectorMeta, CONNECTOR_SETTINGS, TYPE, connectorSettings);
-                                            connector.setItemMeta(connectorMeta);
-                                            p.sendMessage(
-                                                    properties.getReplacedProperty("Connector_Core_Bound"));
-                                            p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0F);
-                                            return;
+                                        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                                            SerializeFriendlyBlockLocation key = SerializeFriendlyBlockLocation.fromLocation(block.getLocation());
+                                            NodeType nodeType = NodeTypeOperator.INSTANCE.get(key);
+                                            if (nodeType != NodeType.CONTROLLER) {
+                                                return;
+                                            }
+                                            CoreInfo coreInfo = coreInfoSerializer.getFromLocation(key);
+                                            if (coreInfo != null) {
+                                                connectorSettings.coreLocation = LOCATION_SERIALIZER.SerializableToString(block.getLocation());
+                                                DataTypeMethods.setCustom(connectorMeta, CONNECTOR_SETTINGS, TYPE, connectorSettings);
+                                                connector.setItemMeta(connectorMeta);
+                                                p.sendMessage(
+                                                        properties.getReplacedProperty("Connector_Core_Bound"));
+                                                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0F);
+                                                return;
+                                            }
+                                            TweakConnectorMode(connectorSettings, connectorMeta, connector, p);
+                                        }catch (Exception ex){
+                                            ex.printStackTrace();
                                         }
-                                        TweakConnectorMode(connectorSettings,connectorMeta,connector,p);
                                     },
                                     () -> TweakConnectorMode(connectorSettings,connectorMeta,connector,p)
                             );

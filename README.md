@@ -16,6 +16,9 @@ And I'm too lazy to test all the versions,you may have to test it yourself!
 * DynaTech,
 * FluffyMachines
 
+tested a bit with:
+* Cultivation(GardenCloche)
+
 It's an idea about 2 years ago(I mean 2023),when I consider all machines as some inputs-and-outputs,the calculation would be extremely fast.It reduces lagging!
 
 Use in this way:Put all machines into one box(called MachineNetworkContainer) or several,make sure it can run forever by its inputs and outputs.Launch the boxes(via MachineNetworkCore).OFF THE SERVER AND GO TO BED.It will be calculated as running when getting outputs.

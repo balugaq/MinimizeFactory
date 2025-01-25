@@ -46,10 +46,34 @@ public abstract class NetworkNode extends SlimefunItem {
 
     public static void initNode(SerializeFriendlyBlockLocation sfLocation,NodeType nodeType){
         switch (nodeType){
-            case STORAGE -> StorageInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
-            case CONTROLLER -> CoreInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
-            case BRIDGE -> BridgeInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
-            case MACHINE_CONTAINER -> ContainerInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
+            case STORAGE -> {
+                try (StorageInfoSerializer storageInfoSerializer= StorageInfoSerializer.THREAD_LOCAL.get()){
+                    storageInfoSerializer.initializeAtLocation(sfLocation);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            case CONTROLLER -> {
+                try (CoreInfoSerializer coreInfoSerializer= CoreInfoSerializer.THREAD_LOCAL.get()){
+                    coreInfoSerializer.initializeAtLocation(sfLocation);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            case BRIDGE -> {
+                try (BridgeInfoSerializer bridgeInfoSerializer= BridgeInfoSerializer.THREAD_LOCAL.get()){
+                    bridgeInfoSerializer.initializeAtLocation(sfLocation);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            case MACHINE_CONTAINER -> {
+                try (ContainerInfoSerializer containerInfoSerializer= ContainerInfoSerializer.THREAD_LOCAL.get()){
+                    containerInfoSerializer.initializeAtLocation(sfLocation);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
             default -> new Exception("trying to init unexpected node " + nodeType + " at " + sfLocation).printStackTrace();
         }
     }
@@ -139,51 +163,60 @@ public abstract class NetworkNode extends SlimefunItem {
         }
         if (distance < NETWORK_MAX_DISTANCE && !toRegisterForNextRun.isEmpty()){
             registerNodes(sourceLocation,coreLocation,toRegisterForNextRun,registeredOrFailed,valid,distance + 1);
-        }else{
-            CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocationKey);
-            List<SerializeFriendlyBlockLocation> bridges = new ArrayList<>(List.of(coreInfo.bridgeLocations));
-            List<SerializeFriendlyBlockLocation> containers = new ArrayList<>(List.of(coreInfo.containerLocations));
-            List<SerializeFriendlyBlockLocation> storages = new ArrayList<>(List.of(coreInfo.storageLocations));
-            for (Location nodeLocation:valid){
-                SerializeFriendlyBlockLocation nodeLocationKey = SerializeFriendlyBlockLocation.fromLocation(nodeLocation);
-                NodeType nodeType = NodeTypeOperator.INSTANCE.get(nodeLocationKey);
-                if (nodeType == null){continue;}
-                switch (nodeType){
-                    case BRIDGE -> {
-                        CoreLocationOperator.INSTANCE.set(nodeLocationKey,coreLocationKey);
-                        bridges.add(nodeLocationKey);
-                        setCoreStatusForNode(NodeType.BRIDGE,nodeLocation);
-                    }
-                    case MACHINE_CONTAINER -> {
-                        CoreLocationOperator.INSTANCE.set(nodeLocationKey,coreLocationKey);
-                        containers.add(nodeLocationKey);
-                        setCoreStatusForNode(NodeType.MACHINE_CONTAINER,nodeLocation);
-                    }
-                    case STORAGE -> {
-                        CoreLocationOperator.INSTANCE.set(nodeLocationKey,coreLocationKey);
-                        storages.add(nodeLocationKey);
-                        setCoreStatusForNode(NodeType.STORAGE,nodeLocation);
-                    }
-                    default -> {
-                        logger.log(Level.WARNING,
-                                "Unexpected node type " + nodeType
-                                        + " at "
-                                        + nodeLocation
-                        );
+        }else
+        {
+            try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get())
+            {
+                CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
+                List<SerializeFriendlyBlockLocation> bridges = new ArrayList<>(List.of(coreInfo.bridgeLocations));
+                List<SerializeFriendlyBlockLocation> containers = new ArrayList<>(List.of(coreInfo.containerLocations));
+                List<SerializeFriendlyBlockLocation> storages = new ArrayList<>(List.of(coreInfo.storageLocations));
+                for (Location nodeLocation : valid) {
+                    SerializeFriendlyBlockLocation nodeLocationKey = SerializeFriendlyBlockLocation.fromLocation(nodeLocation);
+                    NodeType nodeType = NodeTypeOperator.INSTANCE.get(nodeLocationKey);
+                    if (nodeType == null) {
                         continue;
                     }
+                    switch (nodeType) {
+                        case BRIDGE -> {
+                            CoreLocationOperator.INSTANCE.set(nodeLocationKey, coreLocationKey);
+                            bridges.add(nodeLocationKey);
+                            setCoreStatusForNode(NodeType.BRIDGE, nodeLocation);
+                        }
+                        case MACHINE_CONTAINER -> {
+                            CoreLocationOperator.INSTANCE.set(nodeLocationKey, coreLocationKey);
+                            containers.add(nodeLocationKey);
+                            setCoreStatusForNode(NodeType.MACHINE_CONTAINER, nodeLocation);
+                        }
+                        case STORAGE -> {
+                            CoreLocationOperator.INSTANCE.set(nodeLocationKey, coreLocationKey);
+                            storages.add(nodeLocationKey);
+                            setCoreStatusForNode(NodeType.STORAGE, nodeLocation);
+                        }
+                        default -> {
+                            logger.log(Level.WARNING,
+                                    "Unexpected node type " + nodeType
+                                            + " at "
+                                            + nodeLocation
+                            );
+                            continue;
+                        }
+                    }
+                    World w = nodeLocation.getWorld();
+                    if (w != null) {
+                        w.playEffect(nodeLocation, Effect.ENDER_SIGNAL,/*Effect.ENDER_SIGNAL.getId()*/0);
+                    }
                 }
-                World w = nodeLocation.getWorld();
-                if (w != null){
-                    w.playEffect(nodeLocation, Effect.ENDER_SIGNAL,/*Effect.ENDER_SIGNAL.getId()*/0);
-                }
+                coreInfo.networkStatus = NETWORK_CONTROLLER_ONLINE;
+                coreInfo.bridgeLocations = bridges.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
+                coreInfo.containerLocations = containers.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
+                coreInfo.storageLocations = storages.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
+                coreInfoSerializer.saveToLocationNoThrow(coreInfo, coreLocationKey);
+                MachineNetworkCore.refresh(BlockStorage.getInventory(coreLocation), coreLocation.getBlock(), NETWORK_CONTROLLER_ONLINE);
             }
-            coreInfo.networkStatus = NETWORK_CONTROLLER_ONLINE;
-            coreInfo.bridgeLocations = bridges.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
-            coreInfo.containerLocations = containers.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
-            coreInfo.storageLocations = storages.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
-            CoreInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(coreInfo,coreLocationKey);
-            MachineNetworkCore.refresh(BlockStorage.getInventory(coreLocation), coreLocation.getBlock(), NETWORK_CONTROLLER_ONLINE);
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -191,17 +224,21 @@ public abstract class NetworkNode extends SlimefunItem {
 
     public static void unregisterNodes(Location coreLocation){
         SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(coreLocation);
-        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocationKey);
-        for (SerializeFriendlyBlockLocation[] keys:new SerializeFriendlyBlockLocation[][]{coreInfo.bridgeLocations, coreInfo.containerLocations, coreInfo.storageLocations}){
-            for (SerializeFriendlyBlockLocation nodeKey:keys){
-                CoreLocationOperator.INSTANCE.set(nodeKey,null);
+        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+            CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
+            for (SerializeFriendlyBlockLocation[] keys:new SerializeFriendlyBlockLocation[][]{coreInfo.bridgeLocations, coreInfo.containerLocations, coreInfo.storageLocations}){
+                for (SerializeFriendlyBlockLocation nodeKey:keys){
+                    CoreLocationOperator.INSTANCE.set(nodeKey,null);
+                }
             }
+            coreInfo.bridgeLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
+            coreInfo.containerLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
+            coreInfo.storageLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
+            coreInfo.networkStatus = NETWORK_CONTROLLER_OFFLINE;
+            coreInfoSerializer.saveToLocationNoThrow(coreInfo,coreLocationKey);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        coreInfo.bridgeLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
-        coreInfo.containerLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
-        coreInfo.storageLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
-        coreInfo.networkStatus = NETWORK_CONTROLLER_OFFLINE;
-        CoreInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(coreInfo,coreLocationKey);
     }
 
     @Deprecated
@@ -214,17 +251,21 @@ public abstract class NetworkNode extends SlimefunItem {
         if (nodeType == null){
             return false;
         }
-        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocation);
-        SerializeFriendlyBlockLocation[] registeredLocations = null;
-        switch (nodeType){
-            case BRIDGE -> registeredLocations = coreInfo.bridgeLocations;
-            case MACHINE_CONTAINER -> registeredLocations = coreInfo.containerLocations;
-            case STORAGE -> registeredLocations = coreInfo.storageLocations;
-            default -> {return false;}
-        }
-        if (registeredLocations == null){return false;}
-        for (SerializeFriendlyBlockLocation registeredLocation:registeredLocations){
-            if (Objects.equals(registeredLocation,nodeLocation)){return true;}
+        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+            CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocation);
+            SerializeFriendlyBlockLocation[] registeredLocations = null;
+            switch (nodeType){
+                case BRIDGE -> registeredLocations = coreInfo.bridgeLocations;
+                case MACHINE_CONTAINER -> registeredLocations = coreInfo.containerLocations;
+                case STORAGE -> registeredLocations = coreInfo.storageLocations;
+                default -> {return false;}
+            }
+            if (registeredLocations == null){return false;}
+            for (SerializeFriendlyBlockLocation registeredLocation:registeredLocations){
+                if (Objects.equals(registeredLocation,nodeLocation)){return true;}
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return false;
     }
