@@ -6,28 +6,25 @@ import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRationa
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.RandomizedSet;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.WeightedNode;
-import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.getInUnsafe;
 
-public class RandomizeSetSolving {
+public class RandomizedSetSolving {
 
     private static Field FIELD_RandomizedSet_internalSet = null;
     public static final Map<float[],IntegerRational[]> calculatedMap = new HashMap<>(128);
 
     @Nonnull
-    public static <T> SimplePair<T[], IntegerRational[]> solveRandomizeSet(@Nonnull RandomizedSet<T> randomizedSet,Class<T> tClass){
+    public static <T> SimplePair<T[], IntegerRational[]> solveRandomizedSet(@Nonnull RandomizedSet<T> randomizedSet, Class<T> tClass){
         T[] result = (T[]) Array.newInstance(tClass,randomizedSet.size());
         IntegerRational[] expectations = new IntegerRational[randomizedSet.size()];
         try {

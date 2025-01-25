@@ -4,29 +4,22 @@ import dev.sefiraat.cultivation.api.datatypes.instances.FloraLevelProfile;
 import dev.sefiraat.cultivation.api.slimefun.items.plants.HarvestablePlant;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
-import io.github.ignorelicensescn.minimizefactory.utils.mathutils.Approximation;
-import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.RandomizedSet;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.WeightedNode;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.logging.Level;
 
 import static dev.sefiraat.cultivation.implementation.slimefun.items.Machines.GARDEN_CLOCHE;
-import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags.CultivationFlag;
-import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.getInUnsafe;
-import static io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft.RandomizeSetSolving.solveRandomizeSet;
+import static io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft.RandomizedSetSolving.solveRandomizedSet;
 import static io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 
 public class CultivationSerializedMachineRecipes {
@@ -64,7 +57,7 @@ public class CultivationSerializedMachineRecipes {
 //                                logger.log(Level.WARNING, String.valueOf(METHOD_HarvestablePlant_getHarvestingResults));
                             }
                             RandomizedSet<ItemStack> randomOutput = (RandomizedSet<ItemStack>) METHOD_HarvestablePlant_getHarvestingResults.invoke(plant);
-                            SimplePair<ItemStack[],IntegerRational[]> outputsAndExpectations = solveRandomizeSet(randomOutput, ItemStack.class);
+                            SimplePair<ItemStack[],IntegerRational[]> outputsAndExpectations = solveRandomizedSet(randomOutput, ItemStack.class);
                             SerializedMachine_MachineRecipe serialized =
                             new SerializedMachine_MachineRecipe(
                                     stack.clone()

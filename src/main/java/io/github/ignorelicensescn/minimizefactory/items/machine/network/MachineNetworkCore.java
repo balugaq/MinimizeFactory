@@ -454,70 +454,72 @@ public class MachineNetworkCore extends NetworkNode{
                 });
             }
             case NETWORK_CONTROLLER_UNLOCKING -> {
-                {
-                    CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocationKey);
+                new Thread(()->{
                     {
-                        for (SerializeFriendlyBlockLocation nodeLocationKey:coreInfo.containerLocations){
-                            Location nodeLocation = nodeLocationKey.toLocation();
-                            unlockNode(nodeLocation);
-                            setCoreStatusForNode(NodeType.MACHINE_CONTAINER, nodeLocation);
-                        }
-                    }
-                    {
-                        for (SerializeFriendlyBlockLocation nodeLocationKey:coreInfo.storageLocations){
-                            Location nodeLocation = nodeLocationKey.toLocation();
-                            unlockNode(nodeLocation);
-                            setCoreStatusForNode(NodeType.STORAGE, nodeLocation);
-                        }
-                    }
-                }
-                new Thread() {
-                    @Override
-                    public void run() {
-                        super.run();
                         CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocationKey);
-
-                        List<Location> emptyStorageLocations = new LinkedList<>();
-                        ItemStackMapForOutputCalculation outputMap = new ItemStackMapForOutputCalculation();
-                        for (SerializeFriendlyBlockLocation storageLocationKey:coreInfo.storageLocations){
-                            Location storageLocation = storageLocationKey.toLocation();
-                            if (!MachineNetworkStorage.isValidStorage(storageLocation)){
-                                continue;
-                            }
-                            ItemStack storeItem = MachineNetworkStorage.getStoredItem(storageLocation);
-                            if (storeItem == null){
-                                emptyStorageLocations.add(storageLocation);
-                            }else {
-                                outputMap.put(new ItemStackAsKey(storeItem),storageLocation);
+                        {
+                            for (SerializeFriendlyBlockLocation nodeLocationKey : coreInfo.containerLocations) {
+                                Location nodeLocation = nodeLocationKey.toLocation();
+                                unlockNode(nodeLocation);
+                                setCoreStatusForNode(NodeType.MACHINE_CONTAINER, nodeLocation);
                             }
                         }
-
-                        BigRational[] stablizedOutputAmountsPerTick = coreInfo.stableOutputAmount;
-                        ItemStack[] stabilizedOutputs = coreInfo.stableOutputs;
-                        long lockTime = coreInfo.lockTime;
-                        long timePast = Math.max(0,System.currentTimeMillis()-lockTime);
-                        long tickPast = timePast/500;//slimefun tick
-                        for (int i=0;i<stablizedOutputAmountsPerTick.length;i+=1){
-                            stablizedOutputAmountsPerTick[i] = stablizedOutputAmountsPerTick[i].multiply(tickPast);
-                            BigRational outputAmount = stablizedOutputAmountsPerTick[i];
-                            ItemStackAsKey itemToOutput = new ItemStackAsKey(stabilizedOutputs[i]);
-                            if (!outputMap.containsKey(itemToOutput) && !emptyStorageLocations.isEmpty()){
-                                Location newEmptyContainer = emptyStorageLocations.remove(0);
-                                outputMap.put(itemToOutput,newEmptyContainer);
-                            }else if (emptyStorageLocations.isEmpty()){
-                                continue;
+                        {
+                            for (SerializeFriendlyBlockLocation nodeLocationKey : coreInfo.storageLocations) {
+                                Location nodeLocation = nodeLocationKey.toLocation();
+                                unlockNode(nodeLocation);
+                                setCoreStatusForNode(NodeType.STORAGE, nodeLocation);
                             }
-                            Location containerToOutput = outputMap.get(itemToOutput);
-                            MachineNetworkStorage.setStoredStackNoThrow(containerToOutput,itemToOutput.getTemplate());
-                            MachineNetworkStorage.addStored(containerToOutput,outputAmount);
                         }
-                        clearCoreInputsAndOutputsInfo(coreInfo);
-                        coreInfo.networkStatus = NETWORK_CONTROLLER_ONLINE;
-                        CoreInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(coreInfo,coreLocationKey);
-                        unlockNode(b.getLocation());
-                        refresh(menu, b, NETWORK_CONTROLLER_ONLINE);
                     }
-                }.start();
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocationKey);
+
+                            List<Location> emptyStorageLocations = new LinkedList<>();
+                            ItemStackMapForOutputCalculation outputMap = new ItemStackMapForOutputCalculation();
+                            for (SerializeFriendlyBlockLocation storageLocationKey : coreInfo.storageLocations) {
+                                Location storageLocation = storageLocationKey.toLocation();
+                                if (!MachineNetworkStorage.isValidStorage(storageLocation)) {
+                                    continue;
+                                }
+                                ItemStack storeItem = MachineNetworkStorage.getStoredItem(storageLocation);
+                                if (storeItem == null) {
+                                    emptyStorageLocations.add(storageLocation);
+                                } else {
+                                    outputMap.put(new ItemStackAsKey(storeItem), storageLocation);
+                                }
+                            }
+
+                            BigRational[] stablizedOutputAmountsPerTick = coreInfo.stableOutputAmount;
+                            ItemStack[] stabilizedOutputs = coreInfo.stableOutputs;
+                            long lockTime = coreInfo.lockTime;
+                            long timePast = Math.max(0, System.currentTimeMillis() - lockTime);
+                            long tickPast = timePast / 500;//slimefun tick
+                            for (int i = 0; i < stablizedOutputAmountsPerTick.length; i += 1) {
+                                stablizedOutputAmountsPerTick[i] = stablizedOutputAmountsPerTick[i].multiply(tickPast);
+                                BigRational outputAmount = stablizedOutputAmountsPerTick[i];
+                                ItemStackAsKey itemToOutput = new ItemStackAsKey(stabilizedOutputs[i]);
+                                if (!outputMap.containsKey(itemToOutput) && !emptyStorageLocations.isEmpty()) {
+                                    Location newEmptyContainer = emptyStorageLocations.remove(0);
+                                    outputMap.put(itemToOutput, newEmptyContainer);
+                                } else if (emptyStorageLocations.isEmpty()) {
+                                    continue;
+                                }
+                                Location containerToOutput = outputMap.get(itemToOutput);
+                                MachineNetworkStorage.setStoredStackNoThrow(containerToOutput, itemToOutput.getTemplate());
+                                MachineNetworkStorage.addStored(containerToOutput, outputAmount);
+                            }
+                            clearCoreInputsAndOutputsInfo(coreInfo);
+                            coreInfo.networkStatus = NETWORK_CONTROLLER_ONLINE;
+                            CoreInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(coreInfo, coreLocationKey);
+                            unlockNode(b.getLocation());
+                            refresh(menu, b, NETWORK_CONTROLLER_ONLINE);
+                        }
+                    }.start();
+                }).start();
             }
             case NETWORK_CONTROLLER_DISABLING -> new Thread(){
                 @Override

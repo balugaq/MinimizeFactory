@@ -37,6 +37,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
+import static io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft.RandomizedSetSolving.solveRandomizedSet;
 import static io.github.ignorelicensescn.minimizefactory.utils.searchregistries.SearchRegistries.registerOnScannedSlimefunItemInstanceListener;
 import static io.github.mooy1.infinityexpansion.items.blocks.Blocks.INFINITY_FORGE;
 import static io.github.mooy1.infinityexpansion.items.machines.Machines.*;
@@ -457,16 +458,9 @@ public class InfinityExpansionConsts {
             int energyPerTick = getIntInUnsafe(tier,tier.getClass().getDeclaredField("energy"));
 
             RandomizedSet<ItemStack> drops = (RandomizedSet<ItemStack>) getInUnsafe(card,card.getClass().getDeclaredField("drops"));
-            Map<ItemStack,Float> dropMap = drops.toMap();
-            Set<ItemStack> keys = dropMap.keySet();
-            ItemStack[] output = new ItemStack[keys.size()];
-            IntegerRational[] expectation = new IntegerRational[keys.size()];
-            int counter = 0;
-            for (ItemStack i:keys){
-                output[counter] = i.clone();
-                expectation[counter] = Approximation.find(dropMap.get(i));
-                counter += 1;
-            }
+            SimplePair<ItemStack[],IntegerRational[]> solvedDrops = solveRandomizedSet(drops,ItemStack.class);
+            ItemStack[] output = solvedDrops.first;
+            IntegerRational[] expectation = solvedDrops.second;
             CARDS_INFO.put(card.getId(),new SimpleTri<>(output,expectation,(long)energyPerTick));
             CARDS_INFO_LIST.add(new SimpleFour<>(card.getId(),output,expectation,(long)energyPerTick));
         }
