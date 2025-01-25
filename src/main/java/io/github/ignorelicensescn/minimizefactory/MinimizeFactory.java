@@ -4,6 +4,7 @@ import io.github.acdeasdff.infinityCompress.items.Multiblock_Autocrafter;
 import io.github.ignorelicensescn.minimizefactory.items.Registers;
 import io.github.ignorelicensescn.minimizefactory.sfgroups.Groups;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.SQLiteBlockDataStorageManager;
+import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Cultivation.CultivationSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.DynaTech.DynaTechSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.FNAmp.FNAmplificationSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.FluffyMachines.FluffyMachinesSerializedMachineRecipes;
@@ -138,6 +139,10 @@ public class MinimizeFactory extends AbstractAddon {
             PluginEnabledFlags.FluffyMachinesFlag = true;
             logger.log(Level.INFO,"FluffyMachines Detected");
         }
+        if (Bukkit.getPluginManager().isPluginEnabled("Cultivation")){
+            PluginEnabledFlags.CultivationFlag = true;
+            logger.log(Level.INFO,"Cultivation Detected");
+        }
 
         logger.log(Level.INFO, "Installed plugins Checked.");
 
@@ -185,14 +190,15 @@ public class MinimizeFactory extends AbstractAddon {
                     e.printStackTrace();
                     }
                 }
-                new Thread(() -> {try{
-                    getInfinitySingularities();
-                    getRandomizedItemStackClass();
-                    initInfinityWorkbenchRecipes();
-                    initGearTransformerRecipes();
-                    getStoneworksFactoryRecipes();
-                    getOscillators();
-                } catch (Exception e){e.printStackTrace();}
+                new Thread(() -> {
+                    try{
+                        getInfinitySingularities();
+                        getRandomizedItemStackClass();
+                        initInfinityWorkbenchRecipes();
+                        initGearTransformerRecipes();
+                        getStoneworksFactoryRecipes();
+                        getOscillators();
+                    } catch (Exception e){e.printStackTrace();}
                 }).start();
 
                 InfinityExpansionSerializedMachineRecipes.init();
@@ -249,6 +255,15 @@ public class MinimizeFactory extends AbstractAddon {
                     try{initAutoTableSawRecipes((AutoTableSaw) AUTO_TABLE_SAW.getItem());} catch (Exception e){e.printStackTrace();}
                     FluffyMachinesSerializedMachineRecipes.init();
                 }).start();
+            }
+            if (PluginEnabledFlags.CultivationFlag){
+                new Thread(() -> {
+                    try {
+                        CultivationSerializedMachineRecipes.init();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }).run();
             }
             logger.log(Level.INFO,"Recipe information load thread set.");
         });

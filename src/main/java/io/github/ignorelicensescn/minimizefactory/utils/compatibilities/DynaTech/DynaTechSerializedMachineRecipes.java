@@ -34,7 +34,7 @@ public class DynaTechSerializedMachineRecipes {
                     new SerializedRecipeProvider<StardustReactor>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable StardustReactor m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable StardustReactor m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_StardustReactor(m);
                             return fromMachineFuels(stardustReactorFuels,m.getItem(),null,energyInfo[0]);
@@ -61,7 +61,7 @@ public class DynaTechSerializedMachineRecipes {
                     new SerializedRecipeProvider<CulinaryGenerator>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable CulinaryGenerator m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable CulinaryGenerator m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_CulinaryGenerator(m);
                             return fromMachineFuels(culinaryGeneratorFuels,m.getItem(),null,energyInfo[0]);
@@ -90,7 +90,7 @@ public class DynaTechSerializedMachineRecipes {
                     new SerializedRecipeProvider<>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AbstractElectricMachine m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AbstractElectricMachine m ,@Nullable ItemStack stack) {
                             if (m == null) {return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_AbstractElectricMachine(m);
                             List<MachineRecipe> machineRecipes = growthChamberRecipes.get(m.getClass());

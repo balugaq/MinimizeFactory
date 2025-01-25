@@ -13,7 +13,7 @@ import java.util.List;
 public interface SerializedRecipeProvider<Machine> {
     
     @Nonnull
-    List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Machine m);
+    List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Machine m, @Nullable ItemStack stack);
     @Nullable
     default SimplePair<String,List<String>> getNameAndLoreForRecipe(@Nullable Machine m,SimplePair<SerializedMachine_MachineRecipe,ItemStack> serialized,int index){
         return null;

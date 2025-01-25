@@ -46,7 +46,7 @@ public class SlimefunSerializedMachineRecipes {
                 new SerializedRecipeProvider<ElectricDustWasher>() {
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable ElectricDustWasher m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable ElectricDustWasher m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = findEnergyInfo_ElectricDustWasher(m);
                         List<MachineRecipeWithExpectations> machineRecipes = findRecipes_ElectricDustWasher(m);
@@ -76,7 +76,7 @@ public class SlimefunSerializedMachineRecipes {
 
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable ElectricGoldPan m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable ElectricGoldPan m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = findEnergyInfo_ElectricGoldPan(m);
                         List<MachineRecipeWithExpectations> machineRecipes = findRecipes_ElectricGoldPan(m);
@@ -106,7 +106,7 @@ public class SlimefunSerializedMachineRecipes {
 
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AContainer m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AContainer m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = findEnergyInfo_AContainer(m);
                         List<MachineRecipe> machineRecipes = findRecipes(m);
@@ -136,7 +136,7 @@ public class SlimefunSerializedMachineRecipes {
 
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AGenerator m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AGenerator m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = findEnergyInfo_AGenerator(m);
                         Set<MachineFuel> machineRecipes = findFuels(m);
@@ -204,7 +204,7 @@ public class SlimefunSerializedMachineRecipes {
 
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Reactor reactor) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Reactor reactor ,@Nullable ItemStack stack) {
                         if (reactor == null){return Collections.emptyList();}
                         long[] energyInfo = findEnergyInfo_Reactor(reactor);
                         Set<MachineFuel> machineRecipes = findFuels_Reactor(reactor);
@@ -259,7 +259,7 @@ public class SlimefunSerializedMachineRecipes {
                 new SerializedRecipeProvider<SolarGenerator>() {
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SolarGenerator m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SolarGenerator m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = findEnergyInfo_SolarGenerator(m);
                         return fromSolarGen(m,energyInfo[0],energyInfo[1]);
@@ -287,7 +287,7 @@ public class SlimefunSerializedMachineRecipes {
 //
 //                    @Nonnull
 //                    @Override
-//                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AbstractEntityAssembler m) {
+//                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AbstractEntityAssembler m ,@Nullable ItemStack stack) {
 //                        long[] energyInfo = findEnergyInfo_AbstractEntityAssembler(m);
 //                        List<MachineRecipeOutEntity> machineRecipesOutEntity = findRecipes_AbstractEntityAssembler(m);
 //
@@ -336,7 +336,7 @@ public class SlimefunSerializedMachineRecipes {
                 new SerializedRecipeProvider<FluidPump>() {
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable FluidPump m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable FluidPump m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
                                 m.getItem(),
@@ -368,7 +368,7 @@ public class SlimefunSerializedMachineRecipes {
 
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable EnhancedAutoCrafter m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable EnhancedAutoCrafter m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = new long[]{m.getEnergyConsumption(),1,m.getCapacity()};
                         List<SimplePair<ItemStack[],ItemStack>> machineRecipes = getMultiblockAutocrafterRecipes(m);
@@ -396,7 +396,7 @@ public class SlimefunSerializedMachineRecipes {
 
                     @Nonnull
                     @Override
-                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable VanillaAutoCrafter m) {
+                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable VanillaAutoCrafter m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = new long[]{m.getEnergyConsumption(),1,m.getCapacity()};
 

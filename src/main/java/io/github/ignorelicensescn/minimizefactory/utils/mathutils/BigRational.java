@@ -11,6 +11,8 @@ public record BigRational(@Nonnull BigInteger numerator,@Nonnull BigInteger deno
 {
     public static final BigRational ONE = new BigRational(BigInteger.ONE,BigInteger.ONE);
     public static final BigRational ZERO = new BigRational(BigInteger.ZERO,BigInteger.ONE);
+    public static final BigInteger INTEGER_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
+    public static final BigInteger INTEGER_MIN = BigInteger.valueOf(Integer.MIN_VALUE);
 
     public BigRational(IntegerRational integerRational){
         this(BigInteger.valueOf(integerRational.numerator()),BigInteger.valueOf(integerRational.denominator()));
@@ -189,5 +191,20 @@ public record BigRational(@Nonnull BigInteger numerator,@Nonnull BigInteger deno
             return here.numerator().compareTo(there.numerator());
         }
         return here.numerator().multiply(there.denominator).compareTo(here.denominator.multiply(there.numerator));
+    }
+
+    public boolean canSaveConvertToIntegerRational(){
+        return canNumeratorSaveConvertToIntegerRational()
+                && canDenominatorSaveConvertToIntegerRational();
+    }
+    public boolean canNumeratorSaveConvertToIntegerRational(){
+        return 0 <= numerator.compareTo(INTEGER_MIN) && numerator.compareTo(INTEGER_MAX) <= 0;
+    }
+    public boolean canDenominatorSaveConvertToIntegerRational(){
+        return 0 <= denominator.compareTo(INTEGER_MIN) && denominator.compareTo(INTEGER_MAX) <= 0;
+    }
+
+    public IntegerRational toIntegerRational(){
+        return new IntegerRational(numerator.intValue(),denominator.intValue());
     }
 }

@@ -1,7 +1,12 @@
 package io.github.ignorelicensescn.minimizefactory.utils.mathutils;
 
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+
+import static io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational.BIG_INTEGER_INTEGER_MAX;
 
 /**
  * <p>VERY FAST</p>
@@ -125,7 +130,11 @@ public class Approximation {
             p_b = new_p_b ; q_b = new_q_b;
         }
     }
+    public static int multiplier_float = 10000;
+    public static long multiplier_long = 100000000L;
     public static IntegerRational find(float a){
+        IntegerRational viaBig = findViaBigRational(a);
+
         LongRational longResult = find((double) a);
         if (Integer.MIN_VALUE <= longResult.numerator() && longResult.numerator() <= Integer.MAX_VALUE
                 && Integer.MIN_VALUE <= longResult.denominator() && longResult.denominator() <= Integer.MAX_VALUE){
@@ -135,7 +144,7 @@ public class Approximation {
         int sign = (int) Math.signum(a);
         a = Math.abs(a);
         if (0 < a && a < 1){
-            IntegerRational result = find((int) (a * (1000000000)),1,1000000000);
+            IntegerRational result = find((int) (a * (multiplier_float)),1,multiplier_float);
             result = result.multiply(sign);
             cacheMapForFloat.put(a * sign,result);
             return result;
@@ -201,7 +210,7 @@ public class Approximation {
         int sign = (int) Math.signum(a);
         a = Math.abs(a);
         if (0 < a && a < 1){
-            LongRational result = find((long) (a * 1000000000000000000L),1,1000000000000000000L);
+            LongRational result = find((long) (a * multiplier_long),1,multiplier_long);
             result = result.multiply(sign);
             cacheMapForDouble.put(a * sign,result);
             return result;
@@ -216,6 +225,27 @@ public class Approximation {
             );
             cacheMapForDouble.put(a * sign,dividingPart);
             return dividingPart;
+        }
+    }
+
+    @Nullable
+    public static IntegerRational findViaBigRational(float a){
+        if (Float.isNaN(a) || Float.isInfinite(a)){return null;}
+        BigDecimal decimal = new BigDecimal(a);
+        int exp = Math.getExponent(a);
+        if (exp >= 0){
+            BigInteger numerator = decimal.toBigInteger();
+            if (numerator.compareTo(BIG_INTEGER_INTEGER_MAX) > 0){
+                return null;
+            }
+            return new IntegerRational(numerator.intValue(),1);
+        }
+        else {
+            BigInteger denominator = BigInteger.TWO.pow(exp*(-1));
+            int numerator = (int)(a / Math.pow(2,exp));
+            BigRational rational = new BigRational(BigInteger.valueOf(numerator),denominator).simplify();
+            if (rational.denominator().compareTo(BIG_INTEGER_INTEGER_MAX) > 0){return null;}
+            return new IntegerRational(rational.numerator().intValue(),rational.denominator().intValue());
         }
     }
 }

@@ -40,7 +40,7 @@ public class FNAmplificationSerializedMachineRecipes {
                     new SerializedRecipeProvider<CustomSolarGen>() {
                 @Nonnull
                 @Override
-                public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable CustomSolarGen m) {
+                public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable CustomSolarGen m ,@Nullable ItemStack stack) {
                     if (m == null){return Collections.emptyList();}
                     long[] energyInfo = findEnergyInfo_FNAmp_CustomSolarGen(m);
                     return fromSolarGen(m,energyInfo[0],energyInfo[1]);
@@ -66,7 +66,7 @@ public class FNAmplificationSerializedMachineRecipes {
                     new SerializedRecipeProvider<CustomPowerGen>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable CustomPowerGen m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable CustomPowerGen m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_FNAmp_CustomPowerGen(m);
                             return fromSolarGen(m,energyInfo[0],energyInfo[1]);

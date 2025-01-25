@@ -54,7 +54,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MaterialGenerator m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MaterialGenerator m ,@Nullable ItemStack stack) {
                             if (m == null){return new ArrayList<>();}
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
                             for (MachineRecipe r:findRecipes_MaterialGenerator(m)){
@@ -89,7 +89,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable ResourceSynthesizer m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable ResourceSynthesizer m ,@Nullable ItemStack stack) {
                             if (m == null){return new ArrayList<>();}
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
                             for (MachineRecipe r:findRecipes_ResourceSynthesizer(m)){
@@ -126,7 +126,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SingularityConstructor m)
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SingularityConstructor m,@Nullable ItemStack stack)
                         {
                             if (m == null){return new ArrayList<>();}
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
@@ -166,7 +166,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MachineBlock m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MachineBlock m ,@Nullable ItemStack stack) {
                             if (m == null){return new ArrayList<>();}
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
                             for (MachineRecipeInTicks r:findRecipes_MachineBlock(m)){
@@ -225,7 +225,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                     new SerializedRecipeProvider<GeoQuarry>() {
                         @Override
                         @Nonnull
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable GeoQuarry m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable GeoQuarry m ,@Nullable ItemStack stack) {
                             if (m == null){return new ArrayList<>();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_GeoQuarry(m);
                             return fromBioAndEnvOutputs(geoMinerResourcesInfo_BiomeAndEnvironmentKey_List,m.getItem(),null,energyInfo[0],(int)energyInfo[1]);
@@ -338,7 +338,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Quarry m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Quarry m ,@Nullable ItemStack stack) {
                             if (m == null){return new ArrayList<>();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_Quarry(m);
                             QuarryInfo info = null;
@@ -470,7 +470,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable StoneworksFactory m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable StoneworksFactory m ,@Nullable ItemStack stack) {
                             if (m == null){return new ArrayList<>();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_StoneWorksFactory(m);
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
@@ -503,7 +503,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                     new SerializedRecipeProvider<VoidHarvester>() {
                 @Nonnull
                 @Override
-                public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable VoidHarvester m) {
+                public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable VoidHarvester m ,@Nullable ItemStack stack) {
                     if (m == null){return Collections.emptyList();}
                     long[] energyInfo = getVoidHarvesterEnergyInfo(m);
                     SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
@@ -559,7 +559,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable GrowingMachine m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable GrowingMachine m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_GrowingMachine(m);
                             SimplePair<ItemStack,ItemStack[]>[] recipes = getGrowingMachineOutput(m);
@@ -587,7 +587,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                     new SerializedRecipeProvider<EnergyGenerator>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable EnergyGenerator m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable EnergyGenerator m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_EnergyGenerator(m);
                             String id = m.getId();
@@ -676,7 +676,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                     new SerializedRecipeProvider<InfinityReactor>() {
                 @Nonnull
                 @Override
-                public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable InfinityReactor m) {
+                public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable InfinityReactor m ,@Nullable ItemStack stack) {
                     if (m == null){return Collections.emptyList();}
                     long[] energyInfo = findEnergyInfo_InfinityExpansion_InfinityReactor(m);
                     Set<TweakedMachineFuel> machineFuels = findFuels_InfinityExpansion_InfinityReactor(m);
@@ -727,7 +727,7 @@ public class InfinityExpansionSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MobSimulationChamber m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MobSimulationChamber m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
                             for (SimpleFour<String, ItemStack[],IntegerRational[],Long> cardInfo:CARDS_INFO_LIST){
@@ -763,7 +763,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                     new SerializedRecipeProvider<InfinityWorkbench>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable InfinityWorkbench m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable InfinityWorkbench m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{m.getCapacity(),1,m.getCapacity()};
                             return fromCraftingTableLikeRecipes(INFINITY_WORKBENCH_RECIPES,m.getItem(),null,energyInfo[0]);
@@ -788,7 +788,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                     new SerializedRecipeProvider<GearTransformer>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable GearTransformer m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable GearTransformer m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{m.getCapacity(),1,m.getCapacity()};
                             return fromCraftingTableLikeRecipes(GEAR_TRANSFORMER_RECIPES,m.getItem(),null,energyInfo[0]);

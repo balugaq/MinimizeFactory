@@ -45,7 +45,7 @@ public class InfinityCompressSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGenerator m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGenerator m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityCompress_TweakedGenerator(m);
                             return fromSolarGen(m,energyInfo[0],energyInfo[0]);
@@ -70,7 +70,7 @@ public class InfinityCompressSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedMaterialGenerator m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedMaterialGenerator m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityCompress_TweakedMaterialGenerator( m);
                             List<MachineRecipe> machineRecipes = findRecipes_TweakedMaterialGenerator(m);
@@ -150,7 +150,7 @@ public class InfinityCompressSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGEOQuarry m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGEOQuarry m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_TweakedGeoQuarry(m);
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
@@ -258,7 +258,7 @@ public class InfinityCompressSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGEOQuarry_Filter m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGEOQuarry_Filter m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_TweakedGeoQuarry(m);
                             List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
@@ -311,7 +311,7 @@ public class InfinityCompressSerializedMachineRecipes {
                     new SerializedRecipeProvider<Multiblock_Autocrafter>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Multiblock_Autocrafter m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Multiblock_Autocrafter m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{Multiblock_Autocrafter.ENERGY_CONSUMPTION,1,Multiblock_Autocrafter.CAPACITY};
                             List<SimplePair<ItemStack[],ItemStack>> machineRecipes = getMultiblockAutocrafterRecipes(m);
@@ -337,7 +337,7 @@ public class InfinityCompressSerializedMachineRecipes {
                     new SerializedRecipeProvider<AutoInfinityWorkbench>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoInfinityWorkbench m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoInfinityWorkbench m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{m.getCapacity(),1,m.getCapacity()};
                             return fromInputsAndSingleOutput(INFINITY_WORKBENCH_RECIPES,m,energyInfo[0],1);
@@ -361,7 +361,7 @@ public class InfinityCompressSerializedMachineRecipes {
                     new SerializedRecipeProvider<TweakedGenerator>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGenerator m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGenerator m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{m.getCapacity(),1,m.getCapacity()};
                             return fromCraftingTableLikeRecipes(GEAR_TRANSFORMER_RECIPES,m.getItem(),null,energyInfo[0]);

@@ -30,7 +30,7 @@ public class LiteXpansionSerializedMachineRecipes {
                     new SerializedRecipeProvider<AdvancedSolarPanel>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AdvancedSolarPanel m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AdvancedSolarPanel m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_LiteX_AdvancedSolarPanel(m);
                             return fromSolarGen(m,energyInfo[0],energyInfo[1]);

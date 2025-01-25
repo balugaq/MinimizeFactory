@@ -2,6 +2,8 @@ package io.github.ignorelicensescn.minimizefactory.utils.mathutils;
 
 import javax.annotation.concurrent.Immutable;
 
+import java.math.BigInteger;
+
 import static com.google.common.math.IntMath.gcd;
 
 /**
@@ -15,6 +17,7 @@ public record IntegerRational(int numerator,int denominator,int hash) {
     public static final IntegerRational ONE = new IntegerRational(1,1);
     public static final IntegerRational HALF = new IntegerRational(1,2);
     public static final IntegerRational ZERO = new IntegerRational(0,1);
+    public static final BigInteger BIG_INTEGER_INTEGER_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
 
     public IntegerRational(int numerator,int denominator){
         this(numerator,denominator,numerator+denominator);

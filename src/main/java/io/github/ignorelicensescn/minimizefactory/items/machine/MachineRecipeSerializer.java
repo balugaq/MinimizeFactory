@@ -119,7 +119,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
                         SerializedRecipeProvider<SlimefunItem> rp = (SerializedRecipeProvider<SlimefunItem>) getSerializedRecipeProviderForMachine(sfItem);
                         if (rp != null){
                             menu.replaceExistingItem(statusBorder[0], new CustomItemStack(Material.CYAN_STAINED_GLASS_PANE, List.of(rp.getEnergyInfoWithCheck(sfItem))));
-                            List<SimplePair<SerializedMachine_MachineRecipe,ItemStack>> recipes = rp.getSerializedRecipes(sfItem);
+                            List<SimplePair<SerializedMachine_MachineRecipe,ItemStack>> recipes = rp.getSerializedRecipes(sfItem, cursor.clone());
                             MachineRecipeSerializerInitCrafting.initCraftingRecipes_SerializedRecipes(menu, PageManager.getPage(p), recipes, sfItem,rp);
                             menu.replaceExistingItem(prevAndNext[0], new CustomItemStack(Material.GREEN_STAINED_GLASS_PANE, properties.getReplacedProperty("Test_InfoProvider_PrevPage")));
                             menu.addMenuClickHandler(prevAndNext[0], (pClickedPrev, slotPrev, item, actionPrev) -> {

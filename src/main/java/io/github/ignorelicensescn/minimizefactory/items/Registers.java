@@ -28,6 +28,7 @@ import java.util.List;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_ITEM_STACK_ARRAY;
+import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_STRING_ARRAY;
 import static io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems.*;
 
 /**
@@ -232,7 +233,7 @@ public class Registers {
                         ),null));
         @Nonnull
         @Override
-        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m) {
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m ,@Nullable ItemStack stack) {
             return result;
         }
     };
@@ -255,7 +256,7 @@ public class Registers {
         ),null));
         @Nonnull
         @Override
-        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m) {
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m ,@Nullable ItemStack stack) {
             return result;
         }
     };
@@ -297,7 +298,7 @@ public class Registers {
             "MINIMIZEFACTORY_COBBLESTONE_GENERATOR",
             Material.PISTON,
             properties.getReplacedProperty("Serializable_Cobblestone_Generator"),
-            properties.getReplacedProperty("Serializable_Cobblestone_Generator_Description")
+            properties.getReplacedProperties("Serializable_Cobblestone_Generator_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
     );
     public static final SerializeOnly COBBLESTONE_GENERATOR_FOR_REGISTER = new SerializeOnly(
             Groups.SERIALIZABLE,
@@ -312,14 +313,14 @@ public class Registers {
         final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = Collections.singletonList(new SimplePair<>(new SerializedMachine_MachineRecipe(
                 COBBLESTONE_GENERATOR,
                 new MachineRecipeInTicks(
-                        4,
+                        1,
                         EMPTY_ITEM_STACK_ARRAY,
                         new ItemStack[]{new ItemStack(Material.COBBLESTONE,3)}),
                 0
         ),null));
         @Nonnull
         @Override
-        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m) {
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m ,@Nullable ItemStack stack) {
             return result;
         }
     };

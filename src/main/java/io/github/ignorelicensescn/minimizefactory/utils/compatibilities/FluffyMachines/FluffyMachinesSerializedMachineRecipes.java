@@ -34,7 +34,7 @@ public class FluffyMachinesSerializedMachineRecipes {
                     new SerializedRecipeProvider<AutoTableSaw>() {
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoTableSaw m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoTableSaw m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             List<MachineRecipe> machineRecipes = findRecipes_AutoTableSaw(m);
                             return SerializeMachineRecipeUtils.fromMachineRecipe(machineRecipes,m,AutoTableSaw.ENERGY_CONSUMPTION,1);
@@ -60,7 +60,7 @@ public class FluffyMachinesSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoCrafter m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoCrafter m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{AutoCrafter.ENERGY_CONSUMPTION,1, AutoCrafter.CAPACITY};
                             List<SimplePair<ItemStack[],ItemStack>> machineRecipes = getMultiblockAutocrafterRecipes(m);
@@ -88,7 +88,7 @@ public class FluffyMachinesSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoCraftingTable m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoCraftingTable m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{AutoCraftingTable.ENERGY_CONSUMPTION,1, AutoCraftingTable.CAPACITY};
                             return SerializeMachineRecipeUtils.fromInputsAndSingleOutput(vanillaRecipeArray,m,
@@ -115,7 +115,7 @@ public class FluffyMachinesSerializedMachineRecipes {
 
                         @Nonnull
                         @Override
-                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoAncientAltar m) {
+                        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoAncientAltar m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{AutoAncientAltar.ENERGY_CONSUMPTION,1, AutoAncientAltar.CAPACITY};
                             return SerializeMachineRecipeUtils.fromInputsAndSingleOutput(altarRecipes,m,
