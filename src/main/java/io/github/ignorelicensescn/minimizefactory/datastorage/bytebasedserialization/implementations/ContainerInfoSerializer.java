@@ -19,7 +19,7 @@ import java.io.*;
 import java.sql.Blob;
 
 public class ContainerInfoSerializer implements Serializer<ContainerInfo>, LocationBasedInfoProvider<ContainerInfo>, Initializer<ContainerInfo> {
-    public static final ContainerInfoSerializer INSTANCE = new ContainerInfoSerializer();
+    public static final ThreadLocal<ContainerInfoSerializer> THREAD_LOCAL = new ThreadLocal<>();
     private ContainerInfoSerializer(){}
     private static final NodeType TYPE = NodeType.MACHINE_CONTAINER;
     private  final Kryo kryoInstance = new Kryo(){

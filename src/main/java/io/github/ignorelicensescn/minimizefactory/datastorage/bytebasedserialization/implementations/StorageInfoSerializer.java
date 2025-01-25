@@ -22,7 +22,9 @@ import java.math.BigInteger;
 import java.sql.Blob;
 
 public class StorageInfoSerializer implements Serializer<StorageInfoSerializationWrapper>, LocationBasedInfoProvider<StorageInfo>, Initializer<StorageInfo> {
-    public static final StorageInfoSerializer INSTANCE = new StorageInfoSerializer();
+
+    public static final  ThreadLocal<StorageInfoSerializer> THREAD_LOCAL = new ThreadLocal<>();
+
     private StorageInfoSerializer(){}
     private final Kryo kryoInstance = new Kryo(){
         {

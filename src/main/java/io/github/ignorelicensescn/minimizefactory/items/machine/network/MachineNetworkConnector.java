@@ -50,7 +50,7 @@ public class MachineNetworkConnector extends SlimefunItem {
                                         SerializeFriendlyBlockLocation key = SerializeFriendlyBlockLocation.fromLocation(block.getLocation());
                                         NodeType nodeType = NodeTypeOperator.INSTANCE.get(key);
                                         if (nodeType != NodeType.CONTROLLER){return;}
-                                        CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getFromLocation(key);
+                                        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getFromLocation(key);
                                         if (coreInfo != null){
                                             connectorSettings.coreLocation = LOCATION_SERIALIZER.SerializableToString(block.getLocation());
                                             DataTypeMethods.setCustom(connectorMeta, CONNECTOR_SETTINGS, TYPE, connectorSettings);

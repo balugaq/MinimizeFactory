@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
 
 public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapper>, LocationBasedInfoProvider<CoreInfo>, Initializer<CoreInfo> {
-    public static final CoreInfoSerializer INSTANCE = new CoreInfoSerializer();
+    public static final  ThreadLocal<CoreInfoSerializer> THREAD_LOCAL = new ThreadLocal<>();
     private CoreInfoSerializer(){}
     private static final NodeType TYPE = NodeType.CONTROLLER;
     private  final Kryo kryoInstance = new Kryo(){
@@ -80,7 +80,7 @@ public class CoreInfoSerializer implements Serializer<CoreInfoSerializationWrapp
 
     @Override
     public CoreInfo getOrDefault(SerializeFriendlyBlockLocation location){
-        CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getFromLocation(location);
+        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getFromLocation(location);
         if (coreInfo == null){
             initializeAtLocation(location);
             coreInfo = new CoreInfo();

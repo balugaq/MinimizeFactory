@@ -46,10 +46,10 @@ public abstract class NetworkNode extends SlimefunItem {
 
     public static void initNode(SerializeFriendlyBlockLocation sfLocation,NodeType nodeType){
         switch (nodeType){
-            case STORAGE -> StorageInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
-            case CONTROLLER -> CoreInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
-            case BRIDGE -> BridgeInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
-            case MACHINE_CONTAINER -> ContainerInfoSerializer.INSTANCE.initializeAtLocation(sfLocation);
+            case STORAGE -> StorageInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
+            case CONTROLLER -> CoreInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
+            case BRIDGE -> BridgeInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
+            case MACHINE_CONTAINER -> ContainerInfoSerializer.THREAD_LOCAL.get().initializeAtLocation(sfLocation);
             default -> new Exception("trying to init unexpected node " + nodeType + " at " + sfLocation).printStackTrace();
         }
     }
@@ -140,7 +140,7 @@ public abstract class NetworkNode extends SlimefunItem {
         if (distance < NETWORK_MAX_DISTANCE && !toRegisterForNextRun.isEmpty()){
             registerNodes(sourceLocation,coreLocation,toRegisterForNextRun,registeredOrFailed,valid,distance + 1);
         }else{
-            CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
+            CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocationKey);
             List<SerializeFriendlyBlockLocation> bridges = new ArrayList<>(List.of(coreInfo.bridgeLocations));
             List<SerializeFriendlyBlockLocation> containers = new ArrayList<>(List.of(coreInfo.containerLocations));
             List<SerializeFriendlyBlockLocation> storages = new ArrayList<>(List.of(coreInfo.storageLocations));
@@ -182,7 +182,7 @@ public abstract class NetworkNode extends SlimefunItem {
             coreInfo.bridgeLocations = bridges.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
             coreInfo.containerLocations = containers.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
             coreInfo.storageLocations = storages.toArray(EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY);
-            CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfo,coreLocationKey);
+            CoreInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(coreInfo,coreLocationKey);
             MachineNetworkCore.refresh(BlockStorage.getInventory(coreLocation), coreLocation.getBlock(), NETWORK_CONTROLLER_ONLINE);
         }
     }
@@ -191,7 +191,7 @@ public abstract class NetworkNode extends SlimefunItem {
 
     public static void unregisterNodes(Location coreLocation){
         SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(coreLocation);
-        CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocationKey);
+        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocationKey);
         for (SerializeFriendlyBlockLocation[] keys:new SerializeFriendlyBlockLocation[][]{coreInfo.bridgeLocations, coreInfo.containerLocations, coreInfo.storageLocations}){
             for (SerializeFriendlyBlockLocation nodeKey:keys){
                 CoreLocationOperator.INSTANCE.set(nodeKey,null);
@@ -201,7 +201,7 @@ public abstract class NetworkNode extends SlimefunItem {
         coreInfo.containerLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
         coreInfo.storageLocations = EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
         coreInfo.networkStatus = NETWORK_CONTROLLER_OFFLINE;
-        CoreInfoSerializer.INSTANCE.saveToLocationNoThrow(coreInfo,coreLocationKey);
+        CoreInfoSerializer.THREAD_LOCAL.get().saveToLocationNoThrow(coreInfo,coreLocationKey);
     }
 
     @Deprecated
@@ -214,7 +214,7 @@ public abstract class NetworkNode extends SlimefunItem {
         if (nodeType == null){
             return false;
         }
-        CoreInfo coreInfo = CoreInfoSerializer.INSTANCE.getOrDefault(coreLocation);
+        CoreInfo coreInfo = CoreInfoSerializer.THREAD_LOCAL.get().getOrDefault(coreLocation);
         SerializeFriendlyBlockLocation[] registeredLocations = null;
         switch (nodeType){
             case BRIDGE -> registeredLocations = coreInfo.bridgeLocations;
