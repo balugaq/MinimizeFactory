@@ -64,7 +64,7 @@ public class CultivationSerializedMachineRecipes {
                                 logger.log(Level.WARNING, String.valueOf(METHOD_HarvestablePlant_getHarvestingResults));
                             }
                             RandomizedSet<ItemStack> randomOutput = (RandomizedSet<ItemStack>) METHOD_HarvestablePlant_getHarvestingResults.invoke(plant);
-                            SimplePair<ItemStack[],IntegerRational[]> outputsAndExpectations = solveRandomizeSet(randomOutput);
+                            SimplePair<ItemStack[],IntegerRational[]> outputsAndExpectations = solveRandomizeSet(randomOutput, ItemStack.class);
                             SerializedMachine_MachineRecipe serialized =
                             new SerializedMachine_MachineRecipe(
                                     stack.clone()

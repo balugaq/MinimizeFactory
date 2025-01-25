@@ -9,6 +9,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.WeightedNo
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -24,8 +25,8 @@ public class RandomizeSetSolving {
     private static Field FIELD_RandomizedSet_internalSet = null;
 
     @Nonnull
-    public static <T> SimplePair<T[], IntegerRational[]> solveRandomizeSet(@Nonnull RandomizedSet<T> randomizedSet){
-        T[] result = (T[]) new Object[randomizedSet.size()];
+    public static <T> SimplePair<T[], IntegerRational[]> solveRandomizeSet(@Nonnull RandomizedSet<T> randomizedSet,Class<T> tClass){
+        T[] result = (T[]) Array.newInstance(tClass,randomizedSet.size());
         IntegerRational[] expectations = new IntegerRational[randomizedSet.size()];
         try {
             if (FIELD_RandomizedSet_internalSet == null){
