@@ -69,4 +69,6 @@ public class DynaTechConsts {
         }
         logger.log(Level.INFO,"GrowthChambers fuels loaded.");
     }
+
+    static Field Field_MineralizedApiary_material = null;
 }

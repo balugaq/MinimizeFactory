@@ -209,6 +209,12 @@ public class Registers {
             properties.getReplacedProperty("Serializable_Auto_Cactus"),
             properties.getReplacedProperties("Serializable_Auto_Cactus_Lore_1",ChatColor.GRAY).toArray(EmptyArrays.EMPTY_STRING_ARRAY)
     );
+    public static final SlimefunItemStack AUTO_BAMBOO = new SlimefunItemStack(
+            "MINIMIZEFACTORY_SERIALIZABLE_AUTO_BAMBOO",
+            Material.OBSERVER,
+            properties.getReplacedProperty("Serializable_Auto_Bamboo"),
+            properties.getReplacedProperties("Serializable_Auto_Bamboo_Lore_1",ChatColor.GRAY).toArray(EmptyArrays.EMPTY_STRING_ARRAY)
+    );
     //ticks are slimefun ticks(sft,1sft=10gt)
     public static final SerializeOnly AUTO_SUGAR_CANE_FOR_REGISTER = new SerializeOnly(
             Groups.SERIALIZABLE,
@@ -254,6 +260,34 @@ public class Registers {
                         EMPTY_ITEM_STACK_ARRAY,new ItemStack[]{new ItemStack(Material.CACTUS)}),
                 0
         ),null));
+        @Nonnull
+        @Override
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m ,@Nullable ItemStack stack) {
+            return result;
+        }
+    };
+
+    public static final SerializeOnly AUTO_BAMBOO_FOR_REGISTER = new SerializeOnly(
+            Groups.SERIALIZABLE,
+            AUTO_BAMBOO,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            new ItemStack[]{
+                    new ItemStack(Material.REDSTONE),new ItemStack(Material.OBSERVER),null,
+                    new ItemStack(Material.COBBLESTONE),new ItemStack(Material.PISTON),null,
+                    null,                               new ItemStack(Material.DIRT),new ItemStack(Material.BAMBOO),
+            }
+    ) {
+        final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = Collections.singletonList(
+                new SimplePair<>(
+                        new SerializedMachine_MachineRecipe(
+                                AUTO_BAMBOO,
+                                new MachineRecipeInTicks(
+                                        401,//4096 game-ticks,but 1 slimefun-tick == 10game-ticks
+                                        EMPTY_ITEM_STACK_ARRAY,
+                                        new ItemStack[]{new ItemStack(Material.BAMBOO)}
+                                ),
+                                0
+                        ),null));
         @Nonnull
         @Override
         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m ,@Nullable ItemStack stack) {
