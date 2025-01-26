@@ -15,19 +15,57 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import org.bukkit.Bukkit;
+import stormpot.Allocator;
+import stormpot.Pool;
+import stormpot.Poolable;
+import stormpot.Slot;
 
 import java.io.*;
 import java.sql.Blob;
 
-public class ContainerInfoSerializer implements Serializer<ContainerInfo>, LocationBasedInfoProvider<ContainerInfo>, Initializer<ContainerInfo>, AutoCloseable{
+import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
+
+public class ContainerInfoSerializer implements Serializer<ContainerInfo>,
+        LocationBasedInfoProvider<ContainerInfo>, Initializer<ContainerInfo>,
+        AutoCloseable, Poolable {
     @Override
     public void close() throws Exception {
-        if (!Bukkit.isPrimaryThread()){
-            THREAD_LOCAL.remove();
+        this.release();
+    }
+
+    @Override
+    public void release() {
+        if (slot != null){
+            slot.release(this);
         }
     }
-    public static final ThreadLocal<ContainerInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(ContainerInfoSerializer::new);
-    private ContainerInfoSerializer(){}
+    private static final Allocator<ContainerInfoSerializer> ALLOCATOR = new Allocator<ContainerInfoSerializer>() {
+        @Override
+        public ContainerInfoSerializer allocate(Slot slot) throws Exception {
+            return new ContainerInfoSerializer(slot);
+        }
+
+        @Override
+        public void deallocate(ContainerInfoSerializer poolable) throws Exception {
+            poolable.slot = null;
+        }
+    };
+    private static final Pool<ContainerInfoSerializer> OBJECT_POOL =
+            Pool.from(ALLOCATOR)
+                    .setSize(minimizeFactoryInstance.getConfig().getInt("serializer_object_pool_size",30))
+                    .build();
+    public static ContainerInfoSerializer getInstance(){
+        try {
+            ContainerInfoSerializer instance = OBJECT_POOL.tryClaim();
+            return instance == null?new ContainerInfoSerializer(null):instance;
+        }catch (Exception e){
+            return new ContainerInfoSerializer(null);
+        }
+    }
+    private ContainerInfoSerializer(Slot slot){
+        this.slot = slot;
+    }
+    private Slot slot;
     private static final NodeType TYPE = NodeType.MACHINE_CONTAINER;
     private  final Kryo kryoInstance = new Kryo(){
         {

@@ -22,13 +22,13 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
+import stormpot.Timeout;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.logging.Level;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.*;
-import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_ITEM_STACK_ARRAY;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_SERIALIZE_FRIENDLY_LOCATION_ARRAY;
 import static io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeKeys.*;
 
@@ -47,28 +47,29 @@ public abstract class NetworkNode extends SlimefunItem {
     public static void initNode(SerializeFriendlyBlockLocation sfLocation,NodeType nodeType){
         switch (nodeType){
             case STORAGE -> {
-                try (StorageInfoSerializer storageInfoSerializer= StorageInfoSerializer.THREAD_LOCAL.get()){
+                try (StorageInfoSerializer storageInfoSerializer= StorageInfoSerializer.getInstance()){
                     storageInfoSerializer.initializeAtLocation(sfLocation);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
             case CONTROLLER -> {
-                try (CoreInfoSerializer coreInfoSerializer= CoreInfoSerializer.THREAD_LOCAL.get()){
+                try (CoreInfoSerializer coreInfoSerializer= CoreInfoSerializer.getInstance()){
                     coreInfoSerializer.initializeAtLocation(sfLocation);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
             case BRIDGE -> {
-                try (BridgeInfoSerializer bridgeInfoSerializer= BridgeInfoSerializer.THREAD_LOCAL.get()){
+                try (BridgeInfoSerializer bridgeInfoSerializer= BridgeInfoSerializer.getInstance()
+                ){
                     bridgeInfoSerializer.initializeAtLocation(sfLocation);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
             case MACHINE_CONTAINER -> {
-                try (ContainerInfoSerializer containerInfoSerializer= ContainerInfoSerializer.THREAD_LOCAL.get()){
+                try (ContainerInfoSerializer containerInfoSerializer= ContainerInfoSerializer.getInstance()){
                     containerInfoSerializer.initializeAtLocation(sfLocation);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -165,7 +166,7 @@ public abstract class NetworkNode extends SlimefunItem {
             registerNodes(sourceLocation,coreLocation,toRegisterForNextRun,registeredOrFailed,valid,distance + 1);
         }else
         {
-            try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get())
+            try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance())
             {
                 CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                 List<SerializeFriendlyBlockLocation> bridges = new ArrayList<>(List.of(coreInfo.bridgeLocations));
@@ -224,7 +225,7 @@ public abstract class NetworkNode extends SlimefunItem {
 
     public static void unregisterNodes(Location coreLocation){
         SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(coreLocation);
-        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
             CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
             for (SerializeFriendlyBlockLocation[] keys:new SerializeFriendlyBlockLocation[][]{coreInfo.bridgeLocations, coreInfo.containerLocations, coreInfo.storageLocations}){
                 for (SerializeFriendlyBlockLocation nodeKey:keys){
@@ -251,7 +252,7 @@ public abstract class NetworkNode extends SlimefunItem {
         if (nodeType == null){
             return false;
         }
-        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
             CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocation);
             SerializeFriendlyBlockLocation[] registeredLocations = null;
             switch (nodeType){

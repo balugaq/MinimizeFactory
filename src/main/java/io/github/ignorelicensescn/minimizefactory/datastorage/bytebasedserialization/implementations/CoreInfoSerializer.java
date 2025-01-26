@@ -19,23 +19,60 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Ser
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
 import org.bukkit.Bukkit;
+import stormpot.Allocator;
+import stormpot.Pool;
+import stormpot.Poolable;
+import stormpot.Slot;
 
 import java.io.*;
 import java.math.BigInteger;
 
+import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
+
 public class CoreInfoSerializer implements
         Serializer<CoreInfoSerializationWrapper>,
         LocationBasedInfoProvider<CoreInfo>,
-        Initializer<CoreInfo>, AutoCloseable{
+        Initializer<CoreInfo>, 
+        AutoCloseable,
+        Poolable {
     @Override
     public void close() throws Exception {
-        if (!Bukkit.isPrimaryThread()){
-            THREAD_LOCAL.remove();
-        }
+        this.release();
     }
 
-    public static final ThreadLocal<CoreInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(CoreInfoSerializer::new);
-    private CoreInfoSerializer(){}
+    @Override
+    public void release() {
+        if (slot != null){
+            slot.release(this);
+        }
+    }
+    private static final Allocator<CoreInfoSerializer> ALLOCATOR = new Allocator<>() {
+        @Override
+        public CoreInfoSerializer allocate(Slot slot) throws Exception {
+            return new CoreInfoSerializer(slot);
+        }
+
+        @Override
+        public void deallocate(CoreInfoSerializer poolable) throws Exception {
+            poolable.slot = null;
+        }
+    };
+    private static final Pool<CoreInfoSerializer> OBJECT_POOL =
+            Pool.from(ALLOCATOR)
+                    .setSize(minimizeFactoryInstance.getConfig().getInt("serializer_object_pool_size",30))
+                    .build();
+    public static CoreInfoSerializer getInstance(){
+        try {
+            CoreInfoSerializer instance = OBJECT_POOL.tryClaim();
+            return instance == null?new CoreInfoSerializer(null):instance;
+        }catch (Exception e){
+            return new CoreInfoSerializer(null);
+        }
+    }
+    private CoreInfoSerializer(Slot slot){
+        this.slot = slot;
+    }
+    private Slot slot;
     private static final NodeType TYPE = NodeType.CONTROLLER;
     private  final Kryo kryoInstance = new Kryo(){
         {

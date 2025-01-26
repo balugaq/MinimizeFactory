@@ -16,24 +16,56 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.StorageInfo;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import org.bukkit.Bukkit;
+import stormpot.Allocator;
+import stormpot.Pool;
+import stormpot.Poolable;
+import stormpot.Slot;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.sql.Blob;
 
-public class StorageInfoSerializer implements Serializer<StorageInfoSerializationWrapper>, LocationBasedInfoProvider<StorageInfo>, Initializer<StorageInfo> , AutoCloseable{
+import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
+
+public class StorageInfoSerializer implements Serializer<StorageInfoSerializationWrapper>, LocationBasedInfoProvider<StorageInfo>, Initializer<StorageInfo> , AutoCloseable,
+        Poolable {
     @Override
     public void close() throws Exception {
-        if (!Bukkit.isPrimaryThread()){
-            THREAD_LOCAL.remove();
+        this.release();
+    }
+
+    @Override
+    public void release() {
+        if (slot != null){
+            slot.release(this);
         }
     }
-    public static final  ThreadLocal<StorageInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(StorageInfoSerializer::new);
+    private static final Allocator<StorageInfoSerializer> ALLOCATOR = new Allocator<>() {
+        @Override
+        public StorageInfoSerializer allocate(Slot slot) throws Exception {
+            return new StorageInfoSerializer(slot);
+        }
 
-    private StorageInfoSerializer(){}
+        @Override
+        public void deallocate(StorageInfoSerializer poolable) throws Exception {
+            poolable.slot = null;
+        }
+    };
+    private static final Pool<StorageInfoSerializer> OBJECT_POOL =
+            Pool.from(ALLOCATOR)
+                    .setSize(minimizeFactoryInstance.getConfig().getInt("serializer_object_pool_size",30))
+                    .build();
+    public static StorageInfoSerializer getInstance(){
+        try {
+            StorageInfoSerializer instance = OBJECT_POOL.tryClaim();
+            return instance == null?new StorageInfoSerializer(null):instance;
+        }catch (Exception e){
+            return new StorageInfoSerializer(null);
+        }
+    }
+    private StorageInfoSerializer(Slot slot){
+        this.slot = slot;
+    }
+    private Slot slot;
     private final Kryo kryoInstance = new Kryo(){
         {
             register(byte.class);

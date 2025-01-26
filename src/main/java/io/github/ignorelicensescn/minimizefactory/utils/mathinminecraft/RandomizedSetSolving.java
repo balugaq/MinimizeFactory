@@ -12,10 +12,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Level;
 
+import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
 import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.getInUnsafe;
 
 public class RandomizedSetSolving {
@@ -25,36 +25,48 @@ public class RandomizedSetSolving {
 
     @Nonnull
     public static <T> SimplePair<T[], IntegerRational[]> solveRandomizedSet(@Nonnull RandomizedSet<T> randomizedSet, Class<T> tClass){
-        T[] result = (T[]) Array.newInstance(tClass,randomizedSet.size());
-        IntegerRational[] expectations = new IntegerRational[randomizedSet.size()];
+
         try {
             if (FIELD_RandomizedSet_internalSet == null){
                 FIELD_RandomizedSet_internalSet = randomizedSet.getClass().getDeclaredField("internalSet");
             }
             Set<WeightedNode<T>> weightedNodes = (Set<WeightedNode<T>>) getInUnsafe(randomizedSet,FIELD_RandomizedSet_internalSet);
 
-            int minExp = 129;
-            float[] key = new float[weightedNodes.size()];
-            int keyCounter = 0;
+            List<WeightedNode<T>> weightedNodesCleared = new ArrayList<>(weightedNodes.size());
             for (WeightedNode<T> node:weightedNodes){
+                if (node.getWeight() != 0){
+                    weightedNodesCleared.add(node);
+                }
+            }
+
+            T[] result = (T[]) Array.newInstance(tClass,weightedNodesCleared.size());
+            IntegerRational[] expectations = new IntegerRational[weightedNodesCleared.size()];
+            int minExp = 129;
+            float[] key = new float[weightedNodesCleared.size()];
+            int keyCounter = 0;
+            for (WeightedNode<T> node:weightedNodesCleared){
                 result[keyCounter] = node.getObject();
                 int currentExp = Math.getExponent(node.getWeight());
                 minExp = Math.min(minExp,currentExp);
                 key[keyCounter] = node.getWeight();
                 keyCounter += 1;
             }
+            Arrays.sort(key);
             IntegerRational[] tryGetResult = calculatedMap.getOrDefault(key,null);
             if (tryGetResult != null){
                 return new SimplePair<>(result,tryGetResult);
             }
             BigInteger gcd = BigInteger.ZERO;
             int counter = 0;
-            BigInteger[] nums = new BigInteger[randomizedSet.size()];
+            BigInteger[] nums = new BigInteger[weightedNodesCleared.size()];
             BigInteger total = BigInteger.ZERO;
 
             BigInteger binaryZeroes = minExp >= 0 ?BigInteger.TWO.pow(minExp):BigInteger.TWO.pow(minExp*(-1));
-            for (WeightedNode<T> node:weightedNodes){
-                int intPart = (int) (node.getWeight() / Math.pow(2,minExp));
+
+            //            logger.log(Level.WARNING,"solving set"+weightedNodesCleared);
+            for (WeightedNode<T> node:weightedNodesCleared){
+//                logger.log(Level.WARNING, Integer.toBinaryString(Float.floatToRawIntBits(node.getWeight())));
+                int intPart = (int) (node.getWeight() / Math.pow(2.,minExp));
                 BigInteger current = BigInteger.valueOf(intPart);
                 if(minExp >=0){
                     current = current.divide(binaryZeroes);
@@ -89,15 +101,18 @@ public class RandomizedSetSolving {
                 }
             }
             calculatedMap.put(key,expectations);
+            return new SimplePair<>(result,expectations);
         }catch (Exception e){
             e.printStackTrace();
+            T[] result = (T[]) Array.newInstance(tClass,randomizedSet.size());
+            IntegerRational[] expectations = new IntegerRational[randomizedSet.size()];
             int counter = 0;
             for (Map.Entry<T,Float> weightedItem:randomizedSet.toMap().entrySet()){
                 result[counter] = weightedItem.getKey();
                 expectations[counter] = Approximation.find(weightedItem.getValue());
                 counter += 1;
             }
+            return new SimplePair<>(result,expectations);
         }
-        return new SimplePair<>(result,expectations);
     }
 }

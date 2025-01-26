@@ -47,7 +47,7 @@ public class MachineNetworkConnector extends SlimefunItem {
                         if (p.isSneaking()){
                             e.getClickedBlock().ifPresentOrElse(
                                     block -> {
-                                        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                                        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                                             SerializeFriendlyBlockLocation key = SerializeFriendlyBlockLocation.fromLocation(block.getLocation());
                                             NodeType nodeType = NodeTypeOperator.INSTANCE.get(key);
                                             if (nodeType != NodeType.CONTROLLER) {

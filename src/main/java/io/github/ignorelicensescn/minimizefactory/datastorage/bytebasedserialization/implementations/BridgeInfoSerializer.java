@@ -3,8 +3,6 @@ package io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserializ
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.util.DefaultClassResolver;
-import com.esotericsoftware.kryo.util.HashMapReferenceResolver;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Initializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.LocationBasedInfoProvider;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Serializer;
@@ -15,20 +13,51 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
-import org.bukkit.Bukkit;
+import stormpot.*;
 
 import java.io.*;
-import java.sql.Blob;
 
-public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBasedInfoProvider<NodeInfo>, Initializer<NodeInfo>, AutoCloseable{
+import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
+
+public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBasedInfoProvider<NodeInfo>, Initializer<NodeInfo>, AutoCloseable, Poolable {
     @Override
     public void close() throws Exception {
-        if (!Bukkit.isPrimaryThread()){
-            THREAD_LOCAL.remove();
+        this.release();
+    }
+
+    @Override
+    public void release() {
+        if (slot != null){
+            slot.release(this);
         }
     }
-    public static final ThreadLocal<BridgeInfoSerializer> THREAD_LOCAL = ThreadLocal.withInitial(BridgeInfoSerializer::new);
-    private BridgeInfoSerializer(){}
+    private static final Allocator<BridgeInfoSerializer> ALLOCATOR = new Allocator<BridgeInfoSerializer>() {
+        @Override
+        public BridgeInfoSerializer allocate(Slot slot) throws Exception {
+            return new BridgeInfoSerializer(slot);
+        }
+
+        @Override
+        public void deallocate(BridgeInfoSerializer poolable) throws Exception {
+            poolable.slot = null;
+        }
+    };
+    private static final Pool<BridgeInfoSerializer> OBJECT_POOL =
+            Pool.from(ALLOCATOR)
+                    .setSize(minimizeFactoryInstance.getConfig().getInt("serializer_object_pool_size",30))
+                    .build();
+    public static BridgeInfoSerializer getInstance(){
+        try {
+            BridgeInfoSerializer instance = OBJECT_POOL.tryClaim();
+            return instance == null?new BridgeInfoSerializer(null):instance;
+        }catch (Exception e){
+            return new BridgeInfoSerializer(null);
+        }
+    }
+    private BridgeInfoSerializer(Slot slot){
+        this.slot = slot;
+    }
+    private Slot slot;
     private static final NodeType TYPE = NodeType.BRIDGE;
 
     private final Kryo kryoInstance = new Kryo(){
@@ -104,4 +133,5 @@ public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBased
         NodeTypeOperator.INSTANCE.set(location,TYPE);
         saveToLocationNoThrow(new NodeInfo(),location);
     }
+
 }

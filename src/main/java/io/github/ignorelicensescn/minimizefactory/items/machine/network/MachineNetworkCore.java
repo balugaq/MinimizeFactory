@@ -41,6 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.logging.Level;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.*;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_BIG_RATIONAL_ARRAY;
@@ -120,7 +121,7 @@ public class MachineNetworkCore extends NetworkNode{
         @Override
         @ParametersAreNonnullByDefault
         public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
-            try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+            try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                 SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(e.getBlock().getLocation());
                 CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                 if (!Objects.equals(coreInfo.networkStatus, NETWORK_CONTROLLER_OFFLINE)){
@@ -154,7 +155,7 @@ public class MachineNetworkCore extends NetworkNode{
                 if (!LocationBasedColumnAdder.INSTANCE.checkExistence(coreLocationKey)){
                     initNode(coreLocationKey,NodeType.CONTROLLER);
                 }
-                try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                     CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                     refresh(menu,b, coreInfo.networkStatus);
                 }catch (Exception e){
@@ -185,7 +186,7 @@ public class MachineNetworkCore extends NetworkNode{
         SerializeFriendlyBlockLocation coreLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
 
         if (!Objects.equals(status,NETWORK_CONTROLLER_LOCKING) && !Objects.equals(status,NETWORK_CONTROLLER_UNLOCKING)) {//prevent deadlock
-            try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()) {
+            try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()) {
                 CoreInfo coreInfoForSettingStatus = coreInfoSerializer.getOrDefault(coreLocationKey);
                 coreInfoForSettingStatus.networkStatus = status;
                 coreInfoSerializer.saveToLocationNoThrow(coreInfoForSettingStatus, coreLocationKey);
@@ -223,7 +224,7 @@ public class MachineNetworkCore extends NetworkNode{
                     }
                     lastConnectorUsedTime = current;
                     PlayerLastConnectorUsedTime.put(playerUUID,current);
-                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                         CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                         coreInfo.networkStatus = NETWORK_CONTROLLER_STARTING;
                         coreInfoSerializer.saveToLocationNoThrow(coreInfo, coreLocationKey);
@@ -244,7 +245,7 @@ public class MachineNetworkCore extends NetworkNode{
                 menu.addMenuClickHandler(BUTTON_ESTABLISH_MACHINE_NETWORK,ChestMenuUtils.getEmptyClickHandler());
                 menu.replaceExistingItem(BUTTON_LOCK_MACHINE_NETWORK, ITEM_LOCK_MACHINE_NETWORK.clone());
                 menu.addMenuClickHandler(BUTTON_LOCK_MACHINE_NETWORK, (p, slot, item, action) -> {
-                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                         CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                         coreInfo.networkStatus = NETWORK_CONTROLLER_LOCKING;
                         coreInfo.lockTime = System.currentTimeMillis();
@@ -280,7 +281,7 @@ public class MachineNetworkCore extends NetworkNode{
                     menu.addMenuClickHandler(BUTTON_TERMINATE_MACHINE_NETWORK, ChestMenuUtils.getEmptyClickHandler());
 
 
-                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                         CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                         coreInfo.networkStatus = NETWORK_CONTROLLER_DISABLING;
                         coreInfoSerializer.saveToLocationNoThrow(coreInfo, coreLocationKey);
@@ -302,7 +303,7 @@ public class MachineNetworkCore extends NetworkNode{
                 lockNode(b.getLocation());
                 new Thread(() -> {
                     //lockNodes
-                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                         CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                         {
                             for (SerializeFriendlyBlockLocation nodeLocationKey:coreInfo.containerLocations){
@@ -325,7 +326,7 @@ public class MachineNetworkCore extends NetworkNode{
                     //calculate inputs and outputs
                     new Thread(() ->
                     {
-                        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get())
+                        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance())
                         {
                             CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
 
@@ -488,7 +489,7 @@ public class MachineNetworkCore extends NetworkNode{
             }
             case NETWORK_CONTROLLER_UNLOCKING -> {
                 new Thread(()->{
-                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                         CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
                         {
                             for (SerializeFriendlyBlockLocation nodeLocationKey : coreInfo.containerLocations) {
@@ -508,7 +509,7 @@ public class MachineNetworkCore extends NetworkNode{
                         e.printStackTrace();
                     }
                     new Thread(() -> {
-                        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                        try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                             CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
 
                             List<Location> emptyStorageLocations = new LinkedList<>();
@@ -541,6 +542,10 @@ public class MachineNetworkCore extends NetworkNode{
                                 } else if (emptyStorageLocations.isEmpty()) {
                                     continue;
                                 }
+                                if (outputAmount.numerator().compareTo(outputAmount.denominator()) < 0){
+                                    continue;
+                                }
+//                                logger.log(Level.WARNING,"output:"+itemToOutput);
                                 Location containerToOutput = outputMap.get(itemToOutput);
                                 MachineNetworkStorage.setStoredStackNoThrow(containerToOutput, itemToOutput.getTemplate());
                                 MachineNetworkStorage.addStored(containerToOutput, outputAmount);
@@ -558,7 +563,7 @@ public class MachineNetworkCore extends NetworkNode{
                 @Override
                 public void run() {
                     super.run();
-                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.THREAD_LOCAL.get()){
+                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
                         lockNode(b.getLocation());
                         unregisterNodes(b.getLocation());
                         unlockNode(b.getLocation());

@@ -51,6 +51,11 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.48.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.chrisvest</groupId>
+            <artifactId>stormpot</artifactId>
+            <version>3.2</version>
+        </dependency>
 <!--        end getting angry-->
 
 <!--        compiled Slimefun RC-37 locally to give some annotations for myself,see my repos:RemovedBySFCNInspection and Slimefun4-RC-37-modified-->

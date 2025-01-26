@@ -68,7 +68,7 @@ public class MachineNetworkStorage extends NetworkNode{
     private static final BlockBreakHandler STORAGE_BREAK_HANDLER = new BlockBreakHandler(false, false) {
         @Override
         public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
-            try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+            try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
                 Block b = e.getBlock();
                 Player p = e.getPlayer();
 
@@ -200,7 +200,7 @@ public class MachineNetworkStorage extends NetworkNode{
 
             @Override
             public void newInstance(@Nonnull BlockMenu menu, @Nonnull Block b) {
-                try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+                try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
                     buildMenu(menu, b, storageInfoSerializer);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -346,7 +346,7 @@ public class MachineNetworkStorage extends NetworkNode{
         }
         else {
             SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-            try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+            try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
                 StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
                 if (storedCompareToZero > 0 && ItemStackUtil.isItemStackSimilar(storageInfo.storeItem, item)) {
                     storeItem(b, inv, slot, item, stored);
@@ -360,7 +360,7 @@ public class MachineNetworkStorage extends NetworkNode{
 
     static void pushOutput(BlockMenu inv, Block b) {
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
             ItemStack displayItem = storageInfo.storeItem;
             if (displayItem != null && displayItem.getType() != Material.BARRIER) {
@@ -395,7 +395,7 @@ public class MachineNetworkStorage extends NetworkNode{
 
     private static void registerItem(Block b, BlockMenu inv, int slot, ItemStack item, BigInteger stored) {
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
             storageInfo.storeItem = item;
             storageInfo.storeAmount = stored;
@@ -407,10 +407,13 @@ public class MachineNetworkStorage extends NetworkNode{
 
     public static void setStoredStackNoThrow(Location l, ItemStack item){
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
-            storageInfo.storeItem = item;
-            storageInfoSerializer.saveToLocationNoThrow(storageInfo, storageLocationKey);
+            if (!ItemStackUtil.isItemStackSimilar(storageInfo.storeItem,item)){
+                storageInfo.storeItem = item;
+                storageInfo.storeAmount = BigInteger.ZERO;
+                storageInfoSerializer.saveToLocationNoThrow(storageInfo, storageLocationKey);
+            }
         }catch (Exception e){e.printStackTrace();}
         BlockStorage.getInventory(l).replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
     }
@@ -432,7 +435,7 @@ public class MachineNetworkStorage extends NetworkNode{
     public static void updateMenu(Block b, BlockMenu inv, boolean force) {
 
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
             ItemStack storedItem = storageInfo.storeItem;
 
@@ -459,7 +462,7 @@ public class MachineNetworkStorage extends NetworkNode{
     public static void checkEmpty(Block b,BlockMenu inv){
         BigInteger stored = getStored(b);
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()){
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
             if (stored.compareTo(BigInteger.ZERO) == 0) {
                 inv.replaceExistingItem(DISPLAY_SLOT, EMPTY_ITEM);
@@ -474,7 +477,7 @@ public class MachineNetworkStorage extends NetworkNode{
     public void insertAll(Player p, BlockMenu menu, Block b) {
 
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()) {
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
             ItemStack storedItem = storageInfo.storeItem;
 
@@ -596,7 +599,7 @@ public class MachineNetworkStorage extends NetworkNode{
     }
     public static BigInteger getStored(Location l) {
         SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()) {
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
             return storageInfo.storeAmount;
         }catch (Exception e){
@@ -607,7 +610,7 @@ public class MachineNetworkStorage extends NetworkNode{
 
     public static void setStored(Location l, BigInteger amount) {
         SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()) {
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
             storageInfo.storeAmount = amount;
             storageInfoSerializer.saveToLocationNoThrow(storageInfo, locationKey);
@@ -621,7 +624,7 @@ public class MachineNetworkStorage extends NetworkNode{
     }
     public static void addStored(Location l,BigInteger amount){
         SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get()) {
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()) {
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
             storageInfo.storeAmount = storageInfo.storeAmount.add(amount);
             storageInfoSerializer.saveToLocationNoThrow(storageInfo,locationKey);
@@ -644,7 +647,7 @@ public class MachineNetworkStorage extends NetworkNode{
     }
     public static ItemStack getStoredItem(Location l) {
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.THREAD_LOCAL.get())  {
+        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance())  {
             StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
             ItemStack result = storageInfo.storeItem;
             if (ItemStackUtil.isItemStackSimilar(result,EMPTY_ITEM)){return null;}
