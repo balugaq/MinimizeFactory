@@ -405,7 +405,7 @@ public class MachineNetworkCore extends NetworkNode{
                                 for (Map.Entry<ItemStackAsKey, BigRational> outputEntry : map.entrySet()) {
                                     stableOutputArr[counter] = outputEntry.getKey().getTemplate();
                                     stableOutputAmount[counter] = outputEntry.getValue();
-                                    stableOutputLore.add(NameUtil.findName(stableOutputArr[counter]) + stableOutputAmount[counter]);
+                                    stableOutputLore.add(NameUtil.findName(stableOutputArr[counter]) + " | " + stableOutputAmount[counter]);
                                     counter += 1;
                                 }
                                 //serialize

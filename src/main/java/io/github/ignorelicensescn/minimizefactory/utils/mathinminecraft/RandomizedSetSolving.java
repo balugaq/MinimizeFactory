@@ -36,10 +36,17 @@ public class RandomizedSetSolving {
 
             T[] result = (T[]) Array.newInstance(tClass,weightedNodes.size());
             IntegerRational[] expectations = new IntegerRational[weightedNodes.size()];
-            //just no fancy things
+            BigRational total = BigRational.ZERO;
+            BigRational[] rationals = new BigRational[weightedNodes.size()];
             for (int i=0;i<weightedNodes.size();i+=1){
                 WeightedNode<T> node = weightedNodes.get(i);
-                BigRational currentRational = BigRational.valueOf(node.getWeight()).simplify();
+                BigRational currentRational = BigRational.valueOf(node.getWeight());
+                rationals[i] = currentRational;
+                total = total.add(currentRational);
+            }
+            for (int i=0;i<weightedNodes.size();i+=1){
+                WeightedNode<T> node = weightedNodes.get(i);
+                BigRational currentRational = rationals[i].divide(total).simplify();
                 if (currentRational.canSaveConvertToIntegerRational()){
                     expectations[i] = currentRational.toIntegerRational();
                 }else {
