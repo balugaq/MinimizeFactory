@@ -15,13 +15,11 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Nod
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import org.bukkit.Bukkit;
-import stormpot.Allocator;
-import stormpot.Pool;
-import stormpot.Poolable;
-import stormpot.Slot;
+import stormpot.*;
 
 import java.io.*;
 import java.sql.Blob;
+import java.util.concurrent.TimeUnit;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
 
@@ -54,9 +52,10 @@ public class ContainerInfoSerializer implements Serializer<ContainerInfo>,
             Pool.from(ALLOCATOR)
                     .setSize(minimizeFactoryInstance.getConfig().getInt("serializer_object_pool_size",30))
                     .build();
+    public static final Timeout timeout = new Timeout(3, TimeUnit.SECONDS);
     public static ContainerInfoSerializer getInstance(){
         try {
-            ContainerInfoSerializer instance = OBJECT_POOL.tryClaim();
+            ContainerInfoSerializer instance = OBJECT_POOL.claim(timeout);
             return instance == null?new ContainerInfoSerializer(null):instance;
         }catch (Exception e){
             return new ContainerInfoSerializer(null);

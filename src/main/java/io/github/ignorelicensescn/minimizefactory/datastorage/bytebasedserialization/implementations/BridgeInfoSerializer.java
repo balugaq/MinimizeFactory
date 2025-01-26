@@ -16,6 +16,7 @@ import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import stormpot.*;
 
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
 
@@ -46,9 +47,10 @@ public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBased
             Pool.from(ALLOCATOR)
                     .setSize(minimizeFactoryInstance.getConfig().getInt("serializer_object_pool_size",30))
                     .build();
+    public static final Timeout timeout = new Timeout(3, TimeUnit.SECONDS);
     public static BridgeInfoSerializer getInstance(){
         try {
-            BridgeInfoSerializer instance = OBJECT_POOL.tryClaim();
+            BridgeInfoSerializer instance = OBJECT_POOL.claim(timeout);
             return instance == null?new BridgeInfoSerializer(null):instance;
         }catch (Exception e){
             return new BridgeInfoSerializer(null);
