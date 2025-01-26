@@ -14,6 +14,22 @@ public record BigRational(@Nonnull BigInteger numerator,@Nonnull BigInteger deno
     public static final BigInteger INTEGER_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     public static final BigInteger INTEGER_MIN = BigInteger.valueOf(Integer.MIN_VALUE);
 
+    public BigRational(BigInteger numerator) {
+        this(numerator,BigInteger.ONE);
+    }
+
+
+
+    public static BigRational valueOf(float f){
+        int exp = Math.getExponent(f);
+        int numerator = (int) (f / Math.pow(2.,exp));
+        if (exp < 0){
+            return new BigRational(BigInteger.valueOf(numerator),BigInteger.TWO.pow(exp*(-1)));
+        }else {
+            return new BigRational(BigInteger.TWO.pow(exp).multiply(BigInteger.valueOf(numerator)));
+        }
+    }
+
     public BigRational(IntegerRational integerRational){
         this(BigInteger.valueOf(integerRational.numerator()),BigInteger.valueOf(integerRational.denominator()));
     }
@@ -161,6 +177,7 @@ public record BigRational(@Nonnull BigInteger numerator,@Nonnull BigInteger deno
     }
     @Override
     public String toString() {
+        if (denominator.equals(BigInteger.ONE)){return numerator.toString();}
         return numerator + "/" + denominator;
     }
     @Override

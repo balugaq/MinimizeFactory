@@ -16,91 +16,38 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
+import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_INTEGER_RATIONAL_ARRAY;
 import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.getInUnsafe;
 
 public class RandomizedSetSolving {
 
     private static Field FIELD_RandomizedSet_internalSet = null;
-    public static final Map<float[],IntegerRational[]> calculatedMap = new HashMap<>(128);
-
     @Nonnull
     public static <T> SimplePair<T[], IntegerRational[]> solveRandomizedSet(@Nonnull RandomizedSet<T> randomizedSet, Class<T> tClass){
-
+        if (randomizedSet.isEmpty()){
+            return new SimplePair<>((T[])Array.newInstance(tClass,0),EMPTY_INTEGER_RATIONAL_ARRAY);
+        }
         try {
             if (FIELD_RandomizedSet_internalSet == null){
                 FIELD_RandomizedSet_internalSet = randomizedSet.getClass().getDeclaredField("internalSet");
             }
-            Set<WeightedNode<T>> weightedNodes = (Set<WeightedNode<T>>) getInUnsafe(randomizedSet,FIELD_RandomizedSet_internalSet);
+            List<WeightedNode<T>> weightedNodes = new ArrayList<>(randomizedSet.size());
+            weightedNodes.addAll((Set<WeightedNode<T>>) getInUnsafe(randomizedSet,FIELD_RandomizedSet_internalSet));
 
-            List<WeightedNode<T>> weightedNodesCleared = new ArrayList<>(weightedNodes.size());
-            for (WeightedNode<T> node:weightedNodes){
-                if (node.getWeight() != 0){
-                    weightedNodesCleared.add(node);
-                }
-            }
-
-            T[] result = (T[]) Array.newInstance(tClass,weightedNodesCleared.size());
-            IntegerRational[] expectations = new IntegerRational[weightedNodesCleared.size()];
-            int minExp = 129;
-            float[] key = new float[weightedNodesCleared.size()];
-            int keyCounter = 0;
-            for (WeightedNode<T> node:weightedNodesCleared){
-                result[keyCounter] = node.getObject();
-                int currentExp = Math.getExponent(node.getWeight());
-                minExp = Math.min(minExp,currentExp);
-                key[keyCounter] = node.getWeight();
-                keyCounter += 1;
-            }
-            Arrays.sort(key);
-            IntegerRational[] tryGetResult = calculatedMap.getOrDefault(key,null);
-            if (tryGetResult != null){
-                return new SimplePair<>(result,tryGetResult);
-            }
-            BigInteger gcd = BigInteger.ZERO;
-            int counter = 0;
-            BigInteger[] nums = new BigInteger[weightedNodesCleared.size()];
-            BigInteger total = BigInteger.ZERO;
-
-            BigInteger binaryZeroes = minExp >= 0 ?BigInteger.TWO.pow(minExp):BigInteger.TWO.pow(minExp*(-1));
-
-            //            logger.log(Level.WARNING,"solving set"+weightedNodesCleared);
-            for (WeightedNode<T> node:weightedNodesCleared){
-//                logger.log(Level.WARNING, Integer.toBinaryString(Float.floatToRawIntBits(node.getWeight())));
-                int intPart = (int) (node.getWeight() / Math.pow(2.,minExp));
-                BigInteger current = BigInteger.valueOf(intPart);
-                if(minExp >=0){
-                    current = current.divide(binaryZeroes);
-                }else {
-                    current = current.multiply(binaryZeroes);
-                }
-                nums[counter] = current;
-                total = total.add(current);
-
-                counter+=1;
-
-                if (gcd.equals(BigInteger.ONE)){
-                    continue;
-                }
-                if (gcd.equals(BigInteger.ZERO)){
-                    gcd = current;
-                }else {
-                    gcd = current.gcd(gcd);
-                }
-            }
-            total = total.divide(gcd);
-            for (int i=0;i<counter;i+=1){
-                nums[i] = nums[i].divide(gcd);
-            }
-            for (int i=0;i<counter;i+=1){
-                BigRational currentRational = new BigRational(nums[i],total).simplify();
+            T[] result = (T[]) Array.newInstance(tClass,weightedNodes.size());
+            IntegerRational[] expectations = new IntegerRational[weightedNodes.size()];
+            //just no fancy things
+            for (int i=0;i<weightedNodes.size();i+=1){
+                WeightedNode<T> node = weightedNodes.get(i);
+                BigRational currentRational = BigRational.valueOf(node.getWeight()).simplify();
                 if (currentRational.canSaveConvertToIntegerRational()){
                     expectations[i] = currentRational.toIntegerRational();
                 }else {
                     //i hope this won't happen
                     expectations[i] = Approximation.find(new BigDecimal(currentRational.numerator()).divide(new BigDecimal(currentRational.denominator()),100).floatValue());
                 }
+                result[i] = node.getObject();
             }
-            calculatedMap.put(key,expectations);
             return new SimplePair<>(result,expectations);
         }catch (Exception e){
             e.printStackTrace();

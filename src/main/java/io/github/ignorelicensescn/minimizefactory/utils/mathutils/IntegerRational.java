@@ -18,6 +18,7 @@ public record IntegerRational(int numerator,int denominator,int hash) {
     public static final IntegerRational HALF = new IntegerRational(1,2);
     public static final IntegerRational ZERO = new IntegerRational(0,1);
     public static final BigInteger BIG_INTEGER_INTEGER_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
+    public static final IntegerRational POSITIVE_MIN = new IntegerRational(1,Integer.MAX_VALUE);
 
     public IntegerRational(int numerator,int denominator){
         this(numerator,denominator,numerator+denominator);
@@ -38,6 +39,7 @@ public record IntegerRational(int numerator,int denominator,int hash) {
 
     @Override
     public String toString() {
+        if (denominator == 1){return String.valueOf(numerator);}
         return numerator + "/" + denominator;
     }
 

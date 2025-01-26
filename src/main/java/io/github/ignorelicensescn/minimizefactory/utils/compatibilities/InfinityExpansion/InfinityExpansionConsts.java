@@ -458,6 +458,7 @@ public class InfinityExpansionConsts {
             int energyPerTick = getIntInUnsafe(tier,tier.getClass().getDeclaredField("energy"));
 
             RandomizedSet<ItemStack> drops = (RandomizedSet<ItemStack>) getInUnsafe(card,card.getClass().getDeclaredField("drops"));
+            if (drops.isEmpty()){continue;}
             SimplePair<ItemStack[],IntegerRational[]> solvedDrops = solveRandomizedSet(drops,ItemStack.class);
             ItemStack[] output = solvedDrops.first;
             IntegerRational[] expectation = solvedDrops.second;
