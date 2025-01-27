@@ -35,6 +35,10 @@ import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.I
 
 public class InfinityCompressSerializedMachineRecipes {
     private static boolean initFlag = false;
+//    it tried to reduce lag,but cannot fight against exponential-growing complexity of calculation.
+//    then here we are.A plugin provides black-boxes should help.We don't need to calculate too much.
+//    before:machines -> calculate tick by tick with laaaaaaaaaag ->result
+//    after:(we know the calculate result)machines -> result,no lag.
     public static void init(){
         if (initFlag){return;}
         if (PluginEnabledFlags.InfinityCompressFlag){
