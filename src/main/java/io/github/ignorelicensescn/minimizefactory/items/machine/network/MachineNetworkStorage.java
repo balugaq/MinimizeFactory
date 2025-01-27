@@ -239,7 +239,8 @@ public class MachineNetworkStorage extends NetworkNode{
 
     private void constructMenu(BlockMenuPreset preset) {
         StorageUtils.createBorder(preset, ChestMenuUtils.getOutputSlotTexture(), outputBorder);
-        StorageUtils.createBorder(preset, ChestMenuUtils.getInputSlotTexture(), inputBorder);
+//        StorageUtils.createBorder(preset, ChestMenuUtils.getInputSlotTexture(), inputBorder);
+        StorageUtils.createBorder(preset, ChestMenuUtils.getBackground(), inputBorder);
         ChestMenuUtils.drawBackground(preset, plainBorder);
     }
 
