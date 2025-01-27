@@ -130,6 +130,7 @@
         </dependency>
 
 <!--        you may have to build it yourself-->
+<!--        see these messy code: https://github.com/AcdeAsdff/InfinityCompress -->
         <dependency>
             <groupId>io.github.acdeasdff</groupId>
             <artifactId>InfinityCompress</artifactId>
