@@ -1,5 +1,7 @@
 *Slimefun extension*
 
+**过年我估计会摸鱼一段时间,不在.有bug放issue/pr(I may absent during Chinese new year,just put problems in issue/pr if exists.)**
+
 **现在汉化组粘液也能用了**
 
 **I didn't translate into english**,but you can try it yourself.See [/src/main/resources/language/](/src/main/resources/language).You may want to add en_US.properties or st.else.
@@ -8,12 +10,12 @@
 And I'm too lazy to test all the versions,you may have to test it yourself!
 *(tested version:purpur-1.20.1-2062)*
 
-**NOT** tested with:
-* InfinityExpansion,
-* InfinityCompress,
-* LiteXpansion,
-* FNAmplifications,
-* DynaTech,
+**NOT** fully tested with:
+* InfinityExpansion
+* InfinityCompress
+* LiteXpansion
+* FNAmplifications
+* DynaTech
 * FluffyMachines
 
 tested a bit with:

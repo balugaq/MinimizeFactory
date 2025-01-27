@@ -109,7 +109,7 @@
         <dependency>
             <groupId>io.github.mooy1</groupId>
             <artifactId>InfinityExpansion</artifactId>
-                        <version>9da37202ef</version>
+            <version>9da37202ef</version>
 <!--            <version>master-SNAPSHOT</version>-->
             <scope>provided</scope>
         </dependency>
