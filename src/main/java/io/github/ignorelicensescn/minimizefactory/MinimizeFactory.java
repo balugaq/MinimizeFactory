@@ -187,6 +187,7 @@ public class MinimizeFactory extends AbstractAddon {
             if (PluginEnabledFlags.InfinityExpansionFlag){
                 {
                     try{getEnergyConsts();} catch (Exception e){e.printStackTrace();}
+                    try{initMobDataCards();} catch (Exception e){e.printStackTrace();}
                 }
                 new Thread(() -> {
                     try{

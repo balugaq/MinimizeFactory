@@ -437,6 +437,10 @@ public class InfinityExpansionConsts {
             InfinityExpansionConsts.class.getDeclaredField(s).setInt(MobData.class,getIntInUnsafe_static(f));
         }
         VOID_HARVESTER_TIME = getIntInUnsafe_static(VoidHarvester.class.getDeclaredField("TIME"));
+
+        logger.log(Level.INFO,"Infinity Expansion energy constants loaded.");
+    }
+    public static void initMobDataCards() throws Exception{
         Map<String, MobDataCard> CARDS = ((Map<String, MobDataCard>) getInUnsafe_static(MobDataCard.class.getDeclaredField("CARDS")));
         for (String s:CARDS.keySet()){
             MobDataCard card = CARDS.get(s);
@@ -452,7 +456,6 @@ public class InfinityExpansionConsts {
             CARDS_INFO.put(card.getId(),new SimpleTri<>(output,expectation,(long)energyPerTick));
             CARDS_INFO_LIST.add(new SimpleFour<>(card.getId(),output,expectation,(long)energyPerTick));
         }
-        logger.log(Level.INFO,"Infinity Expansion energy constants loaded.");
     }
     public static void initInfinityWorkbenchRecipes() throws NoSuchFieldException {
         InfinityWorkbench fake = new InfinityWorkbench(Groups.MAIN_MATERIALS, INFINITY_FORGE, RecipeType.ENHANCED_CRAFTING_TABLE, new ItemStack[] {
