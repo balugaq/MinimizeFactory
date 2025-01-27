@@ -2,9 +2,8 @@ package io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculat
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.StorageInfo;
-import io.github.ignorelicensescn.minimizefactory.utils.records.ItemStackAsKey;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStackAsKey;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
-import org.bukkit.Location;
 
 import java.util.HashMap;
 

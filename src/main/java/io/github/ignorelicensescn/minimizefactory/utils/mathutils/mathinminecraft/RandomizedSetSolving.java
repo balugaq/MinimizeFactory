@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft;
+package io.github.ignorelicensescn.minimizefactory.utils.mathutils.mathinminecraft;
 
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.Approximation;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
@@ -11,11 +11,9 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.*;
-import java.util.logging.Level;
 
-import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_INTEGER_RATIONAL_ARRAY;
 import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityExpansionConsts.getInUnsafe;
 
@@ -51,7 +49,7 @@ public class RandomizedSetSolving {
                     expectations[i] = currentRational.toIntegerRational();
                 }else {
                     //i hope this won't happen
-                    expectations[i] = Approximation.find(new BigDecimal(currentRational.numerator()).divide(new BigDecimal(currentRational.denominator()),100).floatValue());
+                    expectations[i] = Approximation.find(new BigDecimal(currentRational.numerator()).divide(new BigDecimal(currentRational.denominator()), RoundingMode.HALF_UP).floatValue());
                 }
                 result[i] = node.getObject();
             }

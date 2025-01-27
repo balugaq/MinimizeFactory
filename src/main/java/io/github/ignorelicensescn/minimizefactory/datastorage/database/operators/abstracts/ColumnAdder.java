@@ -31,7 +31,7 @@ public class ColumnAdder<InType> {
         ResultSet rs = null;
         Connection conn = databaseInstance.getSQLConnection();
         try (
-             PreparedStatement pstmt = conn.prepareStatement(checkRowStatement);
+             PreparedStatement pstmt = conn.prepareStatement(checkRowStatement)
         ){
             keySetter.setValue(pstmt,1,key);
             rs = pstmt.executeQuery();
@@ -62,21 +62,13 @@ public class ColumnAdder<InType> {
         ResultSet rs = null;
         Connection conn = databaseInstance.getSQLConnection();
         try (
-             PreparedStatement pstmt = conn.prepareStatement(newRowStatement);
+             PreparedStatement pstmt = conn.prepareStatement(newRowStatement)
         ){
             keySetter.setValue(pstmt,1,key);
             pstmt.execute();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return false;
     }

@@ -1,9 +1,9 @@
 package io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculation;
 
-import io.github.ignorelicensescn.minimizefactory.utils.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
-import io.github.ignorelicensescn.minimizefactory.utils.records.ItemStackAsKey;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStackAsKey;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 
 import javax.annotation.Nonnull;

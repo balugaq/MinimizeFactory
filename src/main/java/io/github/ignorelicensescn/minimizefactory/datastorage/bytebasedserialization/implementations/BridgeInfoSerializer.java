@@ -32,7 +32,7 @@ public class BridgeInfoSerializer implements Serializer<NodeInfo>, LocationBased
             slot.release(this);
         }
     }
-    private static final Allocator<BridgeInfoSerializer> ALLOCATOR = new Allocator<BridgeInfoSerializer>() {
+    private static final Allocator<BridgeInfoSerializer> ALLOCATOR = new Allocator<>() {
         @Override
         public BridgeInfoSerializer allocate(Slot slot) throws Exception {
             return new BridgeInfoSerializer(slot);

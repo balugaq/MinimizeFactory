@@ -28,21 +28,13 @@ public class ColumnRemover<InType> {
         ResultSet rs = null;
         Connection conn = databaseInstance.getSQLConnection();
         try (
-             PreparedStatement pstmt = conn.prepareStatement(removeStatement);
+             PreparedStatement pstmt = conn.prepareStatement(removeStatement)
         ){
             keySetter.setValue(pstmt,1,key);
             pstmt.execute();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return false;
     }

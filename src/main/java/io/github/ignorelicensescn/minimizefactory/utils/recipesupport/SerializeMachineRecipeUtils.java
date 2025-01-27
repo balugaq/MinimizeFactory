@@ -5,7 +5,7 @@ import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.Machi
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicksWithExpectations;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeWithExpectations;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
-import io.github.ignorelicensescn.minimizefactory.utils.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;

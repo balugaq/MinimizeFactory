@@ -22,7 +22,6 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
-import stormpot.Timeout;
 
 import javax.annotation.Nonnull;
 import java.util.*;

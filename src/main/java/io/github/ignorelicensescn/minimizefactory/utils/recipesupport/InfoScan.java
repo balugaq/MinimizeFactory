@@ -5,7 +5,7 @@ import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry;
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry_Filter;
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGenerator;
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedMaterialGenerator;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.*;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.*;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
@@ -17,7 +17,6 @@ import io.github.mooy1.infinityexpansion.infinitylib.machines.AbstractMachineBlo
 import io.github.mooy1.infinityexpansion.infinitylib.machines.MachineBlock;
 import io.github.mooy1.infinityexpansion.items.quarries.Quarry;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.items.electric.Capacitor;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.generators.SolarGenerator;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricDustWasher;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.machines.ElectricGoldPan;
@@ -67,7 +66,6 @@ public final class InfoScan {
     public static final List<MachineRecipeOutEntity> emptyMachineRecipeOutEntity = new ArrayList<>();
     public static final Set<MachineFuel> emptyMachineFuels = new HashSet<>();
 
-    public static final List<MachineRecipeWithExpectations> emptyMachineRecipesWithExpectations = new ArrayList<>();
     public static long[] findEnergyInfo_AContainer(AContainer sfItem){
         //Power once(J); delay(tick); Capacity(J)
         //if work per tick:Power per tick; delay(tick)=1
@@ -226,22 +224,6 @@ public final class InfoScan {
         if (sfItem != null){
             energyInfo[2] = sfItem.getCapacity();
             energyInfo[0] = energyInfo[2] / 2 ;
-        }
-        return energyInfo;
-    }
-    public static long[] findEnergyInfo_AbstractEntityAssembler(AbstractEntityAssembler sfItem){
-        long[] energyInfo = new long[]{0,0,0};
-        if (sfItem != null){
-            energyInfo[1] = 60;//yes it's not tweakable
-            energyInfo[0] = sfItem.getEnergyConsumption();
-            energyInfo[2] = sfItem.getCapacity();
-        }
-        return energyInfo;
-    }
-    public static long[] findEnergyInfo_Capacitor(Capacitor sfItem){
-        long[] energyInfo = new long[]{0,0,0};
-        if (sfItem != null){
-            energyInfo[2] = sfItem.getCapacity();
         }
         return energyInfo;
     }

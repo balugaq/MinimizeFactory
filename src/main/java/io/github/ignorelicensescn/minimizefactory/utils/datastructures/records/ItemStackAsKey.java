@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory.utils.records;
+package io.github.ignorelicensescn.minimizefactory.utils.datastructures.records;
 
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 import org.bukkit.Material;

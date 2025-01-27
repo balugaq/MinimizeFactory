@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory.utils.enumsets;
+package io.github.ignorelicensescn.minimizefactory.utils.datastructures.enumsets;
 
 import org.bukkit.Material;
 

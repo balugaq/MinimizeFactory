@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory.utils;
+package io.github.ignorelicensescn.minimizefactory.utils.namemateriallore;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

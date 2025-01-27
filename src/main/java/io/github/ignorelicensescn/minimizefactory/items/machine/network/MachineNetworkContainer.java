@@ -2,7 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.items.machine.network;
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.CoreLocationOperator;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.chestmenubuilds.NodeMenuBuildUtils;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;

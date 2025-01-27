@@ -4,7 +4,7 @@ public enum DataType {
     VARCHAR,
     BOOLEAN,
     INTEGER,
-    BLOB;
+    BLOB
 
 
 }

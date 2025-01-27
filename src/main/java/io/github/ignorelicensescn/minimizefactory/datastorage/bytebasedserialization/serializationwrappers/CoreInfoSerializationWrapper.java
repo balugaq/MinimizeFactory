@@ -15,7 +15,7 @@ public class CoreInfoSerializationWrapper {
     @Nullable
     public SerializeFriendlyBlockLocation coreLocation;
     @Nonnull
-    public NodeType nodeType;
+    public NodeType nodeType = NodeType.INVALID;
     
     public ItemStackSerializationWrapper[] inputs;
     public ItemStackSerializationWrapper[] outputs;

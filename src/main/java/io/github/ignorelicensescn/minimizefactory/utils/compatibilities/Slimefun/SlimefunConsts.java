@@ -2,7 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Slimefu
 
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
-import io.github.ignorelicensescn.minimizefactory.utils.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
@@ -104,8 +104,6 @@ public class SlimefunConsts {
         geoMinerResourcesInfo_BiomeAndEnvironmentKey.put(new BiomeAndEnvironment(biome,env),new SimplePair<>(geoMinerResStack,geoMinerExpectations));
         geoResourcesInfo_BiomeAndEnvironmentKey_List.add(new SimplePair<>(new BiomeAndEnvironment(biome,env),new SimplePair<>(geoResStack,geoExpectations)));
         geoMinerResourcesInfo_BiomeAndEnvironmentKey_List.add(new SimplePair<>(new BiomeAndEnvironment(biome,env),new SimplePair<>(geoMinerResStack,geoMinerExpectations)));
-//        List<SimpleTri<ItemStack, IntegerRational>> geoResourcesList = new ArrayList<>();
-//        List<SimpleTri<ItemStack, IntegerRational>> geoResourcesListObtainable = new ArrayList<>();
         ItemStack[] geoResourcesArray = new ItemStack[geoResCounter];
         IntegerRational[] geoResourcesExpectationArray = new IntegerRational[geoResCounter];
         ItemStack[] geoMinerResourcesArray = new ItemStack[geoMinerResCounter];

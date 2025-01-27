@@ -5,7 +5,7 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.DataRemover;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.StorageInfo;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.chestmenubuilds.NodeMenuBuildUtils;
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
@@ -280,20 +280,6 @@ public class MachineNetworkStorage extends NetworkNode{
             return false;
         });
 
-//        menu.replaceExistingItem(CHECK_SLIMEFUN_ITEM_SLOT,new CustomItemStack(
-//                Material.GREEN_STAINED_GLASS_PANE,
-//                properties.getReplacedProperty("MachineNetworkStorage_Convert_To_Slimefun_Item")
-//        ));
-//        menu.addMenuClickHandler(CHECK_SLIMEFUN_ITEM_SLOT, (p, slot, item, action) -> {
-//            ItemStack unkey = StorageUtils.unKeyItem(menu.getItemInSlot(DISPLAY_SLOT));
-//            SlimefunItem sfItem = SlimefunItem.getByItem(unkey);
-//            if (sfItem == null){return false;}
-//            if (ItemStackUtil.isItemStackSimilar(sfItem.getItem(),unkey)){
-//                menu.replaceExistingItem(DISPLAY_SLOT,StorageUtils.keyItem(sfItem.getItem().clone()));
-//                menu.addMenuClickHandler(DISPLAY_SLOT,ChestMenuUtils.getEmptyClickHandler());
-//            }
-//            return false;
-//        });
 
         showCoreLocation(b.getLocation(),HINT_SLOT,menu);
     }
@@ -311,9 +297,6 @@ public class MachineNetworkStorage extends NetworkNode{
             if(isLocked(SerializeFriendlyBlockLocation.fromLocation(b.getLocation()))){return;}
             BlockMenu inv = BlockStorage.getInventory(b);
 
-//            for (int slot : INPUT_SLOTS) {
-//                acceptInput(inv, b, slot);
-//            }
 
             for (int ignored : OUTPUT_SLOTS) {
                 pushOutput(inv, b);
@@ -325,34 +308,6 @@ public class MachineNetworkStorage extends NetworkNode{
             return true;
         }
     };
-    
-
-//    static void acceptInput(BlockMenu inv, Block b, int slot) {
-//        if (inv.getItemInSlot(slot) == null) {
-//            return;
-//        }
-//
-//        BigInteger stored = getStored(b);
-//        ItemStack item = inv.getItemInSlot(slot);
-//
-//        int storedCompareToZero = stored.compareTo(BigInteger.ZERO);
-//
-//        if (storedCompareToZero == 0) {
-//            registerItem(b, inv, slot, item, stored);
-//        }
-//        else {
-//            SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-//            try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
-//                StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
-//                if (storedCompareToZero > 0 && ItemStackUtil.isItemStackSimilar(storageInfo.storeItem, item)) {
-//                    storeItem(b, inv, slot, item, stored);
-//                }
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//
-//        }
-//    }
 
     static void pushOutput(BlockMenu inv, Block b) {
         SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
@@ -392,38 +347,6 @@ public class MachineNetworkStorage extends NetworkNode{
         }
     }
 
-//    private static void registerItem(Block b, BlockMenu inv, int slot, ItemStack item, BigInteger stored) {
-//        SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(b.getLocation());
-//        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
-//            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
-//            storageInfo.storeItem = item;
-//            storageInfo.storeAmount = stored;
-//            storageInfoSerializer.saveToLocationNoThrow(storageInfo, storageLocationKey);
-//        }catch (Exception e){e.printStackTrace();}
-//        inv.replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
-//        storeItem(b, inv, slot, item, stored);
-//    }
-
-//    public static void setStoredStackNoThrow(Location l, ItemStack item){
-//        SerializeFriendlyBlockLocation storageLocationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-//        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()){
-//            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(storageLocationKey);
-//            if (!ItemStackUtil.isItemStackSimilar(storageInfo.storeItem,item)){
-//                storageInfo.storeItem = item;
-//                storageInfo.storeAmount = BigInteger.ZERO;
-//                storageInfoSerializer.saveToLocationNoThrow(storageInfo, storageLocationKey);
-//            }
-//        }catch (Exception e){e.printStackTrace();}
-//        BlockStorage.getInventory(l).replaceExistingItem(DISPLAY_SLOT, StorageUtils.keyItem(item));
-//    }
-
-//    public static void storeItem(Block b, BlockMenu inv, int slot, ItemStack item, BigInteger stored) {
-//        int amount = item.getAmount();
-//        inv.consumeItem(slot, amount);
-//
-//        setStored(b, stored.add(BigInteger.valueOf(amount)));
-//        updateMenu(b, inv, false);
-//    }
 
     public static void updateStoredStacks(BlockMenu inv, ItemStack storedItem, BigInteger stored){
         if (BigInteger.ZERO.compareTo(stored) < 0){
@@ -544,8 +467,6 @@ public class MachineNetworkStorage extends NetworkNode{
                     StorageUtils.giveOrDropItem(p, storedClone);
                     stored = stored.subtract(BigInteger.ONE);
                     storageInfo.storeAmount = stored;
-//                    setStored(b, stored);
-//                    updateMenu(b, menu, false);
                     infoChangedFlag = true;
                     return;
                 } else {
@@ -609,7 +530,7 @@ public class MachineNetworkStorage extends NetworkNode{
             e.printStackTrace();
         }
         finally {
-            if (infoChangedFlag && storageInfo != null){
+            if (infoChangedFlag){
                 updateMenu(menu, false,storageInfo,storageLocationKey,null);
             }
         }
@@ -627,34 +548,6 @@ public class MachineNetworkStorage extends NetworkNode{
         }
     }
 
-//    public static BigInteger getStored(Block b) {
-//        return getStored(b.getLocation());
-//    }
-//    public static BigInteger getStored(Location l) {
-//        SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-//        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()) {
-//            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
-//            return storageInfo.storeAmount;
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return BigInteger.ZERO;
-//    }
-
-//    public static void setStored(Location l, BigInteger amount) {
-//        SerializeFriendlyBlockLocation locationKey = SerializeFriendlyBlockLocation.fromLocation(l);
-//        try (StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()) {
-//            StorageInfo storageInfo = storageInfoSerializer.getOrDefault(locationKey);
-//            storageInfo.storeAmount = amount;
-//            storageInfoSerializer.saveToLocationNoThrow(storageInfo, locationKey);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        updateMenu(l.getBlock(),BlockStorage.getInventory(l),true);
-//    }
-//    public static void setStored(Block b, BigInteger amount) {
-//        setStored(b.getLocation(),amount);
-//    }
     public static ItemStack getStoredItem(StorageInfo storageInfo){
         ItemStack result = storageInfo.storeItem;
         if (ItemStackUtil.isItemStackSimilar(result,EMPTY_ITEM)){return null;}

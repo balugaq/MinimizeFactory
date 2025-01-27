@@ -2,7 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.machinenetwork;
 
 import io.github.ignorelicensescn.minimizefactory.items.machine.MachineRecipeSerializer;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizefactory.utils.LoreGetter.tryGetLore;
+import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.LoreGetter.tryGetLore;
 import static io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems.ENERGIZED_CAPACITOR;
 
 public class MachineRecipeSerializerInitCrafting {

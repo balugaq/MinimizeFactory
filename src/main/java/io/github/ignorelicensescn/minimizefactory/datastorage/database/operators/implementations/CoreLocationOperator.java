@@ -8,7 +8,7 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.database.types.Col
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 
 public class CoreLocationOperator extends LocationBasedSimpleOperator<SerializeFriendlyBlockLocation,SerializeFriendlyBlockLocation> {
-    public static CoreLocationOperator INSTANCE = new CoreLocationOperator();
+    public static final CoreLocationOperator INSTANCE = new CoreLocationOperator();
     private CoreLocationOperator() {
         super(Column.KEY_COLUMN.columnInnerName, new OperateItem<>(
                 Column.VALUE_CORE_LOCATION_VARCHAR.columnInnerName,

@@ -1,7 +1,7 @@
 package io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculation;
 
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
-import io.github.ignorelicensescn.minimizefactory.utils.records.ItemStackAsKey;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStackAsKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;

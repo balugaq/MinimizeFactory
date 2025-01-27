@@ -2,7 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Cultiva
 
 import dev.sefiraat.cultivation.api.datatypes.instances.FloraLevelProfile;
 import dev.sefiraat.cultivation.api.slimefun.items.plants.HarvestablePlant;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
@@ -22,7 +22,7 @@ import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.propert
 import static io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags.CultivationFlag;
 import static io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.MachineRecipeSerializerInitCrafting.generateDefaultLore;
 import static io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.MachineRecipeSerializerInitCrafting.generateDefaultName;
-import static io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft.RandomizedSetSolving.solveRandomizedSet;
+import static io.github.ignorelicensescn.minimizefactory.utils.mathutils.mathinminecraft.RandomizedSetSolving.solveRandomizedSet;
 import static io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedMachineRecipeFinder.registerSerializedRecipeProvider_byClassName;
 
 public class CultivationSerializedMachineRecipes {
@@ -77,7 +77,7 @@ public class CultivationSerializedMachineRecipes {
                     return Collections.emptyList();
                 }
 
-                @Nullable
+                @Nonnull
                 @Override
                 public SimplePair<String, List<String>> getNameAndLoreForRecipe(@Nullable HarvestablePlant m, SimplePair<SerializedMachine_MachineRecipe, ItemStack> serialized, int index) {
                     List<String> lore = generateDefaultLore(serialized.first);

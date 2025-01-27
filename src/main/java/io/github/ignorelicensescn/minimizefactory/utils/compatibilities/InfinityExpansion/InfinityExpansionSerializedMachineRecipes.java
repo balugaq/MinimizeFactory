@@ -3,7 +3,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Infinit
 import io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags;
 import io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.TweakedMachineFuel;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityCompress.InfinityCompressSerializedMachineRecipes;
@@ -231,66 +231,6 @@ public class InfinityExpansionSerializedMachineRecipes {
                             return fromBioAndEnvOutputs(geoMinerResourcesInfo_BiomeAndEnvironmentKey_List,m.getItem(),null,energyInfo[0],(int)energyInfo[1]);
                         }
 
-//                        @Override
-//                        public SimplePair<String,List<String>> getNameAndLoreForRecipe(@Nullable GeoQuarry m, SimplePair<SerializedMachine_MachineRecipe,ItemStack> recipe,int index)
-//                        {
-//                            long[] energyInfo = findEnergyInfo_InfinityExpansion_GeoQuarry(m);
-//                            int ticksPerOutput = (int) energyInfo[1];
-//
-//                            assert recipe.first.outputs != null;
-//                            SimplePair<BiomeAndEnvironment,
-//                                            SimplePair<ItemStack[], IntegerRational[]>> result
-//                                    =  geoMinerResourcesInfo_BiomeAndEnvironmentKey_List.get(index);
-//
-//                            List<String> lore = new ArrayList<>();
-//                            lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
-//                            ItemStack showItemTemplate = recipe.first.outputs[0];
-//                            lore.add(ChatColor.WHITE + NameUtil.findName(showItemTemplate));
-//
-//                            lore.add(ChatColor.GREEN
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_MainWorld") + " "
-//                                    + ChatColor.RED
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_Nether") + " "
-//                                    + ChatColor.LIGHT_PURPLE
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_End") + " "
-//                                    + ChatColor.GRAY
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_CUSTOM")
-//                            );
-//                            lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_LocationAndExpectation"));
-//                            String[] locations = new String[canBeFoundAt.size() / GEOMINER_BIOME_EVERY_LINE
-//                                    + (canBeFoundAt.size() % GEOMINER_BIOME_EVERY_LINE == 0 ? 0 : 1)];
-//                            Arrays.fill(locations, "");
-//                            for (int j=0;j<canBeFoundAt.size();j+=1){
-//                                SimplePair<BiomeAndEnvironment, IntegerRational> tri = canBeFoundAt.get(j);
-//                                StringBuilder sb = new StringBuilder();
-//                                if (tri.first.environment().equals(World.Environment.NORMAL)){
-//                                    sb.append(ChatColor.GREEN);
-//                                }
-//                                else if (tri.first.environment().equals(World.Environment.NETHER)){
-//                                    sb.append(ChatColor.RED);
-//                                }
-//                                else if (tri.first.environment().equals(World.Environment.THE_END)){
-//                                    sb.append(ChatColor.LIGHT_PURPLE);
-//                                }
-//                                else{
-//                                    sb.append(ChatColor.GRAY);
-//                                }
-//                                sb.append(NameUtil.nameForBiome(tri.first.biome()))
-//                                        .append(" ")
-//                                        .append(properties.getReplacedProperty("Test_InfoProvider_Info_ExpectationColor"))
-//                                        .append(tri.second);
-//                                locations[j / GEOMINER_BIOME_EVERY_LINE] += sb.toString();
-//                            }
-//                            lore.addAll(List.of(locations));
-//                            String name = properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime")
-//                                    + (ticksPerOutput)
-//                                    + properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime_Unit");
-//                            return new SimplePair<>(name,lore);
-//                        }
 
                         @Nonnull
                         @Override

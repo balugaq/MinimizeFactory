@@ -6,11 +6,8 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.preparedstatementoperations.implementations.BytesSetter;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.types.Column;
 
-import java.io.InputStream;
-import java.sql.Blob;
-
 public class BlockDataOperator extends LocationBasedSimpleOperator<byte[], byte[]> {
-    public static BlockDataOperator INSTANCE = new BlockDataOperator();
+    public static final BlockDataOperator INSTANCE = new BlockDataOperator();
     private BlockDataOperator() {
         super(
                 Column.KEY_COLUMN.columnInnerName,

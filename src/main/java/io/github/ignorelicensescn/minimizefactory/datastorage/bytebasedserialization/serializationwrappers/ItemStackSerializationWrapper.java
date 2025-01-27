@@ -7,8 +7,6 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import static io.github.thebusybiscuit.slimefun4.libraries.commons.lang.ArrayUtils.EMPTY_BYTE_ARRAY;
-
 public class ItemStackSerializationWrapper {
 
     private byte[] bytes;

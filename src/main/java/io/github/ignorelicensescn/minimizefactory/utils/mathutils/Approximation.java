@@ -130,10 +130,9 @@ public class Approximation {
             p_b = new_p_b ; q_b = new_q_b;
         }
     }
-    public static int multiplier_float = 10000;
-    public static long multiplier_long = 100000000L;
+    public static final int multiplier_float = 10000;
+    public static final long multiplier_long = 100000000L;
     public static IntegerRational find(float a){
-        IntegerRational viaBig = findViaBigRational(a);
 
         LongRational longResult = find((double) a);
         if (Integer.MIN_VALUE <= longResult.numerator() && longResult.numerator() <= Integer.MAX_VALUE

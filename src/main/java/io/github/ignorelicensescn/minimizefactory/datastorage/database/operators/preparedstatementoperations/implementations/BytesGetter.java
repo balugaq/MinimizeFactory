@@ -2,7 +2,6 @@ package io.github.ignorelicensescn.minimizefactory.datastorage.database.operator
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.preparedstatementoperations.ResultSetValueGetter;
 
-import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

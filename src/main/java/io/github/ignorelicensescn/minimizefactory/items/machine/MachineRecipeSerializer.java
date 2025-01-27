@@ -5,7 +5,7 @@ import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.MachineRecipeSerializerInitCrafting;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.ignorelicensescn.minimizefactory.utils.timestampbasedmanagers.PageManager;
@@ -41,7 +41,7 @@ import java.util.List;
 import static io.github.ignorelicensescn.minimizefactory.items.Registers.MACHINE_STABILIZER;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.*;
 import static io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
-import static io.github.ignorelicensescn.minimizefactory.utils.LoreGetter.tryGetLore;
+import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.LoreGetter.tryGetLore;
 import static io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedMachineRecipeFinder.getSerializedRecipeProviderForMachine;
 import static io.github.mooy1.infinityexpansion.items.generators.Generators.GEOTHERMAL;
 import static io.github.mooy1.infinityexpansion.items.generators.Generators.REINFORCED_GEOTHERMAL;

@@ -69,7 +69,8 @@ public abstract class MultiValueOperator<KeyType> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    };
+    }
+
     @Nullable
     public Object[] get(KeyType key){
         if (databaseInstance == null){
@@ -81,7 +82,7 @@ public abstract class MultiValueOperator<KeyType> {
         ResultSet rs = null;
         Connection conn = databaseInstance.getSQLConnection();
         try (
-             PreparedStatement pstmt = conn.prepareStatement(selectSQL);
+             PreparedStatement pstmt = conn.prepareStatement(selectSQL)
         ){
             keySetter.setValue(pstmt,1, key);
             rs = pstmt.executeQuery();
@@ -107,5 +108,5 @@ public abstract class MultiValueOperator<KeyType> {
             }
         }
         return null;
-    };
+    }
 }

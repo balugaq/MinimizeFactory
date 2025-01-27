@@ -1,7 +1,7 @@
 package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Slimefun;
 
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializeMachineRecipeUtils;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
@@ -281,56 +281,6 @@ public class SlimefunSerializedMachineRecipes {
                         return lore.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
                     }
                 });
-
-//        registerSerializedRecipeProvider_byClassName(AbstractEntityAssembler.class.getName(),
-//                new SerializedRecipeProvider<AbstractEntityAssembler>() {
-//
-//                    @Nonnull
-//                    @Override
-//                    public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AbstractEntityAssembler m ,@Nullable ItemStack stack) {
-//                        long[] energyInfo = findEnergyInfo_AbstractEntityAssembler(m);
-//                        List<MachineRecipeOutEntity> machineRecipesOutEntity = findRecipes_AbstractEntityAssembler(m);
-//
-//
-//                        return null;
-//                    }
-//
-//                    @Nullable
-//                    @Override
-//                    public SimplePair<String, List<String>> getNameAndLoreForRecipe(@Nullable AbstractEntityAssembler m, SerializedMachine_MachineRecipe serialized, int index) {
-//
-//                        long[] energyInfo = findEnergyInfo_AbstractEntityAssembler(m);
-//                        List<String> lore = new ArrayList<>();
-//                        lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Input"));
-//                        for (ItemStack itemStack:serialized.inputs){
-//                            lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(itemStack));
-//                        }
-//                        lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
-//                        lore.add(ChatColor.WHITE + serialized.entityClassName);
-//
-//                        return new SimplePair<>(properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime")
-//                                + (((double)serialized.ticks) / ((double)energyInfo[1]))
-//                                + properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime_Unit"),
-//                                lore);
-//                    }
-//
-//                    @Nonnull
-//                    @Override
-//                    public String[] getEnergyInfoStrings(@Nonnull AbstractEntityAssembler m) {
-//                        long[] energyInfo = findEnergyInfo_AbstractEntityAssembler(m);
-//                        return new String[]{
-//                                properties.getReplacedProperty("Test_InfoProvider_Info_EnergyPerTick")
-//                                        + energyInfo[0]
-//                                        + properties.getReplacedProperty("Test_InfoProvider_Info_EnergyPerTick_Unit"),
-//                                properties.getReplacedProperty("Test_InfoProvider_Info_Cooldown")
-//                                        + energyInfo[1]
-//                                        + properties.getReplacedProperty("Test_InfoProvider_Info_Cooldown_Unit"),
-//                                properties.getReplacedProperty("Test_InfoProvider_Info_EnergyCapacity")
-//                                        + energyInfo[2]
-//                                        + properties.getReplacedProperty("Test_InfoProvider_Info_EnergyCapacity_Unit")
-//                        };
-//                    }
-//                });
 
         registerSerializedRecipeProvider_byClassName(FluidPump.class.getName(),
                 new SerializedRecipeProvider<FluidPump>() {

@@ -60,7 +60,8 @@ public abstract class SimpleOperator<InType,OutType,KeyType> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    };
+    }
+
     @Nullable
     public OutType get(KeyType key){
         if (databaseInstance == null){
@@ -69,7 +70,7 @@ public abstract class SimpleOperator<InType,OutType,KeyType> {
         ResultSet rs = null;
         Connection conn = databaseInstance.getSQLConnection();
         try (
-             PreparedStatement pstmt = conn.prepareStatement(selectSQLStatement);
+             PreparedStatement pstmt = conn.prepareStatement(selectSQLStatement)
         ){
             keySetter.setValue(pstmt,1,key);
             rs = pstmt.executeQuery();
@@ -89,7 +90,7 @@ public abstract class SimpleOperator<InType,OutType,KeyType> {
             }
         }
         return null;
-    };
+    }
 
     public boolean has(KeyType key){
         return get(key) != null;

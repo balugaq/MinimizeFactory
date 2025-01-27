@@ -1,10 +1,12 @@
-package io.github.ignorelicensescn.minimizefactory.utils;
+package io.github.ignorelicensescn.minimizefactory.utils.namemateriallore;
 
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.HashMap;
 import java.util.Map;
 
+//generated via python script:
+//https://github.com/IgnoreLicensesCN/materialColorExtract
 public class MaterialColorMaps {
 
     //hash collision:0

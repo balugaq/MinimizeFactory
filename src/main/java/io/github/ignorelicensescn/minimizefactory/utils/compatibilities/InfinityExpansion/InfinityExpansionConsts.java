@@ -4,7 +4,6 @@ import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry;
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry_Filter;
 import io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays;
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
-import io.github.ignorelicensescn.minimizefactory.utils.mathutils.Approximation;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizefactory.utils.searchregistries.SearchRegistries;
@@ -37,7 +36,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.logger;
-import static io.github.ignorelicensescn.minimizefactory.utils.mathinminecraft.RandomizedSetSolving.solveRandomizedSet;
+import static io.github.ignorelicensescn.minimizefactory.utils.mathutils.mathinminecraft.RandomizedSetSolving.solveRandomizedSet;
 import static io.github.ignorelicensescn.minimizefactory.utils.searchregistries.SearchRegistries.registerOnScannedSlimefunItemInstanceListener;
 import static io.github.mooy1.infinityexpansion.items.blocks.Blocks.INFINITY_FORGE;
 import static io.github.mooy1.infinityexpansion.items.machines.Machines.*;
@@ -126,18 +125,6 @@ public class InfinityExpansionConsts {
 
             try {
                 Field RecipeListField = SingularityConstructor.class.getDeclaredField("RECIPE_LIST");
-//                Class<T> RecipeClass = null;
-//                for (Class<?> checkClass : SingularityConstructor.class.getDeclaredClasses()) {
-//                    if (checkClass.getSimpleName().equals("Recipe")) {
-//                        RecipeClass = (Class<T>) checkClass;
-//                        break;
-//                    }
-//                }
-
-//                VarHandle varHandle = MethodHandles.privateLookupIn(SingularityConstructor.class, MethodHandles.lookup())
-//                        .findStaticVarHandle(SingularityConstructor.class, "RECIPE_LIST", List.class);
-//                varHandle.accessModeType(VarHandle.AccessMode.GET);
-
                 List<T> RecipeList = ((List<T>) getInUnsafe_static(RecipeListField));
                 Field fInput = null;
                 Field fOutput = null;

@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory.utils.records;
+package io.github.ignorelicensescn.minimizefactory.utils.datastructures.records;
 
 import org.bukkit.Location;
 import org.bukkit.World;

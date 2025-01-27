@@ -1,8 +1,8 @@
 package io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated;
 
-import io.github.ignorelicensescn.minimizefactory.utils.LoreGetter;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
-import io.github.ignorelicensescn.minimizefactory.utils.enumsets.MaterialSet;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.LoreGetter;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.enumsets.MaterialSet;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.core.attributes.DistinctiveItem;
@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static io.github.ignorelicensescn.minimizefactory.utils.NameUtil.NULL_STRING;
+import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil.NULL_STRING;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_ITEM_STACK_ARRAY;
 
 public class ItemStackUtil {
@@ -93,19 +93,19 @@ public class ItemStackUtil {
         return collapseItems(itemStacks.toArray(EMPTY_ITEM_STACK_ARRAY));
     }
 
-    public static final MaterialSet validItemSet = new MaterialSet();
+    public static final MaterialSet invalidItemSet = new MaterialSet();
     static {
         for (String s:new String[]{"CAVE_AIR","LEGACY_AIR","AIR"}){
             Material tryGetMaterial = MaterialUtil.valueOf(s);
             if (tryGetMaterial == null){
                 continue;
             }
-            validItemSet.add(tryGetMaterial);
+            invalidItemSet.add(tryGetMaterial);
         }
     }
     public static boolean isItemStackValid(@Nullable ItemStack stack){
         if (stack == null){return false;}
-        return !validItemSet.contains(stack.getType());
+        return !invalidItemSet.contains(stack.getType());
     }
     public static boolean itemStackArrayEquals(@Nullable ItemStack[] A,@Nullable ItemStack[] B){
         if (A == null && B != null){return false;}

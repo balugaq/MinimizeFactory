@@ -18,7 +18,7 @@ public abstract class Database {
     MinimizeFactory plugin;
     Connection connection;
     // The name of the table we created back in SQLite class.
-    public String table = "table_name";
+    public final String table = "table_name";
     public int tokens = 0;
     public Database(MinimizeFactory instance){
         plugin = instance;

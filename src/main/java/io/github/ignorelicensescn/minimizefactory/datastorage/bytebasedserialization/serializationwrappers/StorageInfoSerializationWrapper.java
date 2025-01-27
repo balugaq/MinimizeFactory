@@ -2,11 +2,8 @@ package io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserializ
 
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.StorageInfo;
-import io.github.ignorelicensescn.minimizefactory.items.machine.network.MachineNetworkStorage;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
-import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 

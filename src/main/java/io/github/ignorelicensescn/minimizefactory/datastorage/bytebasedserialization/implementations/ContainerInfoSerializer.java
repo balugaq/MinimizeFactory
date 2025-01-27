@@ -3,7 +3,6 @@ package io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserializ
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.util.HashMapReferenceResolver;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Initializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.LocationBasedInfoProvider;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.Serializer;
@@ -14,11 +13,9 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.Con
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.NodeInfo;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
-import org.bukkit.Bukkit;
 import stormpot.*;
 
 import java.io.*;
-import java.sql.Blob;
 import java.util.concurrent.TimeUnit;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;
@@ -37,7 +34,7 @@ public class ContainerInfoSerializer implements Serializer<ContainerInfo>,
             slot.release(this);
         }
     }
-    private static final Allocator<ContainerInfoSerializer> ALLOCATOR = new Allocator<ContainerInfoSerializer>() {
+    private static final Allocator<ContainerInfoSerializer> ALLOCATOR = new Allocator<>() {
         @Override
         public ContainerInfoSerializer allocate(Slot slot) throws Exception {
             return new ContainerInfoSerializer(slot);

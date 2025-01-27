@@ -2,7 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculat
 
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
-import io.github.ignorelicensescn.minimizefactory.utils.records.ItemStackAsKey;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStackAsKey;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;

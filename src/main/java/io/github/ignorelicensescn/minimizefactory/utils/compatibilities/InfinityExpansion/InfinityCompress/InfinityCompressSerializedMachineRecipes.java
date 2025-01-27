@@ -3,9 +3,9 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Infinit
 import io.github.acdeasdff.infinityCompress.items.Multiblock_Autocrafter;
 import io.github.acdeasdff.infinityCompress.items.blocks.*;
 import io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags;
-import io.github.ignorelicensescn.minimizefactory.utils.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializeMachineRecipeUtils;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
@@ -38,7 +38,8 @@ public class InfinityCompressSerializedMachineRecipes {
 //    it tried to reduce lag,but cannot fight against exponential-growing complexity of calculation.
 //    then here we are.A plugin provides black-boxes should help.We don't need to calculate too much.
 //    before:machines -> calculate tick by tick with laaaaaaaaaag ->result
-//    after:(we know the calculate result)machines -> result,no lag.
+//    we know the calculation result is a function about time t and solved this function,so:
+//    after:machines -> result,no lag.
     public static void init(){
         if (initFlag){return;}
         if (PluginEnabledFlags.InfinityCompressFlag){

@@ -3,21 +3,20 @@ package io.github.ignorelicensescn.minimizefactory.items.machine.network;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.implementations.CoreInfoSerializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.bytebasedserialization.implementations.StorageInfoSerializer;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnAdder;
-import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.abstracts.LocationBasedColumnRemover;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.implementations.DataRemover;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.CoreInfo;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.StorageInfo;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculation.ItemStackMapForOutputCalculation;
-import io.github.ignorelicensescn.minimizefactory.utils.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.BiomeAndEnvironment;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
-import io.github.ignorelicensescn.minimizefactory.utils.NameUtil;
+import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BlockGeometry;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.NodeType;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculation.ContainerCalculationResult;
 import io.github.ignorelicensescn.minimizefactory.utils.machinenetwork.calculation.ItemStackMapForContainerCalculation;
-import io.github.ignorelicensescn.minimizefactory.utils.records.ItemStackAsKey;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStackAsKey;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -43,7 +42,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.logging.Level;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.*;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_BIG_RATIONAL_ARRAY;
@@ -489,97 +487,94 @@ public class MachineNetworkCore extends NetworkNode{
                     return false;
                 });
             }
-            case NETWORK_CONTROLLER_UNLOCKING -> {
-                new Thread(()->{
-                    try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
-                        CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
-                        {
-                            for (SerializeFriendlyBlockLocation nodeLocationKey : coreInfo.containerLocations) {
-                                Location nodeLocation = nodeLocationKey.toLocation();
-                                unlockNode(nodeLocation);
-                                setCoreStatusForNode(NodeType.MACHINE_CONTAINER, nodeLocation);
-                            }
+            case NETWORK_CONTROLLER_UNLOCKING -> new Thread(()->{
+                try (CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance()){
+                    CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
+                    {
+                        for (SerializeFriendlyBlockLocation nodeLocationKey : coreInfo.containerLocations) {
+                            Location nodeLocation = nodeLocationKey.toLocation();
+                            unlockNode(nodeLocation);
+                            setCoreStatusForNode(NodeType.MACHINE_CONTAINER, nodeLocation);
                         }
-                        {
-                            for (SerializeFriendlyBlockLocation nodeLocationKey : coreInfo.storageLocations) {
-                                Location nodeLocation = nodeLocationKey.toLocation();
-                                unlockNode(nodeLocation);
-                                setCoreStatusForNode(NodeType.STORAGE, nodeLocation);
-                            }
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
                     }
-                    new Thread(() -> {
-                        try (
-                                CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance();
-                                StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance();
-                        ){
-                            CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
+                    {
+                        for (SerializeFriendlyBlockLocation nodeLocationKey : coreInfo.storageLocations) {
+                            Location nodeLocation = nodeLocationKey.toLocation();
+                            unlockNode(nodeLocation);
+                            setCoreStatusForNode(NodeType.STORAGE, nodeLocation);
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                new Thread(() -> {
+                    try (
+                            CoreInfoSerializer coreInfoSerializer = CoreInfoSerializer.getInstance();
+                            StorageInfoSerializer storageInfoSerializer = StorageInfoSerializer.getInstance()
+                    ){
+                        CoreInfo coreInfo = coreInfoSerializer.getOrDefault(coreLocationKey);
 
-                            List<SimplePair<SerializeFriendlyBlockLocation,StorageInfo>> emptyStorageLocations = new LinkedList<>();
-                            ItemStackMapForOutputCalculation outputMap = new ItemStackMapForOutputCalculation();
-                            for (SerializeFriendlyBlockLocation storageLocationKey : coreInfo.storageLocations) {
-                                try {
-                                    StorageInfo storageInfo = storageInfoSerializer.getFromLocation(storageLocationKey);
-                                    Location storageLocation = storageLocationKey.toLocation();
-                                    if (!MachineNetworkStorage.isValidStorage(storageLocation)) {
-                                        continue;
-                                    }
-                                    ItemStack storeItem = MachineNetworkStorage.getStoredItem(storageInfo);
-                                    if (storeItem == null) {
-                                        emptyStorageLocations.add(new SimplePair<>(storageLocationKey, storageInfo));
-                                    } else {
-                                        outputMap.put(new ItemStackAsKey(storeItem), new SimplePair<>(storageLocationKey, storageInfo));
-                                    }
-                                }catch (Exception e){
-                                    e.printStackTrace();
+                        List<SimplePair<SerializeFriendlyBlockLocation,StorageInfo>> emptyStorageLocations = new LinkedList<>();
+                        ItemStackMapForOutputCalculation outputMap = new ItemStackMapForOutputCalculation();
+                        for (SerializeFriendlyBlockLocation storageLocationKey : coreInfo.storageLocations) {
+                            try {
+                                StorageInfo storageInfo = storageInfoSerializer.getFromLocation(storageLocationKey);
+                                Location storageLocation = storageLocationKey.toLocation();
+                                if (!MachineNetworkStorage.isValidStorage(storageLocation)) {
                                     continue;
                                 }
+                                ItemStack storeItem = MachineNetworkStorage.getStoredItem(storageInfo);
+                                if (storeItem == null) {
+                                    emptyStorageLocations.add(new SimplePair<>(storageLocationKey, storageInfo));
+                                } else {
+                                    outputMap.put(new ItemStackAsKey(storeItem), new SimplePair<>(storageLocationKey, storageInfo));
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                                continue;
+                            }
+                        }
+
+                        BigRational[] stablizedOutputAmountsPerTick = coreInfo.stableOutputAmount;
+                        ItemStack[] stabilizedOutputs = coreInfo.stableOutputs;
+                        long lockTime = coreInfo.lockTime;
+                        long timePast = Math.max(0, System.currentTimeMillis() - lockTime);
+                        long tickPast = timePast / 500;//slimefun tick
+                        for (int i = 0; i < stablizedOutputAmountsPerTick.length; i += 1) {
+                            stablizedOutputAmountsPerTick[i] = stablizedOutputAmountsPerTick[i].multiply(tickPast);
+                            BigRational outputAmount = stablizedOutputAmountsPerTick[i];
+                            ItemStackAsKey itemToOutput = new ItemStackAsKey(stabilizedOutputs[i]);
+                            if (!outputMap.containsKey(itemToOutput) && !emptyStorageLocations.isEmpty()) {
+                                SimplePair<SerializeFriendlyBlockLocation,StorageInfo> newEmptyContainer = emptyStorageLocations.remove(0);
+                                outputMap.put(itemToOutput, newEmptyContainer);
+                            } else if (emptyStorageLocations.isEmpty()) {
+                                continue;
                             }
 
-                            BigRational[] stablizedOutputAmountsPerTick = coreInfo.stableOutputAmount;
-                            ItemStack[] stabilizedOutputs = coreInfo.stableOutputs;
-                            long lockTime = coreInfo.lockTime;
-                            long timePast = Math.max(0, System.currentTimeMillis() - lockTime);
-                            long tickPast = timePast / 500;//slimefun tick
-                            for (int i = 0; i < stablizedOutputAmountsPerTick.length; i += 1) {
-                                stablizedOutputAmountsPerTick[i] = stablizedOutputAmountsPerTick[i].multiply(tickPast);
-                                BigRational outputAmount = stablizedOutputAmountsPerTick[i];
-                                ItemStackAsKey itemToOutput = new ItemStackAsKey(stabilizedOutputs[i]);
-                                if (!outputMap.containsKey(itemToOutput) && !emptyStorageLocations.isEmpty()) {
-                                    SimplePair<SerializeFriendlyBlockLocation,StorageInfo> newEmptyContainer = emptyStorageLocations.remove(0);
-                                    outputMap.put(itemToOutput, newEmptyContainer);
-                                } else if (emptyStorageLocations.isEmpty()) {
-                                    continue;
-                                }
-
-                                if (outputAmount.denominator().compareTo(BigInteger.ZERO) == 0){
-                                    new ArithmeticException("divide by zero:"+ outputAmount).printStackTrace();
-                                    continue;
-                                }
-                                BigInteger outputAmountInteger = outputAmount.numerator().divide(outputAmount.denominator());
-                                if (outputAmountInteger.compareTo(BigInteger.ZERO) <= 0){
-                                    continue;
-                                }
+                            if (outputAmount.denominator().compareTo(BigInteger.ZERO) == 0){
+                                new ArithmeticException("divide by zero:"+ outputAmount).printStackTrace();
+                                continue;
+                            }
+                            BigInteger outputAmountInteger = outputAmount.numerator().divide(outputAmount.denominator());
+                            if (outputAmountInteger.compareTo(BigInteger.ZERO) <= 0){
+                                continue;
+                            }
 //                                logger.log(Level.WARNING,"output:"+itemToOutput);
-                                SimplePair<SerializeFriendlyBlockLocation, StorageInfo> containerToOutput = outputMap.get(itemToOutput);
-                                containerToOutput.second.storeAmount = containerToOutput.second.storeAmount.add(outputAmountInteger);
-                                containerToOutput.second.storeItem = itemToOutput.getTemplate();
-                                storageInfoSerializer.saveToLocationNoThrow(containerToOutput.second,containerToOutput.first);
-                                MachineNetworkStorage.updateStoredStacks(BlockStorage.getInventory(containerToOutput.first.toLocation()),containerToOutput.second.storeItem, containerToOutput.second.storeAmount);
-//                                MachineNetworkStorage.setStoredStackNoThrow(containerToOutput, itemToOutput.getTemplate());
-//                                MachineNetworkStorage.addStored(containerToOutput, outputAmount);
-                            }
-                            clearCoreInputsAndOutputsInfo(coreInfo);
-                            coreInfo.networkStatus = NETWORK_CONTROLLER_ONLINE;
-                            coreInfoSerializer.saveToLocationNoThrow(coreInfo, coreLocationKey);
-                            unlockNode(b.getLocation());
-                            refresh(menu, b, NETWORK_CONTROLLER_ONLINE);
-                        }catch (Exception e ){e.printStackTrace();}
-                    }).start();
+                            SimplePair<SerializeFriendlyBlockLocation, StorageInfo> containerToOutput = outputMap.get(itemToOutput);
+                            containerToOutput.second.storeAmount = containerToOutput.second.storeAmount.add(outputAmountInteger);
+                            containerToOutput.second.storeItem = itemToOutput.getTemplate();
+                            storageInfoSerializer.saveToLocationNoThrow(containerToOutput.second,containerToOutput.first);
+                            MachineNetworkStorage.updateStoredStacks(BlockStorage.getInventory(containerToOutput.first.toLocation()),containerToOutput.second.storeItem, containerToOutput.second.storeAmount);
+
+                        }
+                        clearCoreInputsAndOutputsInfo(coreInfo);
+                        coreInfo.networkStatus = NETWORK_CONTROLLER_ONLINE;
+                        coreInfoSerializer.saveToLocationNoThrow(coreInfo, coreLocationKey);
+                        unlockNode(b.getLocation());
+                        refresh(menu, b, NETWORK_CONTROLLER_ONLINE);
+                    }catch (Exception e ){e.printStackTrace();}
                 }).start();
-            }
+            }).start();
             case NETWORK_CONTROLLER_DISABLING -> new Thread(){
                 @Override
                 public void run() {

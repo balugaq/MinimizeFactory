@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory.utils;
+package io.github.ignorelicensescn.minimizefactory.utils.namemateriallore;
 
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 
@@ -10,8 +10,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
-import static io.github.ignorelicensescn.minimizefactory.utils.MaterialColorMaps.legacyMaterialColorMap;
-import static io.github.ignorelicensescn.minimizefactory.utils.MaterialColorMaps.materialColorMap;
+import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.MaterialColorMaps.legacyMaterialColorMap;
+import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.MaterialColorMaps.materialColorMap;
 
 public class NameUtil {
     public static final String NULL_STRING = "NULL";

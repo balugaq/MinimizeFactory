@@ -1,7 +1,6 @@
 package io.github.ignorelicensescn.minimizefactory.datastorage.database;
 import io.github.ignorelicensescn.minimizefactory.MinimizeFactory;
 import io.github.ignorelicensescn.minimizefactory.datastorage.database.types.Column;
-import io.github.ignorelicensescn.minimizefactory.datastorage.machinenetwork.SerializeFriendlyBlockLocation;
 
 import java.io.File;
 import java.io.IOException;

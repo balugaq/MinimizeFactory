@@ -1,7 +1,6 @@
 package io.github.ignorelicensescn.minimizefactory.datastorage.database.operators.preparedstatementoperations;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
