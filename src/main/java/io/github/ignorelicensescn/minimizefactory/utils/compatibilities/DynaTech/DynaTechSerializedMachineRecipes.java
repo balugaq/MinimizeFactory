@@ -4,20 +4,15 @@ import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializeMachineRecipeUtils;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
-import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.profelements.dynatech.items.abstracts.AbstractElectricMachine;
 import me.profelements.dynatech.items.electric.generators.CulinaryGenerator;
 import me.profelements.dynatech.items.electric.generators.StardustReactor;
 import me.profelements.dynatech.items.electric.machines.MineralizedApiary;
-import org.bukkit.Material;
 import org.bukkit.block.Beehive;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockDataMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -131,45 +126,47 @@ public class DynaTechSerializedMachineRecipes {
                         @Nonnull
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MineralizedApiary m, @Nullable ItemStack stack) {
-                            if (stack == null || m == null){return Collections.emptyList();}
-                            if (!stack.hasItemMeta()){return Collections.emptyList();}
-                            ItemMeta meta = stack.getItemMeta();
-                            if (meta == null){return Collections.emptyList();}
-                            if (meta instanceof BlockStateMeta blockStateMeta){
-                                if (blockStateMeta.hasBlockState()){
-                                    if (blockStateMeta.getBlockState() instanceof Beehive beehive){
-                                        try {
-                                            if (Field_MineralizedApiary_material == null){
-                                                Field_MineralizedApiary_material = MineralizedApiary.class.getDeclaredField("material");
-                                            }
-                                            ItemStack generateItem = (ItemStack) getInUnsafe(m,Field_MineralizedApiary_material);
-                                            int beeCount = beehive.getEntityCount();
-                                            int timeCost = 60;
-                                            if (beeCount != 0){
-                                                timeCost = 30 - (10*(beeCount-1));
-                                            }
-                                            int energyPerTick = m.getEnergyConsumption();
-                                            int speed = m.getSpeed();
-                                            return Collections.singletonList(new SimplePair<>(
-                                                    new SerializedMachine_MachineRecipe(
-                                                            stack.clone(),
-                                                            new MachineRecipe(
-                                                                    timeCost,new ItemStack[]{null},new ItemStack[]{generateItem.clone()}
-                                                    ),null,
-                                                            energyPerTick,
-                                                            speed,
-                                                            null
-                                                    ),
-                                                    null
-                                            ));
-
-
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                            return Collections.emptyList();
+                            if (m == null || stack == null){return Collections.emptyList();}
+                            int beeCount = 0;
+                            if (stack.hasItemMeta()){
+                                ItemMeta meta = stack.getItemMeta();
+                                if (meta instanceof BlockStateMeta blockStateMeta){
+                                    if (blockStateMeta.hasBlockState()){
+                                        if (blockStateMeta.getBlockState() instanceof Beehive beehive){
+                                            beeCount = beehive.getEntityCount();
                                         }
                                     }
                                 }
+                            }
+
+
+                            try {
+                                if (Field_MineralizedApiary_material == null){
+                                    Field_MineralizedApiary_material = MineralizedApiary.class.getDeclaredField("material");
+                                }
+                                ItemStack generateItem = (ItemStack) getInUnsafe(m,Field_MineralizedApiary_material);
+
+                                int timeCost = 60;
+                                if (beeCount != 0){
+                                    timeCost = 30 - (10*(beeCount-1));
+                                }
+                                int energyPerTick = m.getEnergyConsumption();
+                                int speed = m.getSpeed();
+                                return Collections.singletonList(new SimplePair<>(
+                                        new SerializedMachine_MachineRecipe(
+                                                stack.clone(),
+                                                new MachineRecipe(
+                                                        timeCost,new ItemStack[]{null},new ItemStack[]{generateItem.clone()}
+                                                ),null,
+                                                energyPerTick,
+                                                speed,
+                                                null
+                                        ),
+                                        null
+                                ));
+
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
                             return Collections.emptyList();
                         }
