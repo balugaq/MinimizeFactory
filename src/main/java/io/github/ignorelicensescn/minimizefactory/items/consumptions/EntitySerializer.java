@@ -9,17 +9,19 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import org.bukkit.Sound;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
-import static io.github.ignorelicensescn.minimizefactory.items.SlimefunStacks.SERIALIZED_VILLAGER;
+public class EntitySerializer extends SlimefunItem {
 
-public class VillagerSerializer extends SlimefunItem {
-
-    public VillagerSerializer(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
+    private final ItemStack dropItem;
+    private final Class<? extends Creature> targetCreature;
+    public EntitySerializer(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack dropItem, Class<? extends Creature> targetCreature) {
         super(itemGroup, item, recipeType, recipe);
+        this.dropItem = dropItem;
+        this.targetCreature = targetCreature;
         addItemHandler((EntityInteractHandler) (e,usingItem,offhandFlag) -> {
 
             Entity interactedEntity = e.getRightClicked();
@@ -28,10 +30,11 @@ public class VillagerSerializer extends SlimefunItem {
                 //TODO:Write a message
                 return;
             }
-            if (interactedEntity instanceof Villager v){
+
+            if (EntitySerializer.this.targetCreature.isAssignableFrom(interactedEntity.getClass())){
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_HURT,3.0f,0.5f);
-                v.getWorld().dropItem(v.getLocation(),SERIALIZED_VILLAGER.clone());
-                v.remove();
+                interactedEntity.getWorld().dropItem(interactedEntity.getLocation(),EntitySerializer.this.dropItem.clone());
+                interactedEntity.remove();
                 ItemUtils.consumeItem(usingItem,1,false);
             }
         });

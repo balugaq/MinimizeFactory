@@ -35,3 +35,4 @@ Use in this way:Put all machines into one box(called MachineNetworkContainer) or
 
 
 * and [Kryo](https://github.com/EsotericSoftware/kryo) is really fast.
+* needs sun.misc.Unsafe for compatibility,don't disable it.If you are using Java version >= 22,you need to find a way to enable it.(I didn't use JNI because it's also for removal.)

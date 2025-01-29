@@ -1,8 +1,7 @@
 package io.github.ignorelicensescn.minimizefactory.items;
 
-import dev.sefiraat.cultivation.dough.items.CustomItemStack;
 import io.github.ignorelicensescn.minimizefactory.items.consumptions.MachineStabilizer;
-import io.github.ignorelicensescn.minimizefactory.items.consumptions.VillagerSerializer;
+import io.github.ignorelicensescn.minimizefactory.items.consumptions.EntitySerializer;
 import io.github.ignorelicensescn.minimizefactory.items.machine.MachineRecipeDeserializer;
 import io.github.ignorelicensescn.minimizefactory.items.machine.MachineRecipeSerializer;
 import io.github.ignorelicensescn.minimizefactory.items.machine.network.*;
@@ -17,6 +16,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.UnplaceableBlock;
 import org.bukkit.Material;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -257,7 +257,7 @@ public class Registers {
             return result;
         }
     };
-    public static final VillagerSerializer VILLAGER_SERIALIZER_FOR_REGISTER = new VillagerSerializer(
+    public static final EntitySerializer VILLAGER_SERIALIZER_FOR_REGISTER = new EntitySerializer(
             Groups.MATERIALS,
             SlimefunStacks.VILLAGER_SERIALIZER,
             RecipeType.ENHANCED_CRAFTING_TABLE,
@@ -265,7 +265,9 @@ public class Registers {
                     new ItemStack(Material.WHITE_BED),       MACHINE_STABILIZER,            new ItemStack(Material.WHITE_BED),
                     MACHINE_STABILIZER,             new ItemStack(Material.EMERALD_BLOCK),  MACHINE_STABILIZER,
                     new ItemStack(Material.WHITE_BED),       MACHINE_STABILIZER,            new ItemStack(Material.WHITE_BED)
-            }
+            },
+            SlimefunStacks.SERIALIZED_VILLAGER,
+            Villager.class
     );
     public static final UnplaceableBlock SERIALIZED_VILLAGER_FOR_REGISTER = new UnplaceableBlock(
             Groups.MATERIALS,
@@ -273,7 +275,7 @@ public class Registers {
             RecipeTypes.RIGHT_CLICK,
             new ItemStack[]{
                     null,                               null,                               null,
-                    new ItemStack(Material.PLAYER_HEAD),SlimefunStacks.VILLAGER_SERIALIZER,new ItemStack(Material.VILLAGER_SPAWN_EGG),
+                    new ItemStack(Material.PLAYER_HEAD),SlimefunStacks.VILLAGER_SERIALIZER_SINGLE,new ItemStack(Material.VILLAGER_SPAWN_EGG),
                     null,                               null,                               null
             }
     );

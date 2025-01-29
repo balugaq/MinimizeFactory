@@ -119,6 +119,12 @@ public class SlimefunStacks {
             properties.getReplacedProperty("Material_Villager_Serializer"),
             properties.getReplacedProperties("Material_Villager_Serializer_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
     );
+    public static final SlimefunItemStack VILLAGER_SERIALIZER_SINGLE = new SlimefunItemStack(
+            "MINIMIZEFACTORY_VILLAGER_SERIALIZER",
+            Material.EMERALD_BLOCK,
+            properties.getReplacedProperty("Material_Villager_Serializer"),
+            properties.getReplacedProperties("Material_Villager_Serializer_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
+    );
     static {
         VILLAGER_SERIALIZER.setAmount(4);
     }
