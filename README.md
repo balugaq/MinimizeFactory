@@ -2,7 +2,7 @@
 
 **过年我估计会摸鱼一段时间,不在.有bug放issue/pr(I may absent during Chinese new year,just put problems in issue/pr if exists.)**
 
-**现在汉化组粘液也能用了**
+**现在汉化组粘液也能用了,[GuiZhanLibPlugin](https://github.com/ybw0014/GuizhanLibPlugin)不是必须的,但是可以提供对原版物品的中文翻译(在序列化机器时体现)**
 
 **I didn't translate into english**,but you can try it yourself.See [/src/main/resources/language/](/src/main/resources/language).You may want to add en_US.properties or st.else.
 **Remember to change the config when switching language!**
