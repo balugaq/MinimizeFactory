@@ -4,7 +4,7 @@ description: Calculate and compress a Slimefun factory into a block as your wish
 main: io.github.ignorelicensescn.minimizefactory.MinimizeFactory
 website: 127.0.0.1
 depend: [Slimefun]
-softdepend: [Galactifun,InfinityExpansion,InfinityCompress,LiteXpansion,FNAmplifications,SlimeFrame,DynaTech,SlimefunWarfare,FluffyMachines, Cultivation]
+softdepend: [Galactifun,InfinityExpansion,InfinityCompress,LiteXpansion,FNAmplifications,SlimeFrame,DynaTech,SlimefunWarfare,FluffyMachines, Cultivation, GuizhanLibPlugin]
 version: ${project.version}
 api-version: 1.16
 
