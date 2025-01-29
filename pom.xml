@@ -58,6 +58,12 @@
         </dependency>
 <!--        end getting angry-->
 
+        <dependency>
+            <groupId>net.guizhanss</groupId>
+            <artifactId>GuizhanLibPlugin</artifactId>
+            <version>2.2.0</version>
+            <scope>provided</scope>
+        </dependency>
 <!--        compiled Slimefun RC-37 locally to give some annotations for myself,see my repos:RemovedBySFCNInspection and Slimefun4-RC-37-modified-->
 <!--        compiled locally-->
         <dependency>

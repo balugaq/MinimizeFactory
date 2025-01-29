@@ -2,6 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.namemateriallore;
 
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 
+import net.guizhanss.minecraft.guizhanlib.gugu.minecraft.helpers.MaterialHelper;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
+import static io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags.GuizhanLibPluginFlag;
 import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.MaterialColorMaps.legacyMaterialColorMap;
 import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.MaterialColorMaps.materialColorMap;
 
@@ -33,6 +35,9 @@ public class NameUtil {
     }
     public static String nameForMaterialNoColor(@Nullable Material m){
         if (m == null){return NULL_STRING;}
+        if (GuizhanLibPluginFlag){
+            return MaterialHelper.getName(m);
+        }
         return m.name();
     }
 

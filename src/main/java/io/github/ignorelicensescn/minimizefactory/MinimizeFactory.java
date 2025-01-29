@@ -143,6 +143,10 @@ public class MinimizeFactory extends AbstractAddon {
             PluginEnabledFlags.CultivationFlag = true;
             logger.log(Level.INFO,"Cultivation Detected");
         }
+        if (Bukkit.getPluginManager().isPluginEnabled("GuizhanLibPlugin")){
+            PluginEnabledFlags.GuizhanLibPluginFlag = true;
+            logger.log(Level.INFO,"GuizhanLibPlugin Detected");
+        }
 
         logger.log(Level.INFO, "Installed plugins Checked.");
 

@@ -11,4 +11,5 @@ public class PluginEnabledFlags {
     public static boolean DynaTechFlag = false;
     public static boolean FluffyMachinesFlag = false;
     public static boolean CultivationFlag = false;
+    public static boolean GuizhanLibPluginFlag = false;
 }
