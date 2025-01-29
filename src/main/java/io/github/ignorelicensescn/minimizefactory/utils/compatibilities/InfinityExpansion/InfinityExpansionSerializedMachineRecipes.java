@@ -345,14 +345,19 @@ public class InfinityExpansionSerializedMachineRecipes {
                                             : ChatColor.GRAY;
                             ChatColor colorForOtherExpectation = ChatColor.GRAY;
                             List<String> lore = new ArrayList<>();
-                            lore.add(
-                                    colorForNetherExpectation
-                                            + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
-                                            + properties.getReplacedProperty("Test_InfoProvider_Info_Nether") + " "
-                                            + colorForOtherExpectation
-                                            + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
-                                            + properties.getReplacedProperty("Test_InfoProvider_Info_Other") + " "
-                            );
+                            World.Environment environment = serialized.env;
+                            if (!ALLOW_NETHER_IN_OVERWORLD && environment== World.Environment.NETHER){
+                                lore.add(
+                                        colorForNetherExpectation
+                                                + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
+                                                + properties.getReplacedProperty("Test_InfoProvider_Info_Nether") + " "
+                                );
+                            }else {
+                                lore.add(
+                                        colorForOtherExpectation
+                                                + properties.getReplacedProperty("Test_InfoProvider_Info_ColoredBlock")
+                                                + properties.getReplacedProperty("Test_InfoProvider_Info_Other") + " ");
+                            }
                             ChatColor colorForOutput = Objects.equals(serialized.env,World.Environment.NETHER)?colorForNetherExpectation:colorForOtherExpectation;
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Oscillator_Material"));
                             ItemStack oscillator = serializedPair.second;
