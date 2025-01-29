@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.ignorelicensescn.minimizefactory.items.Registers.MACHINE_STABILIZER;
+import static io.github.ignorelicensescn.minimizefactory.items.SlimefunStacks.MACHINE_STABILIZER;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.properties;
 import static io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil.isItemStackSimilar;
 import static io.github.thebusybiscuit.slimefun4.libraries.commons.lang.ArrayUtils.EMPTY_INT_ARRAY;

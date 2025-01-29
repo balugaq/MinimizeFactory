@@ -38,7 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.ignorelicensescn.minimizefactory.items.Registers.MACHINE_STABILIZER;
+import static io.github.ignorelicensescn.minimizefactory.items.SlimefunStacks.MACHINE_STABILIZER;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.*;
 import static io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.PersistentSerializedMachineRecipeType.SERIALIZED_MACHINE_RECIPE;
 import static io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.LoreGetter.tryGetLore;
