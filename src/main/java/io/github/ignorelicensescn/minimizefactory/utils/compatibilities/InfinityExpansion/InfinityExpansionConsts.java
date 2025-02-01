@@ -3,13 +3,13 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Infinit
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry;
 import io.github.acdeasdff.infinityCompress.items.blocks.TweakedGEOQuarry_Filter;
 import io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.MobSimulationCardInfo;
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizefactory.utils.searchregistries.SearchRegistries;
-import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimpleFour;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
-import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimpleTri;
 import io.github.mooy1.infinityexpansion.InfinityExpansion;
 import io.github.mooy1.infinityexpansion.categories.Groups;
 import io.github.mooy1.infinityexpansion.infinitylib.machines.MachineBlock;
@@ -45,9 +45,9 @@ import static io.github.mooy1.infinityexpansion.items.machines.Machines.*;
  * things here would be mad and {@link sun.misc.Unsafe}
  * */
 public class InfinityExpansionConsts {
-    public static SimplePair<ItemStack[],ItemStack>[] INFINITY_WORKBENCH_RECIPES = new SimplePair[0];
-    public static final Map<String, SimpleTri<ItemStack[],IntegerRational[],Long>> CARDS_INFO = new HashMap<>();//(outputs,expectations,energyPerTick),ignoresXP
-    public static final List<SimpleFour<String, ItemStack[],IntegerRational[],Long>> CARDS_INFO_LIST = new ArrayList<>();
+    public static ItemStacksToStackRecipe[] INFINITY_WORKBENCH_RECIPES = EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE;
+    public static Map<String, MobSimulationCardInfo> CARDS_INFO = Collections.emptyMap();
+    public static List<SimplePair<String, MobSimulationCardInfo>> CARDS_INFO_LIST = Collections.emptyList();
     public static double XP_MULTIPLIER = 1.;
     public static int CHAMBER_INTERVAL = 20;
     public static int CHAMBER_BUFFER = 15000;
@@ -56,7 +56,7 @@ public class InfinityExpansionConsts {
 
     public static Class<?> RandomizedItemStackClass = null;
     public static ItemStack airItemStack = new ItemStack(Material.AIR);
-    public static final List<SingularityRecipe> SINGULARITY_RECIPES = new ArrayList<>();
+    public static List<SingularityRecipe> SINGULARITY_RECIPES = Collections.emptyList();
     public static int HYDRO_ENERGY = -5;
     public static int ADVANCED_HYDRO_ENERGY = -45;
     public static int GEO_ENERGY = -35;
@@ -73,7 +73,7 @@ public class InfinityExpansionConsts {
     public static double COST_MULTIPLIER = 1;
     public static boolean ALLOW_NETHER_IN_OVERWORLD = false;
     public static  int INTERVAL = 1;
-    public static SimplePair<ItemStack[],ItemStack>[] GEAR_TRANSFORMER_RECIPES = new SimplePair[0];
+    public static ItemStacksToStackRecipe[] GEAR_TRANSFORMER_RECIPES = EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE;
     /**
      * Map< SlimefunItemID,machineBlockInfo >
      */
@@ -129,6 +129,7 @@ public class InfinityExpansionConsts {
                 Field fInput = null;
                 Field fOutput = null;
                 Field fAmount = null;
+                SINGULARITY_RECIPES = new ArrayList<>(RecipeList.size());
                 for (T t : RecipeList) {
                     if (fInput == null){
                         fInput = t.getClass().getDeclaredField("input");
@@ -154,7 +155,7 @@ public class InfinityExpansionConsts {
             Field fTicksPerOut = MachineBlock.class.getDeclaredField("ticksPerOutput");
             int ticksPerOut = getIntInUnsafe(machineBlock, fTicksPerOut);
             List<T> Recipes = (List<T>) getInUnsafe(machineBlock,fRecipes);
-            List<MachineBlockRecipe> machineBlockRecipes = new ArrayList<>();
+            List<MachineBlockRecipe> machineBlockRecipes = new ArrayList<>(Recipes.size());
             Field fOutput = null;
             Field fAmount = null;
             Field fStrings = null;
@@ -442,6 +443,8 @@ public class InfinityExpansionConsts {
     }
     public static void initMobDataCards() throws Exception{
         Map<String, MobDataCard> CARDS = ((Map<String, MobDataCard>) getInUnsafe_static(MobDataCard.class.getDeclaredField("CARDS")));
+        CARDS_INFO = new HashMap<>(CARDS.size());
+        CARDS_INFO_LIST = new ArrayList<>(CARDS.size());
         for (String s:CARDS.keySet()){
             MobDataCard card = CARDS.get(s);
 
@@ -453,8 +456,9 @@ public class InfinityExpansionConsts {
             SimplePair<ItemStack[],IntegerRational[]> solvedDrops = solveRandomizedSet(drops,ItemStack.class);
             ItemStack[] output = solvedDrops.first;
             IntegerRational[] expectation = solvedDrops.second;
-            CARDS_INFO.put(card.getId(),new SimpleTri<>(output,expectation,(long)energyPerTick));
-            CARDS_INFO_LIST.add(new SimpleFour<>(card.getId(),output,expectation,(long)energyPerTick));
+            MobSimulationCardInfo cardInfo = new MobSimulationCardInfo(output,expectation, energyPerTick);
+            CARDS_INFO.put(card.getId(),cardInfo);
+            CARDS_INFO_LIST.add(new SimplePair<>(card.getId(),cardInfo));
         }
     }
     public static void initInfinityWorkbenchRecipes() throws NoSuchFieldException {
@@ -465,7 +469,7 @@ public class InfinityExpansionConsts {
         }, 10000000);
         Field f = fake.getClass().getSuperclass().getDeclaredField("recipes");
         List<io.github.mooy1.infinityexpansion.infinitylib.machines.CraftingBlockRecipe> recipes = (List<io.github.mooy1.infinityexpansion.infinitylib.machines.CraftingBlockRecipe>) getInUnsafe(fake,f);
-        INFINITY_WORKBENCH_RECIPES = new SimplePair[recipes.size()];
+        INFINITY_WORKBENCH_RECIPES = new ItemStacksToStackRecipe[recipes.size()];
         for (int i=0;i<recipes.size();i+=1){
             ItemStack[] inputs;
             try {
@@ -485,7 +489,7 @@ public class InfinityExpansionConsts {
                 }
             }
             ItemStack output = (ItemStack) getInUnsafe(recipes.get(i),recipes.get(i).getClass().getDeclaredField("output"));
-            INFINITY_WORKBENCH_RECIPES[i] = new SimplePair<>(ItemStackUtil.collapseItems(inputsClone),output);
+            INFINITY_WORKBENCH_RECIPES[i] = new ItemStacksToStackRecipe(ItemStackUtil.collapseItems(inputsClone),output);
         }
     }
     public static void initGearTransformerRecipes() throws Exception{
@@ -505,7 +509,7 @@ public class InfinityExpansionConsts {
         int toolCount = toolTypes.length*toolMaterials.length;
         int armorRecipeCount = armorCount * armorMaterials.length - armorCount;
         int toolRecipeCount = toolCount * toolMaterials.length - toolCount;
-        GEAR_TRANSFORMER_RECIPES = new SimplePair[toolRecipeCount + armorRecipeCount];
+        GEAR_TRANSFORMER_RECIPES = new ItemStacksToStackRecipe[toolRecipeCount + armorRecipeCount];
         int counter = 0;
         /*
          * recipes for example
@@ -524,7 +528,7 @@ public class InfinityExpansionConsts {
                 for (int i=0;i<armorMaterials.length;i+=1){
                     String inMaterial=armorMaterials[i];
                     if (material.equals(inMaterial)){continue;}
-                    GEAR_TRANSFORMER_RECIPES[counter] = new SimplePair<>(new ItemStack[]{
+                    GEAR_TRANSFORMER_RECIPES[counter] = new ItemStacksToStackRecipe(new ItemStack[]{
                             new ItemStack(Material.getMaterial(  material + type)),armorRecipes[i].clone()}
                             ,new ItemStack(Material.getMaterial(inMaterial + type))
                     );
@@ -537,7 +541,7 @@ public class InfinityExpansionConsts {
                 for (int i=0;i<toolMaterials.length;i+=1){
                     String inMaterial=toolMaterials[i];
                     if (material.equals(inMaterial)){continue;}
-                    GEAR_TRANSFORMER_RECIPES[counter] = new SimplePair<>(new ItemStack[]{
+                    GEAR_TRANSFORMER_RECIPES[counter] = new ItemStacksToStackRecipe(new ItemStack[]{
                             new ItemStack(Material.getMaterial(  material + type)),toolRecipes[i].clone()}
                             ,new ItemStack(Material.getMaterial(inMaterial + type))
                     );

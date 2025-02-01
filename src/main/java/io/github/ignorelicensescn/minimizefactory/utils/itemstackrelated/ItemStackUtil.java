@@ -85,7 +85,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack[] RecipeChoiceListToItemStackArray_formated(List<RecipeChoice> recipeChoices){
-        List<ItemStack> itemStacks = new ArrayList<>();
+        List<ItemStack> itemStacks = new ArrayList<>(recipeChoices.size());
         for (RecipeChoice rc:recipeChoices){
             if (rc == null){continue;}
             itemStacks.add(rc.getItemStack());

@@ -324,7 +324,7 @@ public class MachineRecipeSerializer extends SlimefunItem {
             ItemStack output = MACHINE_STABILIZER.clone();
             output.setAmount(1);
 
-            List<String> lore = new ArrayList<>();
+            List<String> lore = new ArrayList<>(20);
             String inputName = NameUtil.findName(inSlotItem);
 
 //            if (inSlotItem.hasItemMeta() && inSlotItem.getItemMeta().hasDisplayName()){

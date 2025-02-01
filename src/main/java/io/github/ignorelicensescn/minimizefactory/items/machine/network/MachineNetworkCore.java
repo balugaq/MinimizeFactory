@@ -351,7 +351,7 @@ public class MachineNetworkCore extends NetworkNode{
                                     continue;
                                 }
                                 //stabilizer inputs
-                                List<SimplePair<SerializedMachine_MachineRecipe, Integer>> serializedInContainer = new ArrayList<>();
+                                List<SimplePair<SerializedMachine_MachineRecipe, Integer>> serializedInContainer = new ArrayList<>(MachineNetworkContainer.STABILIZER_INPUT_SLOTS.length);
                                 for (int slotIndex : MachineNetworkContainer.STABILIZER_INPUT_SLOTS) {
                                     ItemStack itemStack = locationMenu.getItemInSlot(slotIndex);
                                     if (itemStack == null) {
@@ -372,13 +372,11 @@ public class MachineNetworkCore extends NetworkNode{
 
                             {
 
-                                List<String> inputLore = new ArrayList<>();
-                                List<String> outputLore = new ArrayList<>();
-                                List<String> stableOutputLore = new ArrayList<>();
 
                                 ItemStackMapForContainerCalculation map = result.inputs();
                                 ItemStack[] inputArr = new ItemStack[map.size()];
                                 BigRational[] inputAmount = new BigRational[map.size()];
+                                List<String> inputLore = new ArrayList<>(map.size());
                                 int counter = 0;
                                 for (Map.Entry<ItemStackAsKey, BigRational> inputEntry : map.entrySet()) {
                                     inputArr[counter] = inputEntry.getKey().getTemplate();
@@ -390,6 +388,7 @@ public class MachineNetworkCore extends NetworkNode{
                                 map = result.outputs();
                                 ItemStack[] outputArr = new ItemStack[map.size()];
                                 BigRational[] outputAmount = new BigRational[map.size()];
+                                List<String> outputLore = new ArrayList<>(map.size());
                                 counter = 0;
                                 for (Map.Entry<ItemStackAsKey, BigRational> outputEntry : map.entrySet()) {
                                     outputArr[counter] = outputEntry.getKey().getTemplate();
@@ -401,6 +400,7 @@ public class MachineNetworkCore extends NetworkNode{
                                 map = result.stableOutputs();
                                 ItemStack[] stableOutputArr = new ItemStack[map.size()];
                                 BigRational[] stableOutputAmount = new BigRational[map.size()];
+                                List<String> stableOutputLore = new ArrayList<>(map.size());
                                 counter = 0;
                                 for (Map.Entry<ItemStackAsKey, BigRational> outputEntry : map.entrySet()) {
                                     stableOutputArr[counter] = outputEntry.getKey().getTemplate();

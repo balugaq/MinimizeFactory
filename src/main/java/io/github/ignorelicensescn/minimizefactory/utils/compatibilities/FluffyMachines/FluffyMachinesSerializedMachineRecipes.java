@@ -1,13 +1,13 @@
 package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.FluffyMachines;
 
 import io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializeMachineRecipeUtils;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.implementation.items.multiblocks.OreWasher;
 import io.ncbpfluffybear.fluffymachines.machines.*;
 import io.ncbpfluffybear.fluffymachines.objects.AutoCrafter;
@@ -69,7 +69,7 @@ public class FluffyMachinesSerializedMachineRecipes {
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable AutoCrafter m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{AutoCrafter.ENERGY_CONSUMPTION,1, AutoCrafter.CAPACITY};
-                            List<SimplePair<ItemStack[],ItemStack>> machineRecipes = getMultiblockAutocrafterRecipes(m);
+                            ItemStacksToStackRecipe[] machineRecipes = getMultiblockAutocrafterRecipes(m);
                             return SerializeMachineRecipeUtils.fromInputsAndSingleOutput(machineRecipes,m,
                                     energyInfo[0],1);
                         }

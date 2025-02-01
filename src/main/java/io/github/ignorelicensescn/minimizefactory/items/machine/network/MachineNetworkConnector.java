@@ -12,7 +12,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -80,7 +79,7 @@ public class MachineNetworkConnector extends SlimefunItem {
                             if (coreLocationKey == null){
                                 p.sendMessage(properties.getReplacedProperty("Connector_No_Core_Found"));
                                 return;
-                            };
+                            }
                             e.getClickedBlock().ifPresent(
                                     block -> {
                                         if (!isLocked(coreLocationKey)){

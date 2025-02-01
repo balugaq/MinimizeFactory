@@ -61,10 +61,6 @@ public final class InfoScan {
     public static final int COOLANT_DURATION = 50;
     public static final GoldPan goldPan = SlimefunItems.GOLD_PAN.getItem(GoldPan.class);
     public static final GoldPan netherGoldPan = SlimefunItems.NETHER_GOLD_PAN.getItem(GoldPan.class);
-    public static final List<MachineRecipe> emptyMachineRecipes = new ArrayList<>();
-    public static final List<MachineRecipeInTicks> emptyMachineRecipesInTicks = new ArrayList<>();
-    public static final List<MachineRecipeOutEntity> emptyMachineRecipeOutEntity = new ArrayList<>();
-    public static final Set<MachineFuel> emptyMachineFuels = new HashSet<>();
 
     public static long[] findEnergyInfo_AContainer(AContainer sfItem){
         //Power once(J); delay(tick); Capacity(J)
@@ -347,21 +343,21 @@ public final class InfoScan {
         if (sfItem != null){
             return sfItem.getMachineRecipes();
         }else {
-            return emptyMachineRecipes;
+            return Collections.emptyList();
         }
     }
     public static Set<MachineFuel> findFuels(AGenerator sfItem){
         if (sfItem != null){
             return sfItem.getFuelTypes();
         }else {
-            return emptyMachineFuels;
+            return Collections.emptySet();
         }
     }
     public static Set<MachineFuel> findFuels_Reactor(Reactor sfItem){
         if (sfItem != null){
             return sfItem.getFuelTypes();
         }else {
-            return emptyMachineFuels;
+            return Collections.emptySet();
         }
     }
     public static long[] findEnergyInfo_ElectricGoldPan(ElectricGoldPan sfItem){
@@ -385,7 +381,7 @@ public final class InfoScan {
         return energyInfo;
     }
     
-    private static final List<MachineRecipeWithExpectations> Recipes_ElectricDustWasher_List = new ArrayList<>();
+    private static final List<MachineRecipeWithExpectations> Recipes_ElectricDustWasher_List = new ArrayList<>(12);
     public static void initRecipes_ElectricDustWasher(){
         try {
             OreWasher oreWasher = SlimefunItems.ORE_WASHER.getItem(OreWasher.class);
@@ -486,7 +482,7 @@ public final class InfoScan {
 //        eGoldPanRecipeMap.put(netherGoldPan.getInputMaterial(), new SimplePair<>(outs,expectations));
 //    }
 
-    private static final List<MachineRecipeWithExpectations> eGoldPanRecipes = new ArrayList<>();
+    private static final List<MachineRecipeWithExpectations> eGoldPanRecipes = new ArrayList<>(12);
     public static List<MachineRecipeWithExpectations> findRecipes_ElectricGoldPan(ElectricGoldPan sfItem){
         if (eGoldPanRecipes.isEmpty()){
             initRecipes_ElectricGoldPan();
@@ -532,30 +528,28 @@ public final class InfoScan {
 
     public static List<MachineRecipeOutEntity> findRecipes_AbstractEntityAssembler(AbstractEntityAssembler sfItem){
         try {
-            List<MachineRecipeOutEntity> result = new ArrayList<>();
             ItemStack[] input = new ItemStack[]{
                     sfItem.getBody().clone(),sfItem.getHead().clone()
             };
-            result.add(
-                    new MachineRecipeOutEntity(
-                            30,
-                            input,
-                            (Class<? extends Entity>) sfItem.getClass().getDeclaredMethod("spawnEntity", Location.class).getReturnType()
-                    )
-            );
-            return result;
+            return Collections.singletonList(new MachineRecipeOutEntity(
+                    30,
+                    input,
+                    (Class<? extends Entity>) sfItem.getClass().getDeclaredMethod("spawnEntity", Location.class).getReturnType()
+            ));
         }catch (Exception e){
             e.printStackTrace();
-            return emptyMachineRecipeOutEntity;
+            return Collections.emptyList();
         }
     }
 
     public static List<MachineRecipe> findRecipes_TweakedMaterialGenerator(TweakedMaterialGenerator sfItem){
-        List<ItemStack> output = sfItem.getDisplayRecipes();
-        output.remove(null);
-        List<MachineRecipe> result = new ArrayList<>();
-        result.add(new MachineRecipeInTicks(1, EMPTY_ITEM_STACK_ARRAY, new ItemStack[]{output.get(0)}));
-        return result;
+        List<ItemStack> rawRecipes = sfItem.getDisplayRecipes();
+        List<ItemStack> output = new ArrayList<>(rawRecipes.size());
+        for (ItemStack out:rawRecipes){
+            if (out == null){continue;}
+            output.add(out);
+        }
+        return Collections.singletonList(new MachineRecipeInTicks(1, EMPTY_ITEM_STACK_ARRAY, new ItemStack[]{output.get(0)}));
     }
 
     /**
@@ -564,9 +558,10 @@ public final class InfoScan {
     public static final Map<String,Map<String,SimplePair<ItemStack[],IntegerRational[]>>> machineBlockRecipeMapWithExpectation = new HashMap<>();
     public static List<MachineRecipeInTicks> findRecipes_MachineBlock(MachineBlock sfItem){
         try {
-            List<MachineRecipeInTicks> result = new ArrayList<>();
             MachineBlockInfo machineBlockInfo1 = getMachineBlockInfo(sfItem);
-            for (MachineBlockRecipe machineBlockRecipe: machineBlockInfo1.recipes()){
+            List<MachineBlockRecipe> rawRecipes = machineBlockInfo1.recipes();
+            List<MachineRecipeInTicks> result = new ArrayList<>(rawRecipes.size());
+            for (MachineBlockRecipe machineBlockRecipe: rawRecipes){
                 ItemStack output = machineBlockRecipe.output;
                 if (!(output instanceof InfinityExpansion_RandomizedItemStack)){
                     result.add(new MachineRecipeInTicks(machineBlockInfo1.ticksPerOutput(), machineBlockRecipe.input, new ItemStack[]{machineBlockRecipe.output}));
@@ -610,16 +605,18 @@ public final class InfoScan {
             return result;
         }catch (Exception e){
             e.printStackTrace();
-            return emptyMachineRecipesInTicks;
+            return Collections.emptyList();
         }
     }
 
     public static List<MachineRecipe> findRecipes_MaterialGenerator(MaterialGenerator sfItem){
-        List<ItemStack> output = sfItem.getDisplayRecipes();
-        output.remove(null);
-        List<MachineRecipe> result = new ArrayList<>();
-        result.add(new MachineRecipeInTicks(1, EMPTY_ITEM_STACK_ARRAY, new ItemStack[]{output.get(0)}));
-        return result;
+        List<ItemStack> rawRecipes = sfItem.getDisplayRecipes();
+        List<ItemStack> output = new ArrayList<>(rawRecipes.size());
+        for (ItemStack out:rawRecipes){
+            if (out == null){continue;}
+            output.add(out);
+        }
+        return Collections.singletonList(new MachineRecipeInTicks(1, EMPTY_ITEM_STACK_ARRAY, new ItemStack[]{output.get(0)}));
     }
     public static Set<TweakedMachineFuel> findFuels_InfinityExpansion_InfinityReactor(InfinityReactor sfItem){
         Set<TweakedMachineFuel> result = new HashSet<>();
@@ -653,22 +650,31 @@ public final class InfoScan {
     }
 
     public static List<MachineRecipe> findRecipes_ResourceSynthesizer(ResourceSynthesizer sfItem){
-        List<MachineRecipe> result = new ArrayList<>();
         List<ItemStack> showItem = sfItem.getDisplayRecipes();
+        List<MachineRecipe> result = new ArrayList<>((showItem.size()/4)+1);
         for (int i=0;i<showItem.size();i+=4){
-            result.add(new MachineRecipeInTicks(1,new ItemStack[]{showItem.get(i),showItem.get(i+2)},new ItemStack[]{showItem.get(i+1)}));
+            result.add(
+                    new MachineRecipeInTicks(1,
+                    new ItemStack[]{showItem.get(i),showItem.get(i+2)},
+                    new ItemStack[]{showItem.get(i+1)})
+            );
         }
         return result;
     }
-
+    public static Map<SingularityConstructor,List<SimplePair<SingularityRecipe,Double>>> singularityConstructorRecipesMap = new HashMap<>(5);
     public static List<SimplePair<SingularityRecipe,Double>> findRecipes_SingularityConstructor(SingularityConstructor sfItem){
-        List<SimplePair<SingularityRecipe,Double>> result = new ArrayList<>();
+        if (SINGULARITY_RECIPES.isEmpty()){return Collections.emptyList();}
+
+        List<SimplePair<SingularityRecipe,Double>> result = singularityConstructorRecipesMap.getOrDefault(sfItem,Collections.emptyList());
+        if (!result.isEmpty()){return result;}
+        result = new ArrayList<>(SINGULARITY_RECIPES.size());
         for (SingularityRecipe sr:SINGULARITY_RECIPES){
             result.add(new SimplePair<>(
                     sr,
                     (double) sr.amount() / (double)SingularityConstructorSpeed(sfItem.getId())
             ));
         }
+        singularityConstructorRecipesMap.put(sfItem,result);
         return result;
     }
     public static List<SimplePair<MachineRecipeInTicks, String[]>> findRecipes_StoneworksFactory(StoneworksFactory sfItem){
@@ -680,9 +686,10 @@ public final class InfoScan {
         return initAutoTableSawRecipes(sfItem);
     }
     public static List<MachineRecipe> initAutoTableSawRecipes(AutoTableSaw sfItem) {
-        List<MachineRecipe> result = new ArrayList<>();
+        List<MachineRecipe> result = Collections.emptyList();
         try {
             Map<ItemStack,ItemStack> recipeMap = (Map<ItemStack, ItemStack>) getInUnsafe(sfItem,sfItem.getClass().getDeclaredField("tableSawRecipes"));
+            result = new ArrayList<>(recipeMap.size());
             for (ItemStack itemStack:recipeMap.keySet()){
                 result.add(new MachineRecipeInTicks(1,new ItemStack[]{itemStack.clone()},new ItemStack[]{recipeMap.get(itemStack).clone()}));
             }

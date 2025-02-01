@@ -1,5 +1,6 @@
 package io.github.ignorelicensescn.minimizefactory.utils.recipesupport;
 
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicksWithExpectations;
@@ -101,35 +102,28 @@ public class SerializeMachineRecipeUtils {
         return result;
     }
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>>
-    fromInputsAndSingleOutput(SimplePair<ItemStack[],ItemStack>[] recipes,
+    fromInputsAndSingleOutput(ItemStacksToStackRecipe[] recipes,
                               SlimefunItem sfItem,
                               long consumption,
                               int speed){
         return fromInputsAndSingleOutput(List.of(recipes),sfItem.getItem(),consumption,speed);
     }
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>>
-    fromInputsAndSingleOutput(Collection<SimplePair<ItemStack[],ItemStack>> recipes,
-                                            SlimefunItem sfItem,
-                                            long consumption,
-                                            int speed){
-        return fromInputsAndSingleOutput(recipes,sfItem.getItem(),consumption,speed);
-    }
-    public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>>
-    fromInputsAndSingleOutput(Collection<SimplePair<ItemStack[],ItemStack>> recipes,
+    fromInputsAndSingleOutput(Collection<ItemStacksToStackRecipe> recipes,
                               ItemStack machineItem,
                               long consumption,
                               int speed){
         return fromInputsAndSingleOutput(recipes,machineItem,null,consumption,speed);
     }
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>>
-    fromInputsAndSingleOutput(Collection<SimplePair<ItemStack[],ItemStack>> recipes,
+    fromInputsAndSingleOutput(Collection<ItemStacksToStackRecipe> recipes,
                               ItemStack machineItem,
                               ItemStack catalyzer,
                               long consumption,
                               int speed){
         List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(recipes.size());
-        for (SimplePair<ItemStack[],ItemStack> recipe:recipes){
-            MachineRecipeInTicks machineRecipeInTicks = new MachineRecipeInTicks(1,recipe.first,new ItemStack[]{recipe.second});
+        for (ItemStacksToStackRecipe recipe:recipes){
+            MachineRecipeInTicks machineRecipeInTicks = new MachineRecipeInTicks(1,recipe.input(),new ItemStack[]{recipe.output()});
             SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
                     machineItem,
                     machineRecipeInTicks,
@@ -141,17 +135,17 @@ public class SerializeMachineRecipeUtils {
     }
 
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromCraftingTableLikeRecipes(
-            Collection<SimplePair<ItemStack[], ItemStack>> recipes,
+            Collection<ItemStacksToStackRecipe> recipes,
             ItemStack machineItem,
             ItemStack catalyzer,
             long consumption
             ){
         List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(recipes.size());
-        for (SimplePair<ItemStack[], ItemStack> workBenchRecipe:recipes){
+        for (ItemStacksToStackRecipe workBenchRecipe:recipes){
             MachineRecipeInTicks machineRecipeInTicks = new MachineRecipeInTicks(
                     1,
-                    workBenchRecipe.first,
-                    new ItemStack[]{workBenchRecipe.second}
+                    workBenchRecipe.input(),
+                    new ItemStack[]{workBenchRecipe.output()}
             );
             SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(
                     machineItem,
@@ -163,7 +157,7 @@ public class SerializeMachineRecipeUtils {
         return result;
     }
     public static List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> fromCraftingTableLikeRecipes(
-            SimplePair<ItemStack[], ItemStack>[] recipes,
+            ItemStacksToStackRecipe[] recipes,
             ItemStack machineItem,
             ItemStack catalyzer,
             long consumption

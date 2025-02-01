@@ -11,6 +11,7 @@ import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.FluffyMa
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityCompress.InfinityCompressSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityExpansionSerializedMachineRecipes;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.LiteX.LiteXpansionSerializedMachineRecipes;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.timestampbasedmanagers.PageManager;
 import io.github.ignorelicensescn.minimizefactory.utils.tweakedproperty2.TweakedProperty2;
 import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Slimefun.SlimefunSerializedMachineRecipes;
@@ -37,6 +38,7 @@ import java.util.logging.Logger;
 
 import static io.github.acdeasdff.infinityCompress.items.FNFALsAmplifications.BlocksFN.*;
 import static io.github.acdeasdff.infinityCompress.items.LiteXpansion.BlocksLiteXpansion.*;
+import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE;
 import static io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays.EMPTY_STRING_ARRAY;
 import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Slimefun.SlimefunConsts.*;
 import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.DynaTech.DynaTechConsts.*;
@@ -50,6 +52,8 @@ public class MinimizeFactory extends AbstractAddon {
     public static long LONG_MESSAGE_DELAY = 3000;
     public static int LONG_MESSAGE_COUNT = 5;
     public static int LONG_MESSAGE_BLOCK_NOTIFICATION_COUNT = 5;
+
+    //no more use now since biome is for every recipe
     public static int GEOMINER_BIOME_EVERY_LINE = 3;
 
     public static MinimizeFactory minimizeFactoryInstance;
@@ -64,8 +68,8 @@ public class MinimizeFactory extends AbstractAddon {
     public static final Map<String,Integer> blockMessageCounter = new HashMap<>();
     public static long lastConnectorUsedTime = 0;
     public static final Map<UUID,Long> PlayerLastConnectorUsedTime = new HashMap<>();
-    public static SimplePair<ItemStack[],ItemStack>[] vanillaRecipeArray = new SimplePair[0];
-    public static final List<SimplePair<ItemStack[],ItemStack>> altarRecipes = new ArrayList<>();
+    public static ItemStacksToStackRecipe[] vanillaRecipeArray = EMPTY_STACKS_TO_STACK_RECIPE;
+    public static ItemStacksToStackRecipe[] altarRecipes = EMPTY_STACKS_TO_STACK_RECIPE;
 
     public MinimizeFactory(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file,
@@ -180,7 +184,20 @@ public class MinimizeFactory extends AbstractAddon {
         logger.log(Level.INFO,"Groups loaded.");
 
         //if u have lots of cores.
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, this::onServerStarted);
+        long period = LONG_MESSAGE_DELAY * 300;
+        if (period < 0) {
+            period = Long.MAX_VALUE;
+        }
+        Bukkit.getServer().getScheduler().runTaskTimer(minimizeFactoryInstance, () -> {
+            msgSendDelay.clear();
+            blockMessageCounter.clear();
+            PlayerLastConnectorUsedTime.clear();
+            PageManager.tryClear();
+        },period, period);
+    }
+
+    protected void onServerStarted(){
             logger.log(Level.INFO,"Loading recipe information.");
             new Thread(() -> {
                 initEnergyConst();
@@ -215,7 +232,7 @@ public class MinimizeFactory extends AbstractAddon {
                             catch (Exception e){e.printStackTrace();}
                             try{getMultiblockAutocrafterRecipes((Multiblock_Autocrafter) SlimefunItem.getByItem(AUTO_MILL));}
                             catch (Exception e){e.printStackTrace();}
-                    }).start();
+                        }).start();
                     }
                     if (PluginEnabledFlags.FNAmplificationsFlag){
                         new Thread(() -> {
@@ -266,21 +283,12 @@ public class MinimizeFactory extends AbstractAddon {
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                }).run();
+                }).start();
             }
             logger.log(Level.INFO,"Recipe information load thread set.");
-        });
-        long period = LONG_MESSAGE_DELAY * 300;
-        if (period < 0) {
-            period = Long.MAX_VALUE;
-        }
-        Bukkit.getServer().getScheduler().runTaskTimer(minimizeFactoryInstance, () -> {
-            msgSendDelay.clear();
-            blockMessageCounter.clear();
-            PlayerLastConnectorUsedTime.clear();
-            PageManager.tryClear();
-        },period, period);
     }
+
+
     @Override
     protected void disable() {
         Connection connection = databaseInstance.getSQLConnection();
@@ -338,7 +346,7 @@ public class MinimizeFactory extends AbstractAddon {
         while (recipeIterator.hasNext()) {
             Recipe r = recipeIterator.next();
             if (r instanceof ShapedRecipe sr) {
-                List<RecipeChoice> rc = new ArrayList<>();
+                List<RecipeChoice> rc = new ArrayList<>(sr.getChoiceMap().size());
                 for (RecipeChoice choice : sr.getChoiceMap().values()) {
                     if (choice != null) {
                         rc.add(choice);
@@ -350,15 +358,15 @@ public class MinimizeFactory extends AbstractAddon {
                 shapelessVanillaRecipes.put(slr.getChoiceList(), new SimplePair<>(slr.getResult().clone(), slr));
             }
         }
-        vanillaRecipeArray = new SimplePair[shapedVanillaRecipes.size() + shapelessVanillaRecipes.size()];
+        vanillaRecipeArray = new ItemStacksToStackRecipe[shapedVanillaRecipes.size() + shapelessVanillaRecipes.size()];
         int i=0;
         for (List<RecipeChoice> rcList:shapedVanillaRecipes.keySet()){
-            vanillaRecipeArray[i] = new SimplePair<>(RecipeChoiceListToItemStackArray_formated(rcList),shapedVanillaRecipes.get(rcList).first);
+            vanillaRecipeArray[i] = new ItemStacksToStackRecipe(RecipeChoiceListToItemStackArray_formated(rcList),shapedVanillaRecipes.get(rcList).first);
             i+=1;
         }
         shapedVanillaRecipes.clear();
         for (List<RecipeChoice> rcList:shapelessVanillaRecipes.keySet()){
-            vanillaRecipeArray[i] = new SimplePair<>(RecipeChoiceListToItemStackArray_formated(rcList),shapelessVanillaRecipes.get(rcList).first);
+            vanillaRecipeArray[i] = new ItemStacksToStackRecipe(RecipeChoiceListToItemStackArray_formated(rcList),shapelessVanillaRecipes.get(rcList).first);
             i+=1;
         }
         shapelessVanillaRecipes.clear();

@@ -1,5 +1,6 @@
 package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Slimefun;
 
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.BiomeAndEnvironment;
@@ -29,7 +30,6 @@ import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.I
 public class SlimefunConsts {
     public static int FLUID_PUMP_ENERGY_CONSUMPTION = 42;
     public static boolean GEOInitializedFlag = false;
-    public static final List<SimplePair<ItemStack, IntegerRational>> emptyGEOResourcesList = new ArrayList<>();
 
     /**
      * get ALL GEO resources
@@ -168,11 +168,14 @@ public class SlimefunConsts {
     public static void initAncientAltarRecipes(){
         AncientAltar altarInstance = (AncientAltar) SlimefunItems.ANCIENT_ALTAR.getItem();
         assert altarInstance != null;
+        altarRecipes = new ItemStacksToStackRecipe[altarInstance.getRecipes().size()];
+        int counter = 0;
         for (AltarRecipe recipe: altarInstance.getRecipes()){
-            altarRecipes.add(new SimplePair<>(
+            altarRecipes[counter]=(new ItemStacksToStackRecipe(
                     ItemStackUtil.collapseItems(recipe.getInput().toArray(EMPTY_ITEM_STACK_ARRAY),
                     recipe.getCatalyst()),
                     recipe.getOutput().clone()));
+            counter += 1;
         }
     }
 }

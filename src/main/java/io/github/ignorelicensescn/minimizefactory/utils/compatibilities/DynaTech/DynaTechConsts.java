@@ -9,7 +9,7 @@ import me.profelements.dynatech.items.electric.generators.StardustReactor;
 import me.profelements.dynatech.items.electric.growthchambers.*;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,8 +20,8 @@ import static io.github.ignorelicensescn.minimizefactory.utils.compatibilities.I
 import static io.github.ignorelicensescn.minimizefactory.utils.searchregistries.SearchRegistries.*;
 
 public class DynaTechConsts {
-    public static List<MachineFuel> stardustReactorFuels = new ArrayList<>();
-    public static List<MachineFuel> culinaryGeneratorFuels = new ArrayList<>();
+    public static List<MachineFuel> stardustReactorFuels = Collections.emptyList();
+    public static List<MachineFuel> culinaryGeneratorFuels = Collections.emptyList();
     public static final Map<Class<? extends AbstractElectricMachine>, List<MachineRecipe>> growthChamberRecipes = new ConcurrentHashMap<>();
     public static void getStardustReactorFuels() {
         logger.log(Level.INFO,"Loading StardustReactor fuels");

@@ -2,6 +2,7 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Infinit
 
 import io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags;
 import io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.MobSimulationCardInfo;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;
@@ -10,7 +11,6 @@ import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Infinity
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicksWithExpectations;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
-import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimpleFour;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.mooy1.infinityexpansion.infinitylib.machines.MachineBlock;
 import io.github.mooy1.infinityexpansion.items.blocks.InfinityWorkbench;
@@ -55,9 +55,10 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Nonnull
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MaterialGenerator m ,@Nullable ItemStack stack) {
-                            if (m == null){return new ArrayList<>();}
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
-                            for (MachineRecipe r:findRecipes_MaterialGenerator(m)){
+                            if (m == null){return Collections.emptyList();}
+                            List<MachineRecipe> rawRecipes = findRecipes_MaterialGenerator(m);
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>(rawRecipes.size());
+                            for (MachineRecipe r:rawRecipes){
                                 recipes.add(
                                         new SimplePair<>(
                                                 new SerializedMachine_MachineRecipe(
@@ -90,9 +91,10 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Nonnull
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable ResourceSynthesizer m ,@Nullable ItemStack stack) {
-                            if (m == null){return new ArrayList<>();}
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
-                            for (MachineRecipe r:findRecipes_ResourceSynthesizer(m)){
+                            if (m == null){return Collections.emptyList();}
+                            List<MachineRecipe> rawRecipes = findRecipes_ResourceSynthesizer(m);
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>(rawRecipes.size());
+                            for (MachineRecipe r:rawRecipes){
                                 recipes.add(
                                         new SimplePair<>(
                                                 new SerializedMachine_MachineRecipe(
@@ -128,9 +130,10 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SingularityConstructor m,@Nullable ItemStack stack)
                         {
-                            if (m == null){return new ArrayList<>();}
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
-                            for (SimplePair<SingularityRecipe,Double> r:findRecipes_SingularityConstructor(m)){
+                            if (m == null){return Collections.emptyList();}
+                            List<SimplePair<SingularityRecipe,Double>> rawRecipes = findRecipes_SingularityConstructor(m);
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>(rawRecipes.size());
+                            for (SimplePair<SingularityRecipe,Double> r:rawRecipes){
                                 recipes.add(
                                         new SimplePair<>(
                                                 new SerializedMachine_MachineRecipe(
@@ -167,9 +170,10 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Nonnull
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MachineBlock m ,@Nullable ItemStack stack) {
-                            if (m == null){return new ArrayList<>();}
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
-                            for (MachineRecipeInTicks r:findRecipes_MachineBlock(m)){
+                            if (m == null){return Collections.emptyList();}
+                            List<MachineRecipeInTicks> rawRecipes = findRecipes_MachineBlock(m);
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>(rawRecipes.size());
+                            for (MachineRecipeInTicks r:rawRecipes){
                                 SerializedMachine_MachineRecipe serialized;
                                 if (r instanceof MachineRecipeInTicksWithExpectations){
                                     StringBuilder inputName = new StringBuilder();
@@ -226,7 +230,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Override
                         @Nonnull
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable GeoQuarry m ,@Nullable ItemStack stack) {
-                            if (m == null){return new ArrayList<>();}
+                            if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_GeoQuarry(m);
                             return fromBioAndEnvOutputs(geoMinerResourcesInfo_BiomeAndEnvironmentKey_List,m.getItem(),null,energyInfo[0],(int)energyInfo[1]);
                         }
@@ -279,7 +283,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Nonnull
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Quarry m ,@Nullable ItemStack stack) {
-                            if (m == null){return new ArrayList<>();}
+                            if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_Quarry(m);
                             QuarryInfo info = null;
                             try {
@@ -331,6 +335,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                         {
                             if (m == null){return null;}
                             SerializedMachine_MachineRecipe serialized = serializedPair.first;
+                            if (serialized == null){return null;}
                             QuarryInfo info = null;
                             try {
                                 info = quarryInfo(m);
@@ -344,7 +349,9 @@ public class InfinityExpansionSerializedMachineRecipes {
                                             ? ChatColor.RED
                                             : ChatColor.GRAY;
                             ChatColor colorForOtherExpectation = ChatColor.GRAY;
-                            List<String> lore = new ArrayList<>();
+                            List<String> lore = new ArrayList<>(5
+                                    +(serialized.outputs == null ?0:serialized.outputs.length)
+                            );
                             World.Environment environment = serialized.env;
                             if (!ALLOW_NETHER_IN_OVERWORLD && environment== World.Environment.NETHER){
                                 lore.add(
@@ -394,7 +401,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                         public SimplePair<String, List<String>> getNameAndLoreForRecipe(@Nullable StoneworksFactory m, SimplePair<SerializedMachine_MachineRecipe,ItemStack> serializedMachineMachineRecipe, int index) {
                             SimplePair<MachineRecipeInTicks, String[]> recipePair = findRecipes_StoneworksFactory(m).get(index);
                             MachineRecipeInTicks recipe = recipePair.first;
-                            List<String> lore = new ArrayList<>();
+                            List<String> lore = new ArrayList<>(recipe.getInput().length+recipe.getOutput().length+recipePair.second.length+3);
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Input"));
                             for (ItemStack itemStack:recipe.getInput()){
                                 lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(itemStack));
@@ -416,10 +423,10 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Nonnull
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable StoneworksFactory m ,@Nullable ItemStack stack) {
-                            if (m == null){return new ArrayList<>();}
+                            if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_StoneWorksFactory(m);
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>();
                             List<SimplePair<MachineRecipeInTicks, String[]>> stoneworksFactoryRecipes = findRecipes_StoneworksFactory(m);
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>(stoneworksFactoryRecipes.size());
                             for (SimplePair<MachineRecipeInTicks, String[]> rPair:stoneworksFactoryRecipes){
                                 SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(m.getItem(),rPair.first, energyInfo[0]);
                                 recipes.add(new SimplePair<>(serialized, null));
@@ -485,7 +492,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                             SimplePair<ItemStack,ItemStack[]>[] recipes = getGrowingMachineOutput(m);
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_GrowingMachine(m);
                             SimplePair<ItemStack,ItemStack[]> recipe = recipes[index];
-                            List<String> lore = new ArrayList<>();
+                            List<String> lore = new ArrayList<>(3+recipe.second.length);
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Seed"));
                             lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(recipe.first));
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
@@ -537,7 +544,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_EnergyGenerator(m);
                             String id = m.getId();
                             if (Objects.equals(GEOTHERMAL.getItemId(),id) || Objects.equals(REINFORCED_GEOTHERMAL.getItemId(),id)){
-                                List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+                                List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(4);
                                 SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe();
                                 serialized.sfItem = m;
                                 serialized.sfItemStack = m.getItem();
@@ -625,7 +632,7 @@ public class InfinityExpansionSerializedMachineRecipes {
                     if (m == null){return Collections.emptyList();}
                     long[] energyInfo = findEnergyInfo_InfinityExpansion_InfinityReactor(m);
                     Set<TweakedMachineFuel> machineFuels = findFuels_InfinityExpansion_InfinityReactor(m);
-                    List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+                    List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(machineFuels.size());
                     for (TweakedMachineFuel recipe:machineFuels){
                         SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(m.getItem(),recipe, energyInfo[0]);
                         result.add(new SimplePair<>(serialized,null));
@@ -652,17 +659,20 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Nonnull
                         @Override
                         public SimplePair<String, List<String>> getNameAndLoreForRecipe(@Nullable MobSimulationChamber m, SimplePair<SerializedMachine_MachineRecipe,ItemStack> serialized, int index) {
-                            SimpleFour<String, ItemStack[],IntegerRational[],Long> recipe = CARDS_INFO_LIST.get(index);
-
-                            List<String> lore = new ArrayList<>();
-                            lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_EnergyPerTick") + recipe.d());
+                            SimplePair<String, MobSimulationCardInfo> recipe = CARDS_INFO_LIST.get(index);
+                            String cardID = recipe.first;
+                            MobSimulationCardInfo cardInfo = recipe.second;
+                            List<String> lore = new ArrayList<>(4+cardInfo.outputs().length);
+                            lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_EnergyPerTick") + cardInfo.energyConsumption());
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_MobSimulationCard"));
-                            SlimefunItem card = SlimefunItem.getById(recipe.a());
+                            SlimefunItem card = SlimefunItem.getById(cardID);
                             ItemStack cardItem = card==null?null:card.getItem();
                             lore.add(NameUtil.findName(cardItem));
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
-                            for (int j = 0; j< recipe.b().length; j+=1){
-                                lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(recipe.b()[j]) + properties.getReplacedProperty("Test_InfoProvider_Info_Recipe_Expectation") + recipe.c()[j]);
+                            for (int j = 0; j< cardInfo.outputs().length; j+=1){
+                                lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(cardInfo.outputs()[j])
+                                        + properties.getReplacedProperty("Test_InfoProvider_Info_Recipe_Expectation")
+                                        + cardInfo.outputExpectations()[j]);
                             }
                             return new SimplePair<>(properties.getReplacedProperty("Test_InfoProvider_Info_CraftingTime")
                                     + CHAMBER_INTERVAL
@@ -674,16 +684,15 @@ public class InfinityExpansionSerializedMachineRecipes {
                         @Override
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable MobSimulationChamber m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
-                            for (SimpleFour<String, ItemStack[],IntegerRational[],Long> cardInfo:CARDS_INFO_LIST){
-                                SerializedMachine_MachineRecipe recipe= new SerializedMachine_MachineRecipe(
-                                        m.getItem(),
-                                        new MachineRecipeInTicks(CHAMBER_INTERVAL, EmptyArrays.EMPTY_ITEM_STACK_ARRAY, cardInfo.b()),
-                                        cardInfo.d()
-                                        , 1
-                                        , cardInfo.c());
-                                SlimefunItem card = SlimefunItem.getById(cardInfo.a());
-                                result.add(new SimplePair<>(recipe, card == null?null:card.getItem()));
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(CARDS_INFO_LIST.size());
+                            for (SimplePair<String, MobSimulationCardInfo> cardInfoPair:CARDS_INFO_LIST){
+                                String cardID = cardInfoPair.first;
+                                MobSimulationCardInfo cardInfo = cardInfoPair.second;
+                                SlimefunItem card = SlimefunItem.getById(cardID);
+                                result.add(new SimplePair<>(
+                                        cardInfo.toSerializedRecipe(m.getItem()),
+                                        card == null?null:card.getItem())
+                                );
                             }
                             return result;
                         }

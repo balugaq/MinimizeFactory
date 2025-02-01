@@ -8,7 +8,7 @@
 **Remember to change the config when switching language!**
 
 And I'm too lazy to test all the versions,you may have to test it yourself!
-*(tested version:purpur-1.20.1-2062)*
+*(tested version:purpur-1.20.1-2062,Java 21,launch argument: (java.exe path) -jar purpur-1.20.1-2062.jar )*
 
 **NOT** fully tested with:
 * InfinityExpansion

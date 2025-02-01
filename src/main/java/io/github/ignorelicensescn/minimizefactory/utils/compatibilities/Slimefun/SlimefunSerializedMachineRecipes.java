@@ -1,5 +1,6 @@
 package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Slimefun;
 
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializeMachineRecipeUtils;
@@ -170,7 +171,7 @@ public class SlimefunSerializedMachineRecipes {
                         if (reactor == null){new Exception("reactor not found!").printStackTrace();return new SimplePair<>("",Collections.emptyList());}
                         ItemStack itemStackIn = serialized.inputs == null ? null:serialized.inputs[0];
                         ItemStack itemStackOut = serialized.outputs == null ? null:serialized.outputs[0];
-                        List<String> lore = new ArrayList<>();
+                        List<String> lore = new ArrayList<>(7);
                         if (itemStackIn != null){
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Input"));
                             lore.add(ChatColor.WHITE + NameUtil.findNameWithAmount(itemStackIn));
@@ -209,17 +210,17 @@ public class SlimefunSerializedMachineRecipes {
                         long[] energyInfo = findEnergyInfo_Reactor(reactor);
                         Set<MachineFuel> machineRecipes = findFuels_Reactor(reactor);
                         boolean coolantFlag = (reactor.getCoolant() != null);
-                        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+                        List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(machineRecipes.size());
                         for (MachineFuel fuel:machineRecipes){
                             SerializedMachine_MachineRecipe serialized = new SerializedMachine_MachineRecipe(reactor.getItem(),fuel, energyInfo[0]);
                             if (coolantFlag){
                                 int ticks = serialized.ticks;
                                 ItemStack coolant = reactor.getCoolant().clone();
 
-                                List<ItemStack> coolants = new ArrayList<>();
                                 int coolantCount = ((ticks / COOLANT_DURATION) + ((ticks % COOLANT_DURATION) == 0 ? 0 : 1));
                                 coolant.setAmount(coolant.getMaxStackSize());
                                 int divide = coolantCount / coolant.getMaxStackSize();
+                                List<ItemStack> coolants = new ArrayList<>(divide);
                                 for (int j = 0; j < (divide); j+=1) {
                                     coolants.add(coolant.clone());
                                 }
@@ -321,7 +322,7 @@ public class SlimefunSerializedMachineRecipes {
                     public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable EnhancedAutoCrafter m ,@Nullable ItemStack stack) {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = new long[]{m.getEnergyConsumption(),1,m.getCapacity()};
-                        List<SimplePair<ItemStack[],ItemStack>> machineRecipes = getMultiblockAutocrafterRecipes(m);
+                        ItemStacksToStackRecipe[] machineRecipes = getMultiblockAutocrafterRecipes(m);
                         return SerializeMachineRecipeUtils.fromInputsAndSingleOutput(machineRecipes,m,
                                 energyInfo[0],1);
                     }
@@ -350,7 +351,7 @@ public class SlimefunSerializedMachineRecipes {
                         if (m == null){return Collections.emptyList();}
                         long[] energyInfo = new long[]{m.getEnergyConsumption(),1,m.getCapacity()};
 
-                        SimplePair<ItemStack[],ItemStack>[] machineRecipes = vanillaRecipeArray;
+                        ItemStacksToStackRecipe[] machineRecipes = vanillaRecipeArray;
                         return SerializeMachineRecipeUtils.fromInputsAndSingleOutput(machineRecipes,m,
                                 energyInfo[0],1);
                     }

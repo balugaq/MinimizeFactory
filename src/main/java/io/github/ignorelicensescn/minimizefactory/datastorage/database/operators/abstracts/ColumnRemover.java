@@ -5,7 +5,6 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.databaseInstance;
 import static io.github.ignorelicensescn.minimizefactory.MinimizeFactory.minimizeFactoryInstance;

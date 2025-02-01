@@ -4,6 +4,7 @@ import io.github.acdeasdff.infinityCompress.items.Multiblock_Autocrafter;
 import io.github.acdeasdff.infinityCompress.items.blocks.*;
 import io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags;
 import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.BiomeAndEnvironment;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializeMachineRecipeUtils;
@@ -102,7 +103,7 @@ public class InfinityCompressSerializedMachineRecipes {
                         @Override
                         public SimplePair<String, List<String>> getNameAndLoreForRecipe(@Nullable TweakedGEOQuarry m, SimplePair<SerializedMachine_MachineRecipe,ItemStack> serialized, int index) {
                             SimplePair<ItemStack, List<SimplePair<BiomeAndEnvironment, IntegerRational>>> recipe = geoResourcesInfo_ResourcesList.get(index);
-                            List<String> lore = new ArrayList<>();
+                            List<String> lore = new ArrayList<>(10);
 
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
                             ItemStack itemStack = recipe.first;
@@ -158,7 +159,7 @@ public class InfinityCompressSerializedMachineRecipes {
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGEOQuarry m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_TweakedGeoQuarry(m);
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(geoResourcesInfo_ResourcesList.size()*5);
                             for (SimplePair<ItemStack, List<SimplePair<BiomeAndEnvironment, IntegerRational>>> outputPair
                                     : geoResourcesInfo_ResourcesList) {
 
@@ -210,7 +211,8 @@ public class InfinityCompressSerializedMachineRecipes {
                         @Override
                         public SimplePair<String, List<String>> getNameAndLoreForRecipe(@Nullable TweakedGEOQuarry_Filter m, SimplePair<SerializedMachine_MachineRecipe,ItemStack> serialized, int index) {
                             SimplePair<ItemStack, List<SimplePair<BiomeAndEnvironment, IntegerRational>>> recipe = geoResourcesInfo_ResourcesList.get(index);
-                            List<String> lore = new ArrayList<>();
+                            int locationLines = recipe.second.size() / GEOMINER_BIOME_EVERY_LINE + (recipe.second.size() % GEOMINER_BIOME_EVERY_LINE == 0 ? 0 : 1);
+                            List<String> lore = new ArrayList<>(5+locationLines);
 
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_Material_Output"));
                             ItemStack itemStack = recipe.first;
@@ -230,7 +232,7 @@ public class InfinityCompressSerializedMachineRecipes {
                                     + properties.getReplacedProperty("Test_InfoProvider_Info_CUSTOM")
                             );
                             lore.add(properties.getReplacedProperty("Test_InfoProvider_Info_LocationAndExpectation"));
-                            String[] locations = new String[recipe.second.size() / GEOMINER_BIOME_EVERY_LINE + (recipe.second.size() % GEOMINER_BIOME_EVERY_LINE == 0 ? 0 : 1)];
+                            String[] locations = new String[locationLines];
                             Arrays.fill(locations, "");
                             for (int j=0;j<recipe.second.size();j+=1){
                                 SimplePair<BiomeAndEnvironment, IntegerRational> tri = recipe.second.get(j);
@@ -266,7 +268,7 @@ public class InfinityCompressSerializedMachineRecipes {
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable TweakedGEOQuarry_Filter m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = findEnergyInfo_InfinityExpansion_TweakedGeoQuarry(m);
-                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>();
+                            List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> result = new ArrayList<>(geoResourcesInfo_ResourcesList.size()*5);
                             for (SimplePair<ItemStack, List<SimplePair<BiomeAndEnvironment, IntegerRational>>> outputPair
                                     : geoResourcesInfo_ResourcesList) {
 
@@ -319,7 +321,7 @@ public class InfinityCompressSerializedMachineRecipes {
                         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable Multiblock_Autocrafter m ,@Nullable ItemStack stack) {
                             if (m == null){return Collections.emptyList();}
                             long[] energyInfo = new long[]{Multiblock_Autocrafter.ENERGY_CONSUMPTION,1,Multiblock_Autocrafter.CAPACITY};
-                            List<SimplePair<ItemStack[],ItemStack>> machineRecipes = getMultiblockAutocrafterRecipes(m);
+                            ItemStacksToStackRecipe[] machineRecipes = getMultiblockAutocrafterRecipes(m);
                             return fromInputsAndSingleOutput(machineRecipes,m,
                                     energyInfo[0],1);
                         }

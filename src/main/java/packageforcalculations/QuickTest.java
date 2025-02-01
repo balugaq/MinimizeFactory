@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory;
+package packageforcalculations;
 
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
 

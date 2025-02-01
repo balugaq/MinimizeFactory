@@ -1,8 +1,9 @@
 package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion.InfinityCompress;
 
 import io.github.acdeasdff.infinityCompress.items.Multiblock_Autocrafter;
+import io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays;
+import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.ItemStacksToStackRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.itemstackrelated.ItemStackUtil;
-import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.multiblocks.MultiBlockMachine;
 import io.github.thebusybiscuit.slimefun4.implementation.items.autocrafters.EnhancedAutoCrafter;
@@ -19,9 +20,9 @@ public class InfinityCompressConsts {
     /**
      * Multiblock_Autocrafter_ID List< Pair< Input,Output > >
      */
-    public static final Map<String, List<SimplePair<ItemStack[],ItemStack>>> multiblockAutocrafterRecipes = new HashMap<>();
+    public static final Map<String, ItemStacksToStackRecipe[]> multiblockAutocrafterRecipes = new HashMap<>();
 
-    public static List<SimplePair<ItemStack[], ItemStack>> getMultiblockAutocrafterRecipes(Multiblock_Autocrafter sfItem) {
+    public static ItemStacksToStackRecipe[] getMultiblockAutocrafterRecipes(Multiblock_Autocrafter sfItem) {
         try {
             if (multiblockAutocrafterRecipes.containsKey(sfItem.getId())){
                 return multiblockAutocrafterRecipes.get(sfItem.getId());
@@ -30,39 +31,42 @@ public class InfinityCompressConsts {
             f.setAccessible(true);
             MultiBlockMachine machine = (MultiBlockMachine) getInUnsafe(sfItem,f);
             List<ItemStack[]> itemIn = RecipeType.getRecipeInputList(machine);
-            List<SimplePair<ItemStack[],ItemStack>> recipes = new ArrayList<>();
+            List<ItemStacksToStackRecipe> recipes = new ArrayList<>(itemIn.size());
             for (ItemStack[] itemStacks:itemIn){
                 ItemStack output = RecipeType.getRecipeOutputList(machine,itemStacks);
                 if (output != null)
-                    recipes.add(new SimplePair<>(ItemStackUtil.collapseItems(itemStacks),output));
+                    recipes.add(new ItemStacksToStackRecipe(ItemStackUtil.collapseItems(itemStacks),output));
             }
-            multiblockAutocrafterRecipes.put(sfItem.getId(),recipes);
-            return recipes;
+            ItemStacksToStackRecipe[] result = recipes.toArray(EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE);
+            multiblockAutocrafterRecipes.put(sfItem.getId(),recipes.toArray(EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE));
+            return result;
         }catch (Exception e){
             e.printStackTrace();
-            return Collections.emptyList();
+            return EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE;
         }
     }
-    public static List<SimplePair<ItemStack[], ItemStack>> getMultiblockAutocrafterRecipes(EnhancedAutoCrafter sfItem) {
+    public static ItemStacksToStackRecipe[] getMultiblockAutocrafterRecipes(EnhancedAutoCrafter sfItem) {
         if (multiblockAutocrafterRecipes.containsKey(sfItem.getId())){
             return multiblockAutocrafterRecipes.get(sfItem.getId());
         }
         MultiBlockMachine machine = (MultiBlockMachine) RecipeType.ENHANCED_CRAFTING_TABLE.getMachine();
         List<ItemStack[]> itemIn = RecipeType.getRecipeInputList(machine);
-        List<SimplePair<ItemStack[],ItemStack>> recipes = new ArrayList<>();
+        List<ItemStacksToStackRecipe> recipes = new ArrayList<>(itemIn.size());
         for (ItemStack[] itemStacks:itemIn){
             ItemStack output = RecipeType.getRecipeOutputList(machine,itemStacks);
             if (output != null)
-                recipes.add(new SimplePair<>(ItemStackUtil.collapseItems(itemStacks),output));
+                recipes.add(new ItemStacksToStackRecipe(ItemStackUtil.collapseItems(itemStacks),output));
         }
-        multiblockAutocrafterRecipes.put(sfItem.getId(),recipes);
-        return recipes;
+
+        ItemStacksToStackRecipe[] result = recipes.toArray(EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE);
+        multiblockAutocrafterRecipes.put(sfItem.getId(),recipes.toArray(EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE));
+        return result;
     }
 
     //in fact,this is for FluffyMachine
     //however,I already copied FluffyMachine's AutoCrafter code to InfinityCompress Multiblock Autocrafter.
-    public static List<SimplePair<ItemStack[], ItemStack>> getMultiblockAutocrafterRecipes(AutoCrafter sfItem){
-        List<SimplePair<ItemStack[],ItemStack>> recipes = new ArrayList<>();
+    public static ItemStacksToStackRecipe[] getMultiblockAutocrafterRecipes(AutoCrafter sfItem){
+        ItemStacksToStackRecipe[] result = EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE;
         try {
             if (multiblockAutocrafterRecipes.containsKey(sfItem.getId())){
                 return multiblockAutocrafterRecipes.get(sfItem.getId());
@@ -71,16 +75,19 @@ public class InfinityCompressConsts {
             f.setAccessible(true);
             MultiBlockMachine machine = (MultiBlockMachine) getInUnsafe(sfItem,f);
             List<ItemStack[]> itemIn = RecipeType.getRecipeInputList(machine);
+            List<ItemStacksToStackRecipe> recipes = new ArrayList<>(itemIn.size());
             for (ItemStack[] itemStacks:itemIn){
                 ItemStack output = RecipeType.getRecipeOutputList(machine,itemStacks);
-                if (output != null)
-                    recipes.add(new SimplePair<>(ItemStackUtil.collapseItems(itemStacks),output));
+                if (output != null) {
+                    recipes.add(new ItemStacksToStackRecipe(ItemStackUtil.collapseItems(itemStacks), output));
+                }
             }
-            multiblockAutocrafterRecipes.put(sfItem.getId(),recipes);
+            result = recipes.toArray(EmptyArrays.EMPTY_STACKS_TO_STACK_RECIPE);
+            multiblockAutocrafterRecipes.put(sfItem.getId(),result);
         }catch (Exception e){
             e.printStackTrace();
         }
-        return recipes;
+        return result;
     }
 
 }
