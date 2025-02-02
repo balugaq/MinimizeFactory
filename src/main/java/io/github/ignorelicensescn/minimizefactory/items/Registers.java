@@ -422,9 +422,9 @@ public class Registers {
             SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
             RecipeType.ENHANCED_CRAFTING_TABLE,
             new ItemStack[]{
-                    SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
-                    SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE, SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
-                    SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
+                    SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,
+                    SlimefunStacks.SERIALIZABLE_COMPOSTER, SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,SlimefunStacks.SERIALIZABLE_COMPOSTER,
+                    SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,
             }
     ) {
 
