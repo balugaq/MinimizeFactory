@@ -53,7 +53,9 @@ public class SQLiteBlockDataStorageManager extends Database{
         File dataFolder = new File(plugin.getDataFolder(), dbname+".db");
         if (!dataFolder.exists()){
             try {
-                dataFolder.createNewFile();
+                if (!dataFolder.createNewFile()){
+                    throw new IOException("failed to create database file!" + dataFolder.getCanonicalPath());
+                }
             } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "File write error: "+dbname+".db");
             }

@@ -8,8 +8,11 @@ import io.github.ignorelicensescn.minimizefactory.items.machine.network.*;
 import io.github.ignorelicensescn.minimizefactory.items.serializable.SerializeOnly;
 import io.github.ignorelicensescn.minimizefactory.MinimizeFactory;
 import io.github.ignorelicensescn.minimizefactory.sfgroups.Groups;
+import io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Minecraft.ComposterConsts;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.localmachinerecipe.MachineRecipeInTicks;
+import io.github.ignorelicensescn.minimizefactory.utils.mathutils.BigRational;
+import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
 import io.github.ignorelicensescn.minimizefactory.utils.simpleStructure.SimplePair;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -23,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -306,6 +310,149 @@ public class Registers {
         @Override
         public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m ,@Nullable ItemStack stack) {
             return result;
+        }
+    };
+
+    public static final SerializeOnly SERIALIZABLE_COMPOSTER_FOR_REGISTER = new SerializeOnly(
+            Groups.SERIALIZABLE,
+            SlimefunStacks.SERIALIZABLE_COMPOSTER,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            new ItemStack[]{
+                    null,null,null,
+                    new ItemStack(Material.HOPPER), new ItemStack(Material.COMPOSTER),null,
+                    null, new ItemStack(Material.HOPPER),null,
+            }
+            ) {
+        final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> recipes = new ArrayList<>(ComposterConsts.COMPOSTER_ACCEPT_CHANCES.size()){{
+            for (SimplePair<ItemStack, BigRational> pair:ComposterConsts.COMPOSTER_ACCEPT_CHANCES){
+                IntegerRational expectation =
+                        pair.second
+                        .toIntegerRational()
+                                .multiply(5)
+                                .divide(4)
+                                .simplify();
+                add(
+                        new SimplePair<>(
+                                new SerializedMachine_MachineRecipe(
+                                        SlimefunStacks.SERIALIZABLE_COMPOSTER,
+                                        new MachineRecipeInTicks(
+                                                1,
+                                                new ItemStack[]{pair.first},
+                                                new ItemStack[]{new ItemStack(Material.BONE_MEAL)}
+                                        ),
+                                        null,
+                                        0,
+                                        1,
+                                        new IntegerRational[]{
+                                                expectation
+                                        }
+                                ),
+                                null
+                        )
+                );
+            }
+        }};
+        @Nonnull
+        @Override
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m, @Nullable ItemStack stack) {
+            return recipes;
+        }
+    };
+
+    public static final UnplaceableBlock STONE_SOURCE_FOR_REGISTER = new UnplaceableBlock(
+            Groups.MATERIALS
+            , SlimefunStacks.STONE_SOURCE
+            , RecipeType.ENHANCED_CRAFTING_TABLE
+            , new ItemStack[]{
+                null, new ItemStack(Material.LAVA_BUCKET),   null,
+                new ItemStack(Material.WATER_BUCKET), null, null,
+                null, new ItemStack(Material.PISTON), null
+            }
+    );
+
+    public static final SerializeOnly SERIALIZABLE_MOSS_MACHINE_FOR_REGISTER = new SerializeOnly(
+            Groups.SERIALIZABLE,
+            SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            new ItemStack[]{
+                    SlimefunStacks.STONE_SOURCE,SlimefunStacks.STONE_SOURCE,SlimefunStacks.STONE_SOURCE,
+                    SlimefunStacks.STONE_SOURCE, new ItemStack(Material.MOSS_BLOCK),SlimefunStacks.STONE_SOURCE,
+                    new ItemStack(Material.COMPARATOR), new ItemStack(Material.DISPENSER),new ItemStack(Material.REPEATER),
+            }
+    ) {
+        final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> mossMachineOutputs = Collections.singletonList(
+                        new SimplePair<>(
+                                new SerializedMachine_MachineRecipe(
+                                        SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,
+                                        new MachineRecipeInTicks(
+                                                6,//not exact
+                                                new ItemStack[]{
+                                                        new ItemStack(Material.BONE_MEAL)
+                                                },
+                                                new ItemStack[]{
+                                                        new ItemStack(Material.MOSS_BLOCK),
+                                                        new ItemStack(Material.FLOWERING_AZALEA),
+                                                        new ItemStack(Material.WHEAT_SEEDS),
+                                                        new ItemStack(Material.MOSS_CARPET),
+                                                        new ItemStack(Material.AZALEA),
+                                                }
+                                        ),
+                                        null,
+                                        0,
+                                        1,
+                                        new IntegerRational[]{
+                                                new IntegerRational(25,1),
+                                                new IntegerRational(4,160).simplify(),
+                                                new IntegerRational(50,160*8).simplify(),
+                                                new IntegerRational(25,160).simplify(),
+                                                new IntegerRational(7,160),
+                                        }
+                                ),
+                                null
+                        )
+        );
+        @Nonnull
+        @Override
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m, @Nullable ItemStack stack) {
+            return mossMachineOutputs;
+        }
+    };
+    public static final SerializeOnly SERIALIZABLE_MOSS_BONEMEAL_MACHINE_FOR_REGISTER = new SerializeOnly(
+            Groups.SERIALIZABLE,
+            SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
+            RecipeType.ENHANCED_CRAFTING_TABLE,
+            new ItemStack[]{
+                    SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
+                    SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE, SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
+                    SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,SlimefunStacks.SERIALIZABLE_MOSS_BONEMEAL_MACHINE,
+            }
+    ) {
+
+        final List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> mossBonemealMachineOutputs = Collections.singletonList(
+                new SimplePair<>(
+                        new SerializedMachine_MachineRecipe(
+                                SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,
+                                new MachineRecipeInTicks(
+                                        6,//not exact
+                                        null,
+                                        new ItemStack[]{
+                                                new ItemStack(Material.BONE_MEAL),
+                                        }
+                                ),
+                                null,
+                                0,
+                                1,
+                                new IntegerRational[]{
+                                        new IntegerRational(10800,1),
+                                }
+                        ),
+                        null
+                )
+        );
+        @Nonnull
+        @Override
+        public List<SimplePair<SerializedMachine_MachineRecipe, ItemStack>> getSerializedRecipes(@Nullable SlimefunItem m, @Nullable ItemStack stack) {
+            return mossBonemealMachineOutputs;
         }
     };
 

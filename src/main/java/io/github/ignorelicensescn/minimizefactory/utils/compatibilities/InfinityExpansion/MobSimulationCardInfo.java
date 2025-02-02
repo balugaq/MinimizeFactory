@@ -1,4 +1,4 @@
-package io.github.ignorelicensescn.minimizefactory.utils.datastructures.records;
+package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.InfinityExpansion;
 
 import io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;

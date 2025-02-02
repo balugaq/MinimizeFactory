@@ -2,7 +2,6 @@ package io.github.ignorelicensescn.minimizefactory.utils.compatibilities.Infinit
 
 import io.github.ignorelicensescn.minimizefactory.PluginEnabledFlags;
 import io.github.ignorelicensescn.minimizefactory.utils.EmptyArrays;
-import io.github.ignorelicensescn.minimizefactory.utils.datastructures.records.MobSimulationCardInfo;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.namemateriallore.NameUtil;
 import io.github.ignorelicensescn.minimizefactory.utils.recipesupport.SerializedRecipeProvider;

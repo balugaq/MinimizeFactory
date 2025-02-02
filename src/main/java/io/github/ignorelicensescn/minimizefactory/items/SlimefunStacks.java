@@ -134,4 +134,28 @@ public class SlimefunStacks {
             properties.getReplacedProperty("Serializable_Iron_Golem_Farm"),
             properties.getReplacedProperties("Serializable_Iron_Golem_Farm_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
     );
+    public static final SlimefunItemStack SERIALIZABLE_COMPOSTER = new SlimefunItemStack(
+            "MINIMIZEFACTORY_SERIALIZABLE_COMPOSTER",
+            Material.COMPOSTER,
+            properties.getReplacedProperty("Serializable_Composter"),
+            properties.getReplacedProperties("Serializable_Composter_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
+    );
+    public static final SlimefunItemStack STONE_SOURCE = new SlimefunItemStack(
+            "MINIMIZEFACTORY_STONE_SOURCE",
+            Material.GRAY_STAINED_GLASS,
+            properties.getReplacedProperty("Material_Stone_Source"),
+            properties.getReplacedProperties("Material_Stone_Source_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
+    );
+    public static final SlimefunItemStack SERIALIZABLE_MOSS_MACHINE = new SlimefunItemStack(
+            "MINIMIZEFACTORY_SERIALIZABLE_MOSS_MACHINE",
+            Material.MOSS_BLOCK,
+            properties.getReplacedProperty("Serializable_Moss_Machine"),
+            properties.getReplacedProperties("Serializable_Moss_Machine_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
+    );
+    public static final SlimefunItemStack SERIALIZABLE_MOSS_BONEMEAL_MACHINE = new SlimefunItemStack(
+            "MINIMIZEFACTORY_SERIALIZABLE_MOSS_BONEMEAL_MACHINE",
+            Material.MOSS_BLOCK,
+            properties.getReplacedProperty("Serializable_Moss_Bonemeal_Machine"),
+            properties.getReplacedProperties("Serializable_Moss_Bonemeal_Machine_Description",ChatColor.GRAY).toArray(EMPTY_STRING_ARRAY)
+    );
 }

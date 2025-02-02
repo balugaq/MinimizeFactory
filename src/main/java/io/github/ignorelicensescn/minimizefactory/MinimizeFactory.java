@@ -166,6 +166,7 @@ public class MinimizeFactory extends AbstractAddon {
                 }else {
                     logger.log(Level.WARNING,"Invalid property name:" + language);
                     inStream = this.getClassLoader().getResourceAsStream("language/zh_CN.properties");
+                    assert inStream != null;
                     InputStreamReader inputStreamReader = new InputStreamReader(inStream, StandardCharsets.UTF_8);
                     properties.load(inputStreamReader);
                 }

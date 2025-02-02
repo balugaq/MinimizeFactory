@@ -11,7 +11,7 @@ import static io.github.ignorelicensescn.minimizefactory.utils.mathutils.BlockLo
 @Immutable
 public record BlockLocation(long x, long y, long z, int hash,@Nonnull Vector vector) {
     public BlockLocation(long x, long y, long z){
-        this(x,y,z,(int)(y<<24+x*31+z),new Vector(x,y,z));
+        this(x,y,z,(int)((y<<24)+(x<<12)+z),new Vector(x,y,z));
     }
 
     @Nonnull

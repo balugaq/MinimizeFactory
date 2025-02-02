@@ -5,6 +5,7 @@ import io.github.ignorelicensescn.minimizefactory.datastorage.database.operators
 
 import javax.annotation.Nonnull;
 
+//maybe i should use mybatis
 public record OperateItem<InType,OutType>(
         @Nonnull String valueName,
         @Nonnull PreparedStatementValueSetter<InType> setter,
