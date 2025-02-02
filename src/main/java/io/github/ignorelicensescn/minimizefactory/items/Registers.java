@@ -385,7 +385,7 @@ public class Registers {
                                 new SerializedMachine_MachineRecipe(
                                         SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,
                                         new MachineRecipeInTicks(
-                                                6,//not exact
+                                                12,//not exact
                                                 new ItemStack[]{
                                                         new ItemStack(Material.BONE_MEAL)
                                                 },
@@ -423,7 +423,7 @@ public class Registers {
             RecipeType.ENHANCED_CRAFTING_TABLE,
             new ItemStack[]{
                     SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,
-                    SlimefunStacks.SERIALIZABLE_COMPOSTER, SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,SlimefunStacks.SERIALIZABLE_COMPOSTER,
+                    SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,SlimefunStacks.SERIALIZABLE_COMPOSTER,
                     SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,SlimefunStacks.SERIALIZABLE_COMPOSTER,
             }
     ) {
@@ -433,7 +433,7 @@ public class Registers {
                         new SerializedMachine_MachineRecipe(
                                 SlimefunStacks.SERIALIZABLE_MOSS_MACHINE,
                                 new MachineRecipeInTicks(
-                                        6,//not exact
+                                        12,//not exact
                                         null,
                                         new ItemStack[]{
                                                 new ItemStack(Material.BONE_MEAL),
