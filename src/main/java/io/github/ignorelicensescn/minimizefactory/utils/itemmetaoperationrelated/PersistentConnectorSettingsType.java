@@ -1,7 +1,7 @@
 package io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated;
 
 
-import de.jeff_media.morepersistentdatatypes.DataType;
+import com.jeff_media.morepersistentdatatypes.DataType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;

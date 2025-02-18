@@ -67,9 +67,9 @@
 <!--        compiled Slimefun RC-37 locally to give some annotations for myself,see my repos:RemovedBySFCNInspection and Slimefun4-RC-37-modified-->
 <!--        compiled locally-->
         <dependency>
-            <groupId>com.github.Slimefun</groupId>
+            <groupId>com.github.SlimefunGuguProject</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-37-marked-modified</version>
+            <version>38953fe13a</version>
             <scope>provided</scope>
         </dependency>
 
@@ -80,7 +80,8 @@
             <artifactId>DynaTech</artifactId>
             <version>c6f32ec26c-j16</version>
 <!--            <version>master-SNAPSHOT</version>-->
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/DynaTech.jar</systemPath>
         </dependency>
 
 <!--        compiled locally-->
@@ -89,7 +90,8 @@
             <artifactId>FluffyMachines</artifactId>
             <version>01c839cc0d</version>
 <!--            <version>master-SNAPSHOT</version>-->
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/FluffyMachines.jar</systemPath>
         </dependency>
 
 <!--        compiled locally-->
@@ -98,7 +100,8 @@
             <artifactId>LiteXpansion</artifactId>
             <version>5f1dcec294</version>
 <!--            <version>master-SNAPSHOT</version>-->
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/LiteXpansion.jar</systemPath>
         </dependency>
 
 
@@ -108,7 +111,8 @@
             <artifactId>FNAmplifications</artifactId>
             <version>0b45a05e07</version>
 <!--            <version>master-SNAPSHOT</version>-->
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/FNAmplifications.jar</systemPath>
         </dependency>
 
 <!--        compiled locally-->
@@ -117,7 +121,8 @@
             <artifactId>InfinityExpansion</artifactId>
             <version>9da37202ef</version>
 <!--            <version>master-SNAPSHOT</version>-->
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/InfinityExpansion.jar</systemPath>
         </dependency>
 
 <!--        compiled locally-->
@@ -125,13 +130,14 @@
             <groupId>dev.sefiraat</groupId>
             <artifactId>Cultivation</artifactId>
             <version>2c3e244</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Cultivation.jar</systemPath>
         </dependency>
 
         <dependency>
-            <groupId>de.jeff_media</groupId>
+            <groupId>com.jeff_media</groupId>
             <artifactId>MorePersistentDataTypes</artifactId>
-            <version>1.0.0</version>
+            <version>2.4.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -161,7 +167,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
 
@@ -275,6 +281,14 @@
                 <configuration>
                     <source>16</source>
                     <target>16</target>
+                    <encoding>UTF-8</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.34</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,7 +1,7 @@
 package io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated;
 
 
-import de.jeff_media.morepersistentdatatypes.DataType;
+import com.jeff_media.morepersistentdatatypes.DataType;
 import io.github.ignorelicensescn.minimizefactory.utils.itemmetaoperationrelated.machineWithRecipe.SerializedMachine_MachineRecipe;
 import io.github.ignorelicensescn.minimizefactory.utils.mathutils.IntegerRational;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
